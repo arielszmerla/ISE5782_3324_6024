@@ -17,6 +17,7 @@ public class Triangle extends Polygon{
         super(p0, p1, p2);
     }
 
+
     @Override
     public String toString() {
         return "Triangle{ " + super.toString() + "}" ;

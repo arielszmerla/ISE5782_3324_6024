@@ -1,8 +1,12 @@
 package geometries;
 
+import primitives.Double3;
 import primitives.Point;
 import primitives.Ray;
 import primitives.Vector;
+
+import static primitives.Util.*;
+
 /**
  * Sphere class represents 3D tube in 3D Cartesian coordinate system
  * @author Gal&Ariel
@@ -36,7 +40,22 @@ public class Tube implements Geometry {
      */
     @Override
     public Vector getNormal(Point point) {
-        return null;
+        Point P0 = _axisRay.getP0();
+        Vector v = _axisRay.getDir();
+        Vector P0_P = point.subtract(P0);
+        double t = alignZero(v.dotProduct(P0_P));
+
+        if (isZero(t)) {
+            return P0_P.normalize();
+        }
+
+        Point o = P0.add(v.scale(t));
+        //if the point given is located on the tube axis
+        if (point.equals(o)) {
+            throw new IllegalArgumentException("point cannot be on the tube axis");
+        }
+        Vector n = point.subtract(o).normalize();
+        return n;
     }
 
     @Override

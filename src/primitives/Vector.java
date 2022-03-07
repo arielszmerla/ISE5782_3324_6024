@@ -28,6 +28,8 @@ public class Vector extends Point {
             throw new IllegalArgumentException("Vector(0,0,0) is not valid");
     }
 
+
+
     @Override
     public String toString() {
         return "Vector " + _xyz;
@@ -108,5 +110,13 @@ public class Vector extends Point {
     public Vector normalize() {
         double size = length();
         return new Vector(_xyz.reduce(size));
+    }
+    /**
+     * Change vector to scalized vector
+     *
+     * @return scalized vector
+     */
+    public Vector scale(double t) {
+        return new Vector (_xyz.scale(t));
     }
 }
