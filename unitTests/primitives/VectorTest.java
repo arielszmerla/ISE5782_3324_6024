@@ -6,8 +6,13 @@ import static java.lang.System.out;
 import static org.junit.jupiter.api.Assertions.*;
 import static primitives.Util.isZero;
 
+/**
+ * vector tests class
+ */
 class VectorTest {
-
+    /**
+     * test for equals
+     */
     @Test
     void testTestEquals() {
         // ============ Equivalence Partitions Tests ==============
@@ -18,7 +23,9 @@ class VectorTest {
         assertTrue(v1.equals(v2), "equals() wrong value");
         assertFalse(v1.equals(v3), "equals() wrong value");
     }
-
+    /**
+     * test for dot product
+     */
     @Test
     void testDotProduct() {
         // ============ Equivalence Partitions Tests ==============
@@ -27,7 +34,9 @@ class VectorTest {
         Vector v2 = new Vector(-2, -4, -6);
         assertEquals(-28d, v1.dotProduct(v2), 0.00001, "dotProduct() wrong value");
     }
-
+    /**
+     * test for squared length
+     */
     @Test
     void testCrossProduct() {
         Vector v1 = new Vector(1, 2, 3);
@@ -51,7 +60,9 @@ class VectorTest {
                 "crossProduct() for parallel vectors does not throw an exception");
 
     }
-
+    /**
+     * test for squared length
+     */
     @Test
     void testLengthSquared() {
         // ============ Equivalence Partitions Tests ==============
@@ -59,14 +70,16 @@ class VectorTest {
         assertEquals(14d, new Vector(1, 2, 3).lengthSquared(), 0.00001,
                 "lengthSquared() wrong value");
     }
-
+    /**
+     * test for length calculation
+     */
     @Test
     void testLength() {
         assertEquals(5d, new Vector(0, 3, 4).length(), "length() wrong value");
     }
 
     /**
-     *
+     *test for normalize
      */
     @Test
     void testNormalize() {

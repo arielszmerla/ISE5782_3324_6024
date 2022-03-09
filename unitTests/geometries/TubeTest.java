@@ -5,9 +5,14 @@ import primitives.Ray;
 import primitives.Vector;
 
 import static org.junit.jupiter.api.Assertions.*;
-
+/**
+ * * class for tube class tests
+ */
 class TubeTest {
 
+    /**
+     * test for get normal
+     */
     @Test
     void testGetNormal() {
         Tube tube= new Tube(new Ray(new Point(0,0,0), new Vector(0,0,1)), 1 );

@@ -6,15 +6,16 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class PointTest {
 
-    @Test
-    void testTestEquals() {
-    }
-
+    /**
+     * test for get normal
+     */
     @Test
     void testAdd() {
         fail("Not yet implemented");
     }
-
+    /**
+     * test for get normal
+     */
     @Test
     void testSubtract() {
     }
