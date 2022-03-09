@@ -3,6 +3,9 @@ package geometries;
 import primitives.Point;
 import primitives.Ray;
 import primitives.Vector;
+
+import static primitives.Util.isZero;
+
 /**
  * Cylinder class represents 3D cylinder in 3D Cartesian coordinate system
  * inherit Tube
@@ -41,11 +44,21 @@ public class Cylinder extends Tube {
     }
     /**
      * Get the normal vector on Cylinder based-on point
-     * @param point point where the normal
+     * @param p1 point where the normal
      * @return normal vector
      */
-    public Vector getNormal(Point point) {
-        return null;
-    }
-}
+    @Override
+    public Vector getNormal(Point p1) {
+        // we assume point is on cylinder so we check if it is on top
+        // bottom or side.
+        Point centerBottom = _axisRay.getP0();
+        Point centerTop = _axisRay.getP0().add(_axisRay.getDir().scale(_height));
+        if(p1.equals(centerTop) || isZero(p1.subtract(centerTop).dotProduct(_axisRay.getDir()))) { // top
+            return _axisRay.getDir();
+        } else if (p1.equals(centerBottom) || isZero(p1.subtract(centerBottom).dotProduct(_axisRay.getDir()))) { // bottom
+            return _axisRay.getDir().scale(-1);
+        } else { // side
+            return super.getNormal(p1);
+        }
+    }}
 

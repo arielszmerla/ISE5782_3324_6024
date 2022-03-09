@@ -8,6 +8,17 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class PlaneTest {
 
+    /**
+     * Test method for {@link geometries.Plane#Plane(Point, Point, Point)}.
+     */
+    @Test
+    public void testConstructor() {
+        // ============ Equivalence Partitions Tests ==============
+
+       
+    }
+
+
     @Test
     void testGetNormal() {
         // ============ Equivalence Partitions Tests ==============
