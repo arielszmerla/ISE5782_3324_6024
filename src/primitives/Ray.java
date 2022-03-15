@@ -1,5 +1,7 @@
 package primitives;
 
+import static primitives.Util.isZero;
+
 /**
  * Sphere class represents 3D ray in 3D Cartesian coordinate system
  * @author Gal&Ariel
@@ -57,4 +59,16 @@ public class Ray {
         return _p0.equals(ray._p0) && _dir.equals( ray._dir);
     }
 
+    /**
+     *
+     * get Point on specific distance on the ray
+     *
+     * @param t scalar - distance from p0 on the ray
+     * @return new {@link Point} on the ray
+     */
+    public Point getPoint(double t) {
+        if(isZero(t))
+            throw new IllegalArgumentException("t equals 0 causes illegal Vector Zero");
+        return _p0.add(_dir.scale(t));
+    }
 }

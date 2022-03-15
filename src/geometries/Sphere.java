@@ -1,7 +1,11 @@
 package geometries;
 
 import primitives.Point;
+import primitives.Ray;
 import primitives.Vector;
+
+import java.util.List;
+
 /**
  * Sphere class represents 3D sphere in 3D Cartesian coordinate system
  * @author Gal&Ariel
@@ -58,5 +62,14 @@ public class Sphere implements Geometry{
     public String toString() {
         return "_center=" + _center +
                 ", _radius=" + _radius  ;
+    }
+
+    /**
+     * @param ray {@link Ray} pointing toward the objects
+     * @return List of intersections {@link Point}
+     */
+    @Override
+    public List<Point> findIntersections(Ray ray) {
+        return null;
     }
 }

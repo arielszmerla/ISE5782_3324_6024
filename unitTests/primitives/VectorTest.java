@@ -94,4 +94,8 @@ class VectorTest {
                 "normalized vector is not in the same direction");
         assertEquals(new Vector(0, 0.6, 0.8), n, "wrong normalized vector");
     }
+    @Test
+    void testZero(){
+        assertThrows(IllegalArgumentException.class, () -> new Vector(0,0,0), "zero vector isn't possible");
+    }
 }

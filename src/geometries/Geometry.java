@@ -2,7 +2,11 @@ package geometries;
 
 import primitives.*;
 
-
-public interface Geometry {
+/**
+ * This interface will serve all geometric class
+ *
+ * @author Gal Gabay & Ariel Szmerla
+ */
+public interface Geometry extends Intersectable {
     Vector getNormal(Point point);
 }
