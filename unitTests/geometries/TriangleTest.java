@@ -24,6 +24,9 @@ class TriangleTest {
         assertEquals(new Vector(sqrt3, sqrt3, sqrt3), pl.getNormal(new Point(0, 0, 1)), "Bad normal to Triangle");
     }
 
+    /**
+     * test
+     */
     @Test
     void testFindIntersections() {
 
