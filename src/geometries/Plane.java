@@ -26,13 +26,19 @@ public class Plane implements Geometry{
      * @param p2
      * @param p3
      */
-    public Plane(Point p1, Point p2, Point p3) {
-        _q0 = p1;
+    public Plane(Point p1, Point p2, Point p3) throws IllegalArgumentException {
        Vector v = p2.subtract(p1);
        Vector u = p3.subtract(p1);
        Vector n = v.crossProduct(u);
-       _normal = n.normalize();
+        _q0 = p1;
+        _normal = n.normalize();
     }
+
+    /**
+     * Plane constructor based on point on the plane and normal
+     * @param p point {@link Point} on the plane
+     * @param n normal vector {@link Vector} at point p
+     */
     public Plane(Point p, Vector n)
     {
         _q0 = p;
@@ -40,7 +46,7 @@ public class Plane implements Geometry{
     }
     /**
      * Get the normal vector on plane based-on point
-     * @param point point where the normal
+     * @param point {@link Point} where the normal
      * @return normal vector
      */
     @Override
@@ -50,7 +56,7 @@ public class Plane implements Geometry{
 
     /**
      * getter for normal vector
-     * @return
+     * @return normal {@link java.util.Vector} to plane
      */
     public Vector getNormal() {
         return _normal;

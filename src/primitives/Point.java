@@ -26,6 +26,10 @@ public class Point {
         _xyz =new Double3 (x,y,z);
     }
 
+    public Double3 get_xyz() {
+        return _xyz;
+    }
+
     @Override
     public String toString() {
         return "Point"+_xyz ;

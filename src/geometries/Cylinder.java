@@ -44,8 +44,8 @@ public class Cylinder extends Tube {
     }
     /**
      * Get the normal vector on Cylinder based-on point
-     * @param p1 point where the normal
-     * @return normal vector
+     * @param p1 {@link Point} where the normal
+     * @return normal vector {@link Vector}
      */
     @Override
     public Vector getNormal(Point p1) {

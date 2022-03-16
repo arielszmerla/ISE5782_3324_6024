@@ -23,15 +23,18 @@ class PlaneTest {
     @Test
     public void testConstructor() {
         // ============ Equivalence Partitions Tests ==============
-        // TC01: There is a simple single test here
-        Plane pl = new Plane(p1, p2,p3);
-        //create a vector to be compared to constructored vector normal to a plane
-        Point p0 = p1;
-        Vector v = p2.subtract(p1);
-        Vector u = p3.subtract(p1);
-        Vector n = v.crossProduct(u);
-        Vector normal = n.normalize();
-        assertEquals(normal, pl.getNormal(), "Bad constructor to plane");
+        // TC01: Test plane constructor when two points are the same.
+        try {
+            new Plane(new Point(0,0,0),new Point(0,0,0),new Point(0,1,0));
+            fail("Error: Plane() doesn't throw when two points are the same");
+        } catch (IllegalArgumentException ignored) { }
+
+        // TC02: Test plane constructor when all points are on the same line.
+        try {
+            new Plane(new Point(1,1,1),new Point(2,2,2),new Point(3,3,3));
+            fail("Error: Plane() doesn't throw when all points are on the same line");
+        } catch (IllegalArgumentException ignored) { }
+
     }
 
 
