@@ -39,7 +39,6 @@ public class Ray {
     public Vector getDir() {
         return _dir.normalize();
     }
-
     @Override
     public String toString() {
         return "_p0=" + _p0.toString() +
