@@ -1,6 +1,5 @@
 package geometries;
 
-import primitives.Double3;
 import primitives.Point;
 import primitives.Ray;
 import primitives.Vector;
@@ -44,7 +43,7 @@ public class Tube implements Geometry {
     public Vector getNormal(Point point) {
         Point P0 = _axisRay.getP0();
         Vector v = _axisRay.getDir();
-        Vector P0_P = point.subtract(P0);
+        Vector P0_P = point.substract(P0);
         double t = alignZero(v.dotProduct(P0_P));
 
         if (isZero(t)) {
@@ -56,7 +55,7 @@ public class Tube implements Geometry {
         if (point.equals(o)) {
             throw new IllegalArgumentException("point cannot be on the tube axis");
         }
-        Vector n = point.subtract(o).normalize();
+        Vector n = point.substract(o).normalize();
         return n;
     }
 
