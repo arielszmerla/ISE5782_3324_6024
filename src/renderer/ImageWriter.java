@@ -18,13 +18,13 @@ import javax.imageio.*;
  * @author Dan
  */
 public class ImageWriter {
-	private int nX;
-	private int nY;
+	private int _nX;
+	private int _nY;
 
 	private static final String FOLDER_PATH = System.getProperty("user.dir") + "/images";
 
-	private BufferedImage image;
-	private String imageName;
+	private BufferedImage _image;
+	private String _imageName;
 	
 	private Logger logger = Logger.getLogger("ImageWriter");
 
@@ -36,11 +36,11 @@ public class ImageWriter {
 	 * @param nY        amount of pixels by height
 	 */
 	public ImageWriter(String imageName, int nX, int nY) {
-		this.imageName = imageName;
-		this.nX = nX;
-		this.nY = nY;
+		_imageName = imageName;
+		_nX = nX;
+		_nY = nY;
 
-		image = new BufferedImage(nX, nY, BufferedImage.TYPE_INT_RGB);
+		_image = new BufferedImage(nX, nY, BufferedImage.TYPE_INT_RGB);
 	}
 
 	// ***************** Getters/Setters ********************** //
@@ -50,7 +50,7 @@ public class ImageWriter {
 	 * @return the amount of vertical pixels
 	 */
 	public int getNy() {
-		return nY;
+		return _nY;
 	}
 
 	/**
@@ -59,7 +59,7 @@ public class ImageWriter {
 	 * @return the amount of horizontal pixels
 	 */
 	public int getNx() {
-		return nX;
+		return _nX;
 	}
 
 	// ***************** Operations ******************** //
@@ -70,8 +70,8 @@ public class ImageWriter {
 	 */
 	public void writeToImage() {
 		try {
-			File file = new File(FOLDER_PATH + '/' + imageName + ".png");
-			ImageIO.write(image, "png", file);
+			File file = new File(FOLDER_PATH + '/' + _imageName + ".png");
+			ImageIO.write(_image, "png", file);
 		} catch (IOException e) {
 			logger.log(Level.SEVERE, "I/O error", e);
 			throw new IllegalStateException("I/O error - may be missing directory " + FOLDER_PATH, e);
@@ -87,7 +87,7 @@ public class ImageWriter {
 	 * @param color  final color of the pixel
 	 */
 	public void writePixel(int xIndex, int yIndex, Color color) {
-		image.setRGB(xIndex, yIndex, color.getColor().getRGB());
+		_image.setRGB(xIndex, yIndex, color.getColor().getRGB());
 	}
 
 }
