@@ -6,6 +6,7 @@ import java.util.Objects;
  * @author Gal&Ariel
  */
 public class Point {
+    public static final Point ZERO = new Point(0,0,0);
     final Double3 _xyz;
 
     /**
@@ -64,5 +65,29 @@ public class Point {
      */
     public Vector substract(Point p1) {
         return new Vector(_xyz.subtract(p1._xyz));
+    }
+
+    /**
+     * @param other
+     * @return (x2 - x1)^2 + (y2-y1)^2 + (z2-z1)^2
+     */
+    public double distanceSquared(Point other) {
+        final double x1 = _xyz._d1;
+        final double y1 = _xyz._d2;
+        final double z1 = _xyz._d3;
+
+        final double x2 = other._xyz._d1;
+        final double y2 = other._xyz._d2;
+        final double z2 = other._xyz._d3;
+
+        return ((x2 - x1) * (x2 - x1)) + ((y2 - y1) * (y2 - y1)) + ((z2 - z1) * (z2 - z1));
+    }
+
+    /**
+     * @param p
+     * @return euclidean distance between 2  3D points using the Pythagorean theorem
+     */
+    public double distance(Point p) {
+        return Math.sqrt(distanceSquared(p));
     }
 }

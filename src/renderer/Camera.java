@@ -1,5 +1,6 @@
 package renderer;
 
+import primitives.Color;
 import primitives.Point;
 import primitives.Ray;
 import primitives.Vector;
@@ -87,5 +88,28 @@ public class Camera {
         if (right != 0) myPoint = myPoint.add(_vRight.scale(right));
         if (to != 0) myPoint = myPoint.add(_vTo.scale(to));
         this._p0 = myPoint;
+    }
+
+    public Camera setImageWriter(ImageWriter imageWriter) {
+        this.setImageWriter(imageWriter);
+        return this;
+    }
+
+    public Camera setRayTracer(RayTracer rayTracerBasic) {
+        this.setRayTracer(rayTracerBasic);
+        return this;
+    }
+
+    public void writeToImage() {
+        imagewriter.writeToImage();
+    }
+    public void printGrid(int interval, Color color){
+        for (int i = 0; i < imageWriter.getNx(); i++)
+            for (int j = 0; j < imageWriter.getNy(); j++)
+                if (i % 50 == 0 || j % 50 == 0)
+                    imageWriter.writePixel(i, j, redColor);
+                else
+                    imageWriter.writePixel(i, j, yellowColor);
+        imageWriter.writeToImage();
     }
 }

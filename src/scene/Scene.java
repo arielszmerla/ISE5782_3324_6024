@@ -11,7 +11,7 @@ public class Scene {
     private final AmbientLight _ambientLight;
     private final Geometries _geometries;
 
-    private  Scene(SceneBuilder builder){
+    private Scene(SceneBuilder builder){
         _name = builder._name;
         _background = builder._background;
         _ambientLight = builder._ambientLight;
