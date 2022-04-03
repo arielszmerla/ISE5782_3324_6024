@@ -1,5 +1,7 @@
 package primitives;
 
+import java.util.List;
+
 import static primitives.Util.isZero;
 
 /**
@@ -70,4 +72,19 @@ public class Ray {
             throw new IllegalArgumentException("t equals 0 causes illegal Vector Zero");
         return _p0.add(_dir.scale(t));
     }
+
+
+   public Point findClosestPoint(List<Point> points){
+        if(points.isEmpty())
+            return null;
+        Point p0= this.getP0();
+        Point shortestDistance= points.get(0);
+        for(Point pt : points){
+            if (p0.distance(pt) < p0.distance(shortestDistance)) {
+                shortestDistance = pt;
+            }
+        }
+
+        return shortestDistance;
+   }
 }

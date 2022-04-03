@@ -1,6 +1,6 @@
 package scene;
 
-import elements.AmbientLight;
+import lighting.AmbientLight;
 import geometries.Geometries;
 import primitives.Color;
 
@@ -10,6 +10,7 @@ public class Scene {
     private final Color _background;
     private final AmbientLight _ambientLight;
     private final Geometries _geometries;
+
 
     private Scene(SceneBuilder builder){
         _name = builder._name;
@@ -44,7 +45,7 @@ public class Scene {
 
         public SceneBuilder(String name){
             _name =name;
-
+            _geometries = new Geometries();
         }
         //chaining methods
 
@@ -62,5 +63,7 @@ public class Scene {
             _geometries = geometries;
             return this;
         }
+
+
     }
 }
