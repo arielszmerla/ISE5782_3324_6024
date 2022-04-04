@@ -5,6 +5,8 @@ import primitives.Point;
 import primitives.Ray;
 import scene.Scene;
 
+
+
 import java.util.List;
 
 public class RayTracerBasic extends RayTracer {
@@ -15,21 +17,20 @@ public class RayTracerBasic extends RayTracer {
      * Get color of the intersection of the ray with the scene
      *
      * @param ray Ray to trace
-     * @param isSoftShadows is rendering with soft shadows improvement
      * @return Color of intersection
      */
     @Override
     public Color traceRay(Ray ray) {
-
-        List<Point> myPoints = _scene.getGeometries().findIntersections(ray);
-        if (myPoints != null) {
-            Point myPoint = ray.findClosestPoint(myPoints);
-            return calcColor(myPoint, ray);
+        List<Point> intersections = _scene._geometries.findIntersections(ray);
+        if (intersections != null) {
+            Point closestPoint = ray.findClosestPoint(intersections);
+            return calcColor(closestPoint);
         }
-        return _scene.getBackground();
+        //ray did not intersect any geometrical object
+        return _scene._background;
     }
 
-    private Color calcColor(Point myPoint, Ray ray) {
-        return _scene.getBackground();
+    private Color calcColor(Point point) {
+        return _scene._ambientLight.getIntensity();
     }
 }

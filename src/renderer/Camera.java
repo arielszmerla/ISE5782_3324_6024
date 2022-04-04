@@ -97,12 +97,12 @@ public class Camera {
     }
 
     public Camera setImageWriter(ImageWriter imageWriter) {
-        this.setImageWriter(imageWriter);
+        _imageWriter=imageWriter;
         return this;
     }
 
     public Camera setRayTracer(RayTracer rayTracerBasic) {
-        this.setRayTracer(rayTracerBasic);
+        _rayTracer= rayTracerBasic;
         return this;
     }
     public Camera build() {

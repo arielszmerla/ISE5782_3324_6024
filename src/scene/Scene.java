@@ -6,64 +6,72 @@ import primitives.Color;
 
 public class Scene {
 
-    private final String _name;
-    private final Color _background;
-    private final AmbientLight _ambientLight;
-    private final Geometries _geometries;
+    /**
+     * name of the scene
+     */
+    public String _name;
+
+    /**
+     * background color of the scene
+     */
+    public Color _background;
+
+    /**
+     * Ambient light of the scene
+     */
+    public AmbientLight _ambientLight;
+
+    /**
+     * Geometries figures of the scene
+     */
+    public Geometries _geometries;
 
 
-    private Scene(SceneBuilder builder){
-        _name = builder._name;
-        _background = builder._background;
-        _ambientLight = builder._ambientLight;
-        _geometries = builder._geometries;
+    private Scene(SceneBuilder builder) {
+        this._name = builder._name;
+        this._background = builder._background;
+        this._ambientLight = builder._ambientLight;
+        this._geometries = builder._geometries;
     }
 
-    public String getName() {
-        return _name;
-    }
 
-    public Color getBackground() {
-        return _background;
-    }
+    /**
+     * Builder of the scene
+     */
+    public static class SceneBuilder {
 
-    public AmbientLight getAmbientLight() {
-        return _ambientLight;
-    }
+        public String _name;
+        public Color _background;
+        public AmbientLight _ambientLight;
+        public Geometries _geometries = new Geometries();
 
-    public Geometries getGeometries() {
-        return _geometries;
-    }
-
-    public static class SceneBuilder{
-        private  final String _name;
-        private  Color _background;
-        private AmbientLight _ambientLight;
-        private Geometries _geometries;
-
-
-
-        public SceneBuilder(String name){
-            _name =name;
-            _geometries = new Geometries();
+        public SceneBuilder(String name) {
+            this._name = name;
         }
-        //chaining methods
+        public SceneBuilder(Scene scene){
+            _name = scene._name;
+            _background = scene._background;
+            _ambientLight = scene._ambientLight;
+            _geometries = scene._geometries;
+        }
 
         public SceneBuilder setBackground(Color background) {
-            _background = background;
+            this._background = background;
             return this;
         }
 
         public SceneBuilder setAmbientLight(AmbientLight ambientLight) {
-            _ambientLight = ambientLight;
+            this._ambientLight = ambientLight;
             return this;
         }
 
         public SceneBuilder setGeometries(Geometries geometries) {
-            _geometries = geometries;
+            this._geometries = geometries;
             return this;
         }
 
-
+        public Scene build() {
+            return new Scene(this);
+        }
     }
 }

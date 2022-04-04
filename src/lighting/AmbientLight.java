@@ -26,7 +26,6 @@ public class AmbientLight {
      */
     public AmbientLight(){
         _intensity=Color.BLACK;
-
     }
 
     /**
