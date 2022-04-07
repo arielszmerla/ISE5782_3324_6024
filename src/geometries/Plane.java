@@ -65,34 +65,8 @@ public class Plane extends Geometry{
 
     /**
      * @param ray {@link Ray} pointing toward the objects
-     * @return List of intersections {@link Point}
+     * @return List of intersections {@link GeoPoint}
      */
-    /*
-    @Override
-    public List<Point> findIntersections(Ray ray) {
-        Point p0 = ray.getP0();
-        Vector v = ray.getDir();
-        Vector n = _normal;
-        if (_q0.equals(p0))
-            return null;
-        double nv = alignZero(n.dotProduct(v));
-        if (isZero(nv))
-            return null;
-
-        Vector P0_Q0 = _q0.substract(p0); // Q - P0
-        double nP0Q0 = alignZero(n.dotProduct(P0_Q0));
-
-        if (isZero(nP0Q0))
-            return null;
-
-        double t = alignZero(nP0Q0 / nv);
-        // t should be bigger than 0
-        if (t<=0)
-            return null;
-        return List.of(ray.getPoint(t));
-    }
-*/
-
     @Override
     protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
         Point p0 = ray.getP0();
@@ -114,5 +88,6 @@ public class Plane extends Geometry{
         // t should be bigger than 0
         if (t<=0)
             return null;
-        return List.of(new GeoPoint(this, ray.getPoint(t)));    }
+        return List.of(new GeoPoint(this, ray.getPoint(t)));
+    }
 }

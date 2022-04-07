@@ -5,6 +5,9 @@ import primitives.Ray;
 import primitives.Vector;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static primitives.Util.isZero;
 
 /**
  * Sphere class represents 2D triangle (flat-shape) in 3D Cartesian coordinate system
@@ -26,6 +29,11 @@ public class Triangle extends Polygon{
      * @param ray {@link Ray} pointing toward the objects
      * @return List of intersections {@link Point}
      */
+
+    /**
+     * @param ray {@link Ray} pointing toward the objects
+     * @return List of intersections {@link Point}
+     */
     @Override
     protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
 
@@ -42,12 +50,13 @@ public class Triangle extends Polygon{
         double num2= n2.dotProduct(ray.getDir());
         double num3= n3.dotProduct(ray.getDir());
 
-       if( (num1>0&&num2>0&&num3>0)||(num1<0&&num2<0&&num3<0)) {
-           Plane pl = new Plane(l.get(0), l.get(1), l.get(2));
-           return List.of(new GeoPoint(this, pl.findIntersections(ray).get(0)));
-       }
-       return null;
+        if( (num1>0&&num2>0&&num3>0)||(num1<0&&num2<0&&num3<0)) {
+            Plane pl = new Plane(l.get(0), l.get(1), l.get(2));
+            return List.of(new GeoPoint(this, pl.findIntersections(ray).get(0)));
+        }
+        return null;
     }
+
 
     @Override
     public String toString() {

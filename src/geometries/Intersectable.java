@@ -2,6 +2,7 @@ package geometries;
 
 import primitives.*;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * interface for finding intersestions points
@@ -11,12 +12,27 @@ public abstract class Intersectable {
 
     public static class GeoPoint{
 
-        public final Geometry geometry;
-        public final Point point;
+        public  Geometry _geometry;
+        public  Point _point;
 
         public GeoPoint(Geometry geometry, Point point) {
-            this.geometry = geometry;
-            this.point = point;
+            _geometry = geometry;
+            _point = point;
+        }
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            GeoPoint geoPoint = (GeoPoint) o;
+            return this._geometry.equals(geoPoint._geometry) && _point.equals(geoPoint._point);
+        }
+
+        @Override
+        public String toString() {
+            return "GeoPoint{" +
+                    "_geometry=" + _geometry +
+                    ", _point=" + _point +
+                    '}';
         }
     }
 
@@ -25,11 +41,11 @@ public abstract class Intersectable {
      * @param ray {@link Ray} pointing toward the objects
      * @return List of intersections {@link Point}
      */
-    public final List<Point> findIntersections(Ray ray){
+    public List<Point> findIntersections(Ray ray){
         List<GeoPoint> geoList = findGeoIntersections(ray);
         return geoList == null? null
                 :geoList.stream()
-                .map((gp -> gp.point))
+                .map((gp -> gp._point))
                 .toList();
     }
 

@@ -7,32 +7,22 @@ import primitives.Double3;
  * Ambient light for all objects in 3D space
  *
  */
-public class AmbientLight {
-
-
-    private final Color _intensity; // intensity of ambient light
-
+public class AmbientLight extends Light {
     /**
-     * Ctor
-     * @param Ia light illumination
-     * @param Ka light factor
+     * Intensity of ambient light
+     * The ambient light's color is the color scaled by the ka factor
+     *
+     * @param color color at start
+     * @param ka    attenuation factor
      */
-    public  AmbientLight(Color Ia , Double3 Ka){
-        _intensity = Ia.scale(Ka);
+    public AmbientLight(Color color, Double3 ka) {
+        super(color.scale(ka));
     }
 
     /**
      * dflt ctor
      */
-    public AmbientLight(){
-        _intensity=Color.BLACK;
-    }
-
-    /**
-     * getter for intensity
-     * @return intensity
-     */
-    public Color getIntensity() {
-        return _intensity;
+    public AmbientLight() {
+        super(Color.BLACK.scale(1));
     }
 }

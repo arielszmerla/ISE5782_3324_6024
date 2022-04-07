@@ -2,8 +2,12 @@ package scene;
 
 import lighting.AmbientLight;
 import geometries.Geometries;
+import lighting.LightSource;
 import primitives.Color;
 import primitives.Double3;
+
+import java.util.LinkedList;
+import java.util.List;
 
 public class Scene {
 
@@ -20,12 +24,13 @@ public class Scene {
     /**
      * Ambient light of the scene
      */
-    public AmbientLight _ambientLight=new AmbientLight(Color.BLACK,new Double3(1,1,1));
+    public AmbientLight _ambientLight= new AmbientLight(Color.BLACK,new Double3(1,1,1));
 
     /**
      * Geometries figures of the scene
      */
     public Geometries _geometries;
+    List<LightSource> lights=new LinkedList<>();
 
 
     private Scene(SceneBuilder builder) {
@@ -35,14 +40,18 @@ public class Scene {
         this._geometries = builder._geometries;
     }
 
+    public Scene setLights(List<LightSource> lights) {
+        this.lights = lights;
+        return this;
+    }
+
 
     /**
      * Builder of the scene
      */
     public static class SceneBuilder {
-
         public String _name;
-        public Color _background;
+        public Color _background = Color.BLACK;
         public AmbientLight _ambientLight;
         public Geometries _geometries = new Geometries();
 
