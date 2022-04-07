@@ -3,6 +3,7 @@ package scene;
 import lighting.AmbientLight;
 import geometries.Geometries;
 import primitives.Color;
+import primitives.Double3;
 
 public class Scene {
 
@@ -14,12 +15,12 @@ public class Scene {
     /**
      * background color of the scene
      */
-    public Color _background;
+    public Color _background= Color.BLACK;
 
     /**
      * Ambient light of the scene
      */
-    public AmbientLight _ambientLight;
+    public AmbientLight _ambientLight=new AmbientLight(Color.BLACK,new Double3(1,1,1));
 
     /**
      * Geometries figures of the scene
