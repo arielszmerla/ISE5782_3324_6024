@@ -13,7 +13,7 @@ import static primitives.Util.isZero;
  *
  * @author Gal&Ariel
  */
-public class Sphere implements Geometry {
+public class Sphere extends Geometry {
     /**
      * Sphere's center
      */
@@ -77,7 +77,7 @@ public class Sphere implements Geometry {
      * @return List of intersections {@link Point}
      */
     @Override
-    public List<Point> findIntersections(Ray ray) {
+    public List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
         if (ray.getP0().equals(_center))
             throw new IllegalArgumentException("can't start from center");
         Vector u = _center.substract(ray.getP0());
@@ -87,11 +87,12 @@ public class Sphere implements Geometry {
             return null;
         double th = Math.sqrt(_radius * _radius - d * d);
         if (tm - th > 0 && tm + th > 0)
-            return List.of(ray.getP0().add(ray.getDir().scale(tm - th)), ray.getP0().add(ray.getDir().scale(tm + th)));
+            return List.of(new GeoPoint(this, ray.getP0().add(ray.getDir().scale(tm - th)))
+                    , new GeoPoint(this, ray.getP0().add(ray.getDir().scale(tm + th))));
         if (tm - th > 0 && !(tm + th > 0))
-            return List.of(ray.getP0().add(ray.getDir().scale(tm - th)));
+            return List.of(new GeoPoint(this, ray.getP0().add(ray.getDir().scale(tm - th))));
         if (!(tm - th > 0) && tm + th > 0)
-            return List.of(ray.getP0().add(ray.getDir().scale(tm + th)));
+            return List.of(new GeoPoint(this, ray.getP0().add(ray.getDir().scale(tm + th))));
         return null;
 
     }

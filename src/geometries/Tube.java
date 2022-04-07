@@ -12,7 +12,7 @@ import static primitives.Util.*;
  * Sphere class represents 3D tube in 3D Cartesian coordinate system
  * @author Gal&Ariel
  */
-public class Tube implements Geometry {
+public class Tube extends Geometry {
     /**
      * Ray in the center of the tube
      */
@@ -88,7 +88,8 @@ public class Tube implements Geometry {
      * @return List of intersections {@link Point}
      */
     @Override
-    public List<Point> findIntersections(Ray ray) {
+    protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
         return null;
     }
+
 }

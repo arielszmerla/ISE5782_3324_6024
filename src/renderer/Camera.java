@@ -117,8 +117,8 @@ public class Camera {
         if (_imageWriter == null) {
             throw new MissingResourceException("missing resource", ImageWriter.class.getName(), "");
         }
-        for (int i = 0; i < _imageWriter.getNx(); i++)
-            for (int j = 0; j < _imageWriter.getNy(); j++)
+        for (int i = 0; i < _imageWriter.getNy(); i++)
+            for (int j = 0; j < _imageWriter.getNx(); j++)
                 if (i % interval == 0 || j % interval == 0)
                     _imageWriter.writePixel(j, i, color);
         _imageWriter.writeToImage();
@@ -163,31 +163,8 @@ public class Camera {
      */
     private Color castRay(int nX, int nY, double j, double i) {
 
-        //Pc = P0 + d * vTo
-        Point pc = _p0.add(_vTo.scale(_distance));
-        Point pIJ = pc;
 
-        //Ry = height / nY : height of a pixel
-        double rY = alignZero(_height / nY);
-        //Ry = weight / nX : width of a pixel
-        double rX = alignZero(_width / nX);
-        //xJ is the value of width we need to move from center to get to the point
-        double xJ = alignZero((j - ((nX - 1) / 2d)) * rX);
-        //yI is the value of height we need to move from center to get to the point
-        double yI = alignZero(-(i - ((nY - 1) / 2d)) * rY);
-
-        if (xJ != 0) {
-            pIJ = pIJ.add(_vRight.scale(xJ)); // move to the point
-        }
-        if (yI != 0) {
-            pIJ = pIJ.add(_vUp.scale(yI)); // move to the point
-        }
-
-        //get vector from camera p0 to the point
-        Vector vIJ = pIJ.substract(_p0);
-
-        //return ray to the center of the pixel
-        Ray myRay = new Ray(_p0, vIJ);
+        Ray myRay = constructRay(nX,nY,(int)j,(int)i);
         return _rayTracer.traceRay(myRay);
 
     }

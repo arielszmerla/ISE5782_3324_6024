@@ -7,6 +7,6 @@ import primitives.*;
  *
  * @author Gal Gabay & Ariel Szmerla
  */
-public interface Geometry extends Intersectable {
-    Vector getNormal(Point point);
+public abstract class Geometry extends Intersectable {
+    public abstract Vector getNormal(Point point);
 }
