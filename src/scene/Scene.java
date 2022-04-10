@@ -30,7 +30,7 @@ public class Scene {
      * Geometries figures of the scene
      */
     public Geometries _geometries;
-    List<LightSource> lights=new LinkedList<>();
+    public List<LightSource> lights=new LinkedList<>();
 
 
     private Scene(SceneBuilder builder) {

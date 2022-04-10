@@ -70,7 +70,7 @@ public class RenderTests {
 	@Test
 	public void basicRenderMultiColorTest() {
 		Scene scene = new Scene.SceneBuilder("Test scene")//
-				.setAmbientLight(new AmbientLight(new Color(WHITE), new Double3(1,1,1))).build(); //
+				.setAmbientLight(new AmbientLight(new Color(WHITE), new Double3(0.2))).build(); //
 
 		scene._geometries.add( //
 				new Sphere(new Point(0, 0, -100), 50),

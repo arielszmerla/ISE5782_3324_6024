@@ -24,11 +24,11 @@ public class RayTracerBasic extends RayTracer {
         List<GeoPoint> myPoints = _scene._geometries.findGeoIntersections(ray);
         if (myPoints != null) {
             GeoPoint myPoint = ray.getClosestGeoPoint(myPoints);
-            return calcColor(myPoint);
+            return calcColor(myPoint,ray );
         }
         return _scene._background;
     }
-    private Color calcColor(GeoPoint geoPoint) {
-        return  geoPoint._geometry.getEmission();
+    private Color calcColor(GeoPoint geoPoint, Ray ray) {
+        return geoPoint._geometry.getEmission();
     }
 }
