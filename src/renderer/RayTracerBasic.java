@@ -31,4 +31,4 @@ public class RayTracerBasic extends RayTracer {
     private Color calcColor(GeoPoint geoPoint) {
         return  geoPoint._geometry.getEmission();
     }
-    }
+}
