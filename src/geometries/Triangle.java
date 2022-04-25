@@ -4,6 +4,7 @@ import primitives.Point;
 import primitives.Ray;
 import primitives.Vector;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,15 +30,9 @@ public class Triangle extends Polygon{
      * @param ray {@link Ray} pointing toward the objects
      * @return List of intersections {@link Point}
      */
-
-    /**
-     * @param ray {@link Ray} pointing toward the objects
-     * @return List of intersections {@link Point}
-     */
     @Override
     protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
-
-        List<Point> l =  this._vertices;
+        List<Point> l =  _vertices;
         Vector v1= l.get(0).substract(ray.getP0());
         Vector v2= l.get(1).substract(ray.getP0());
         Vector v3= l.get(2).substract(ray.getP0());
@@ -50,11 +45,19 @@ public class Triangle extends Polygon{
         double num2= n2.dotProduct(ray.getDir());
         double num3= n3.dotProduct(ray.getDir());
 
-        if( (num1>0&&num2>0&&num3>0)||(num1<0&&num2<0&&num3<0)) {
+        if((num1>0&&num2>0&&num3>0)||(num1<0&&num2<0&&num3<0)) {
             Plane pl = new Plane(l.get(0), l.get(1), l.get(2));
-            return List.of(new GeoPoint(this, pl.findIntersections(ray).get(0)));
+            List<GeoPoint> geoPoints =new LinkedList<>();
+
+            for ( Point pt : pl.findIntersections(ray) )
+            {
+                geoPoints.add( new GeoPoint(this,pt));
+
+            }
+            return  geoPoints;
         }
         return null;
+
     }
 
 

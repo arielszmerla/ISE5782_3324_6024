@@ -9,12 +9,9 @@ public class PointLight extends Light implements LightSource{
    private double _kC=1d;
    private double _kL=0d;
    private double _kQ=0d;
-    protected PointLight(Color intensity, Point position,double kC,double kL,double kQ) {
-        super(intensity);
-        _position=position;
-        _kC=kC;
-        _kL=kL;
-        _kQ=kQ;
+    public PointLight(Color c, Point pos) {
+        super(c);
+        _position = new Point(pos.get_xyz());
     }
 
 

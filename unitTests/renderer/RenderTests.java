@@ -40,10 +40,10 @@ public class RenderTests {
 	public void basicRenderTwoColorTest() {
 		Scene scene = new Scene.SceneBuilder("Test scene")//
 				.setAmbientLight(new AmbientLight(new Color(100, 100,100 ), //
-						new Double3( 1))) //
+						new Double3( 1,1,1))) //
 				.setBackground(new Color(75, 127, 90)).build();
 
-		scene._geometries.add(new Sphere( new Point(0, 0, -100),10),
+		scene._geometries.add(new Sphere( new Point(0, 0, -100),1).setEmission(new Color(BLUE)),
 				new Triangle(new Point(-100, 0, -100), new Point(0, 100, -100), new Point(-100, 100, -100)), // up
 				// left
 				new Triangle(new Point(-100, 0, -100), new Point(0, -100, -100), new Point(-100, -100, -100)), // down
@@ -73,7 +73,7 @@ public class RenderTests {
 				.setAmbientLight(new AmbientLight(new Color(WHITE), new Double3(0.2))).build(); //
 
 		scene._geometries.add( //
-				//new Sphere(new Point(0, 0, -100), 50),
+				new Sphere(new Point(0, 0, -100), 50),
 				// up left
 				new Triangle(new Point(-100, 0, -100), new Point(0, 100, -100), new Point(-100, 100, -100))
 						.setEmission(new Color(GREEN)),
@@ -100,8 +100,6 @@ public class RenderTests {
 	 */
 	@Test
 	public void basicRenderXml() throws ParserConfigurationException {
-		//Scene scene = new Scene.SceneBuilder("C:\\Users\\ariel\\IdeaProjects\\ISE5782_3324_6024\\images\\basicRenderTestTwoColors.xml").build();
-		;
 		DalXml xml = new DalXml("images/basicRenderTestTwoColors");
 		Scene scene = xml.getSceneFromXML();
 

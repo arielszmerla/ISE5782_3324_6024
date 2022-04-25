@@ -74,7 +74,7 @@ public class Camera {
         //rotate all vector's using Vector.rotateVector Method
         if (theta == 0) return; //no rotation
         _vUp = _vUp.rotateVector(axis, theta);
-        _vRight= _vRight.rotateVector(axis, theta);
+        _vRight = _vRight.rotateVector(axis, theta);
         _vTo = _vTo.rotateVector(axis, theta);
     }
 
@@ -95,23 +95,26 @@ public class Camera {
     }
 
     public Camera setImageWriter(ImageWriter imageWriter) {
-        _imageWriter=imageWriter;
+        _imageWriter = imageWriter;
         return this;
     }
 
     public Camera setRayTracer(RayTracer rayTracerBasic) {
-        _rayTracer= rayTracerBasic;
+        _rayTracer = rayTracerBasic;
         return this;
     }
+
     public Camera build() {
         return this;
     }
+
     public void writeToImage() {
-        if(_imageWriter==null)
+        if (_imageWriter == null)
             throw new MissingResourceException("missing resource", ImageWriter.class.getName(), "");
         _imageWriter.writeToImage();
     }
-    public void printGrid(int interval, Color color){
+
+    public void printGrid(int interval, Color color) {
         if (_imageWriter == null) {
             throw new MissingResourceException("missing resource", ImageWriter.class.getName(), "");
         }
@@ -121,14 +124,12 @@ public class Camera {
                     _imageWriter.writePixel(j, i, color);
         _imageWriter.writeToImage();
     }
+
     public void renderImage() {
 
         try {
             if (_imageWriter == null) {
                 throw new MissingResourceException("missing resource", ImageWriter.class.getName(), "");
-            }
-            if (this == null) {
-                throw new MissingResourceException("missing resource", Camera.class.getName(), "");
             }
             if (_rayTracer == null) {
                 throw new MissingResourceException("missing resource", RayTracer.class.getName(), "");
@@ -146,6 +147,7 @@ public class Camera {
             throw new UnsupportedOperationException("Not implemented yet" + e.getClassName());
         }
     }
+
     /**
      * The function constructs a ray from Camera location through the center of a
      * pixel (i,j) in the view plane
@@ -158,35 +160,36 @@ public class Camera {
      */
     private Color castRay(int nX, int nY, double j, double i) {
 
-        //Pc = P0 + d * vTo
-        Point pc = _p0.add(_vTo.scale(_distance));
-        Point pIJ = pc;
+//        //Pc = P0 + d * vTo
+//        Point pc = _p0.add(_vTo.scale(_distance));
+//        Point pIJ = pc;
+//
+//        //Ry = height / nY : height of a pixel
+//        double rY = alignZero(_height / nY);
+//        //Ry = weight / nX : width of a pixel
+//        double rX = alignZero(_width / nX);
+//        //xJ is the value of width we need to move from center to get to the point
+//        double xJ = alignZero((j - ((nX - 1) / 2d)) * rX);
+//        //yI is the value of height we need to move from center to get to the point
+//        double yI = alignZero(-(i - ((nY - 1) / 2d)) * rY);
+//
+//        if (xJ != 0) {
+//            pIJ = pIJ.add(_vRight.scale(xJ)); // move to the point
+//        }
+//        if (yI != 0) {
+//            pIJ = pIJ.add(_vUp.scale(yI)); // move to the point
+//        }
+//
+//        //get vector from camera p0 to the point
+//        Vector vIJ = pIJ.substract(_p0);
+//
+//        //return ray to the center of the pixel
+//        Ray myRay = new Ray(_p0, vIJ);
 
-        //Ry = height / nY : height of a pixel
-        double rY = alignZero(_height / nY);
-        //Ry = weight / nX : width of a pixel
-        double rX = alignZero(_width / nX);
-        //xJ is the value of width we need to move from center to get to the point
-        double xJ = alignZero((j - ((nX - 1) / 2d)) * rX);
-        //yI is the value of height we need to move from center to get to the point
-        double yI = alignZero(-(i - ((nY - 1) / 2d)) * rY);
-
-        if (xJ != 0) {
-            pIJ = pIJ.add(_vRight.scale(xJ)); // move to the point
+            return _rayTracer.traceRay(constructRay(nX,nY,(int)j,(int)i));
         }
-        if (yI != 0) {
-            pIJ = pIJ.add(_vUp.scale(yI)); // move to the point
-        }
-
-        //get vector from camera p0 to the point
-        Vector vIJ = pIJ.substract(_p0);
-
-        //return ray to the center of the pixel
-        Ray myRay = new Ray(_p0, vIJ);
-        return _rayTracer.traceRay(myRay);
 
     }
 
 
 
-}

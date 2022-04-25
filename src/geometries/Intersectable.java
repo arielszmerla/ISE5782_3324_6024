@@ -1,6 +1,8 @@
 package geometries;
 
 import primitives.*;
+
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
@@ -48,7 +50,6 @@ public abstract class Intersectable {
                 .map((gp -> gp._point))
                 .toList();
     }
-
     /**
      *
      * @param ray {@link Ray} pointing toward the objects
