@@ -11,16 +11,44 @@ import static primitives.Util.*;
 
 public class Camera {
 
+    /**
+     * right direction vector from camera
+     */
     private Vector _vRight;
+    /**
+     * forward direction vector from camera
+     */
     private Vector _vTo;
+    /**
+     * up direction vector from camera
+     */
     private Vector _vUp;
+    /**
+     * Camera Position
+     */
     private Point _p0;
+    /**
+     * distance from camera to the view pane
+     */
     private double _distance;
+    /**
+     * width of view plane
+     */
     private int _width;
+    /**
+     * height of view plane
+     */
     private int _height;
+
     private ImageWriter _imageWriter;
     private RayTracer _rayTracer;
 
+    /**
+     * Camera constructor based-on point and 2 vectors
+     * @param p0 {@link Point} position
+     * @param vto {@link java.util.Vector}
+     * @param vup {@link  java.util.Vector}
+     */
     public Camera(Point p0, Vector vto, Vector vup) {
         if (!isZero(vto.dotProduct(vup))) {
             throw new IllegalArgumentException("vup and vto aren't orthogonal");
@@ -31,12 +59,22 @@ public class Camera {
         _vRight = _vTo.crossProduct(_vUp);
     }
 
-
+    /**
+     * set distance from camera to viewplane
+     * @param distance
+     * @return updated Camera {@link Camera}
+     */
     public Camera setVPDistance(double distance) {
         _distance = distance;
         return this;
     }
 
+    /**
+     * set view plane size
+     * @param width
+     * @param height
+     * @return updated Camera {@link Camera}
+     */
     public Camera setVPSize(int width, int height) {
         _width = width;
         _height = height;
@@ -65,7 +103,7 @@ public class Camera {
     }
 
 
-    /***
+    /**
      * Rotate camera through axis and angle of rotation
      * @param axis Axis of rotation
      * @param theta Angle of rotation (degrees)
@@ -78,7 +116,7 @@ public class Camera {
         _vTo = _vTo.rotateVector(axis, theta);
     }
 
-    /***
+    /**
      * Move camera (move point of view of the camera)
      * @param up Vertical distance
      * @param right Horizontal side distance
@@ -94,16 +132,30 @@ public class Camera {
         this._p0 = myPoint;
     }
 
+    /**
+     * set imageWriter
+     * @param imageWriter {@link ImageWriter}
+     * @return updated camera {@link Camera}
+     */
     public Camera setImageWriter(ImageWriter imageWriter) {
         _imageWriter = imageWriter;
         return this;
     }
 
+    /**
+     * set ray tracer
+     * @param rayTracerBasic {@link RayTracerBasic}
+     * @return updated camera {@link Camera}
+     */
     public Camera setRayTracer(RayTracer rayTracerBasic) {
         _rayTracer = rayTracerBasic;
         return this;
     }
 
+    /**
+     * get built camera
+     * @return built camera {@link Camera}
+     */
     public Camera build() {
         return this;
     }

@@ -34,7 +34,8 @@ public class RayTracerBasic extends RayTracer {
         return geoPoint._geometry.getEmission();
     }
     private Color calcLocalEffects(GeoPoint intersection, Ray ray) {
-        Vector v = ray.getDir(); Vector n = intersection._geometry.getNormal();
+        Vector v = ray.getDir();
+        Vector n = intersection._geometry.getNormal(intersection._point);
         double nv= alignZero(n.dotProduct(v));
         if (nv== 0) return Color.BLACK;
         int nShininess= intersection._geometry.getMaterial().getnShininess();
@@ -53,7 +54,7 @@ public class RayTracerBasic extends RayTracer {
     }
 
     private Color calcSpecular(Double3 ks, Vector l, Vector n, Vector v, int nShininess, Color lightIntensity) {
-
+        return null;
     }
 
     /**
@@ -73,6 +74,6 @@ public class RayTracerBasic extends RayTracer {
             return lightIntensity.scale(0);
         }
         //color = light * |l.n| * kd
-        return lightIntensity.scale(Math.abs(lN) * kd);
+        return lightIntensity.scale(kd.scale(Math.abs(lN)));
     }
 }

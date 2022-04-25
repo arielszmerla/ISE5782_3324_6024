@@ -52,7 +52,6 @@ public class ImageWriter {
 	public int getNy() {
 		return _nY;
 	}
-
 	/**
 	 * View Plane X axis resolution
 	 * 

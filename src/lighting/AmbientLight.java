@@ -20,7 +20,7 @@ public class AmbientLight extends Light {
     }
 
     /**
-     * dflt ctor
+     * default constructor
      */
     public AmbientLight() {
         super(Color.BLACK.scale(1));

@@ -7,20 +7,34 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * interface for finding intersestions points
+ * abstract class for finding intersestions points
  */
 public abstract class Intersectable {
 
-
+    /**
+     * inner class represents GeoPoint
+     */
     public static class GeoPoint{
 
+        /**
+         * related geometry
+         */
         public  Geometry _geometry;
+        /**
+         * point on geometry
+         */
         public  Point _point;
 
+        /**
+         * GeoPoint constructor based-on geometry and point
+         * @param geometry {@link Geometry}
+         * @param point {@link Point}
+         */
         public GeoPoint(Geometry geometry, Point point) {
             _geometry = geometry;
             _point = point;
         }
+
         @Override
         public boolean equals(Object o) {
             if (this == o) return true;
@@ -29,6 +43,9 @@ public abstract class Intersectable {
             return this._geometry.equals(geoPoint._geometry) && _point.equals(geoPoint._point);
         }
 
+        /** textual description of GeoPoint
+         * @return textual description of GeoPoint
+         */
         @Override
         public String toString() {
             return "GeoPoint{" +
@@ -39,7 +56,7 @@ public abstract class Intersectable {
     }
 
     /**
-     *
+     * find intersections (regular points) on geometry based-on given ray
      * @param ray {@link Ray} pointing toward the objects
      * @return List of intersections {@link Point}
      */
@@ -50,8 +67,9 @@ public abstract class Intersectable {
                 .map((gp -> gp._point))
                 .toList();
     }
+
     /**
-     *
+     * find intersections (GeoPoints) on geometry based-on given ray
      * @param ray {@link Ray} pointing toward the objects
      * @return List of intersections {@link GeoPoint}
      */
@@ -59,6 +77,11 @@ public abstract class Intersectable {
         return findGeoIntersectionsHelper(ray);
     }
 
+    /**
+     * helper function that every class that inherits has to implement
+     * @param ray {@link Ray} pointing toward the objects
+     * @return List of intersections {@link GeoPoint}
+     */
     protected abstract List<GeoPoint> findGeoIntersectionsHelper(Ray ray);
 
 

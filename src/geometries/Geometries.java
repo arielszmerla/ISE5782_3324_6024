@@ -7,21 +7,40 @@ import java.util.*;
 
 
 public class Geometries extends Intersectable {
+    /**
+     * intersectable geometries list
+     */
     private List<Intersectable> _intersectables= new LinkedList<>();
 
+    /**
+     * Geometries constructor
+     * @param geometries
+     */
     public Geometries(Intersectable ... geometries) {
         add(geometries);
     }
-   public Geometries() {
+
+    /**
+     * default Geometries constructor
+     */
+    public Geometries() {
        _intersectables= new LinkedList<>();
    }
-   public void add(Intersectable... geometries) {
 
+    /**
+     * add geometries to _intesectables
+     * @param geometries {@link Intersectable}
+     */
+   public void add(Intersectable... geometries) {
            Collections.addAll(_intersectables,geometries);
    }
 
 
-
+    /**
+     * find intersections (GeoPoints) on geometry based-on given ray
+     * @param ray {@link Ray} pointing toward the objects
+     * @return
+     */
     @Override
     protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
             List<GeoPoint> intersectionPoints = null;

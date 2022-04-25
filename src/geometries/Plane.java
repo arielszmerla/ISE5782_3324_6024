@@ -22,16 +22,16 @@ public class Plane extends Geometry{
 
     /**
      * Plane constructor based on three points on the plane
-     * @param p1
-     * @param p2
-     * @param p3
+     * @param p1 {@link Point #1}
+     * @param p2 {@link Point #2}
+     * @param p3 {@link Point #3}
      */
     public Plane(Point p1, Point p2, Point p3) throws IllegalArgumentException {
        Vector v = p2.substract(p1);
        Vector u = p3.substract(p1);
        Vector n = v.crossProduct(u);
-        _q0 = p1;
-        _normal = n.normalize();
+       _q0 = p1;
+       _normal = n.normalize();
     }
 
     /**
@@ -39,11 +39,11 @@ public class Plane extends Geometry{
      * @param p point {@link Point} on the plane
      * @param n normal vector {@link Vector} at point p
      */
-    public Plane(Point p, Vector n)
-    {
+    public Plane(Point p, Vector n){
         _q0 = p;
         _normal = n.normalize();
     }
+
     /**
      * Get the normal vector on plane based-on point
      * @param point {@link Point} where the normal
@@ -62,8 +62,8 @@ public class Plane extends Geometry{
         return _normal;
     }
 
-
     /**
+     * find intersections (GeoPoints) on geometry based-on given ray
      * @param ray {@link Ray} pointing toward the objects
      * @return List of intersections {@link GeoPoint}
      */

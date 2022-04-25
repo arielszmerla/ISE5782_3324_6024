@@ -25,7 +25,6 @@ public class Sphere extends Geometry {
 
     /**
      * Sphere constructor based on center and radius.
-     *
      * @param center
      * @param radius
      */
@@ -38,7 +37,6 @@ public class Sphere extends Geometry {
 
     /**
      * Get the normal vector on sphere based-on point
-     *
      * @param point point where the normal
      * @return normal vector {@link Vector}
      */
@@ -49,7 +47,6 @@ public class Sphere extends Geometry {
 
     /**
      * get the center of sphere
-     *
      * @return Sphere's center point
      */
     public Point getCenter() {
@@ -58,14 +55,15 @@ public class Sphere extends Geometry {
 
     /**
      * get the radius of sphere
-     *
      * @return Sphere's radius
      */
     public double getRadius() {
         return _radius;
     }
 
-
+    /** textual description of sphere
+     * @return textual description of sphere
+     */
     @Override
     public String toString() {
         return "_center=" + _center +
@@ -73,6 +71,7 @@ public class Sphere extends Geometry {
     }
 
     /**
+     * find intersections (GeoPoints) on sphere based-on given ray
      * @param ray {@link Ray} pointing toward the objects
      * @return List of intersections {@link Point}
      */

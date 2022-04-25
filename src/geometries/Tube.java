@@ -9,7 +9,8 @@ import java.util.List;
 import static primitives.Util.*;
 
 /**
- * Sphere class represents 3D tube in 3D Cartesian coordinate system
+ * Tube class represents 3D tube in 3D Cartesian coordinate system
+ * inherits Geometry class
  * @author Gal&Ariel
  */
 public class Tube extends Geometry {
@@ -36,8 +37,8 @@ public class Tube extends Geometry {
 
     /**
      * Get the normal vector on tube based-on point
-     * @param point point where the normal
-     * @return normal vector
+     * @param point {@link Point} where the requested normal
+     * @return normal vector {@link Vector}
      */
     @Override
     public Vector getNormal(Point point) {
@@ -46,6 +47,7 @@ public class Tube extends Geometry {
         Vector P0_P = point.substract(P0);
         double t = alignZero(v.dotProduct(P0_P));
 
+        //if the point given is located on the tube bottom
         if (isZero(t)) {
             return P0_P.normalize();
         }
@@ -59,6 +61,9 @@ public class Tube extends Geometry {
         return n;
     }
 
+    /** textual description of tube
+     * @return textual description of tube
+     */
     @Override
     public String toString() {
         return "Tube{" +
@@ -69,7 +74,7 @@ public class Tube extends Geometry {
 
     /**
      *  Get ray in the center of the tube
-     * @return Ray in the center of the tube
+     * @return {@link Ray} Ray in the center of the tube
      */
     public Ray getAxisRay() {
         return _axisRay;
@@ -88,7 +93,7 @@ public class Tube extends Geometry {
      * @return List of intersections {@link Point}
      */
     @Override
-    protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
+    protected List <GeoPoint> findGeoIntersectionsHelper(Ray ray) {
         return null;
     }
 
