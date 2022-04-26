@@ -99,7 +99,7 @@ public class LightsTests {
 		camera2.setImageWriter(imageWriter) //
 				.setRayTracer(new RayTracerBasic(scene2)) //
 				.renderImage() ; //
-		camera1.writeToImage();
+		camera2.writeToImage();
 	}
 
 	/**
@@ -114,7 +114,7 @@ public class LightsTests {
 		camera2.setImageWriter(imageWriter) //
 				.setRayTracer(new RayTracerBasic(scene2)) //
 				.renderImage() ; //
-		camera1.writeToImage();
+		camera2.writeToImage();
 	}
 
 	/**
@@ -129,7 +129,7 @@ public class LightsTests {
 		camera2.setImageWriter(imageWriter) //
 				.setRayTracer(new RayTracerBasic(scene2)) //
 				.renderImage() ; //
-		camera1.writeToImage();
+		camera2.writeToImage();
 	}
 
 }

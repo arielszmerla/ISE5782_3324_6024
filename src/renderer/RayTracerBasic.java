@@ -22,16 +22,15 @@ public class RayTracerBasic extends RayTracer {
      */
     @Override
     public Color traceRay(Ray ray) {
-
         List<GeoPoint> myPoints = _scene._geometries.findGeoIntersections(ray);
         if (myPoints != null) {
             GeoPoint myPoint = ray.getClosestGeoPoint(myPoints);
-            return calcColor(myPoint,ray );
+            return calcColor(myPoint,ray);
         }
         return _scene._background;
     }
     private Color calcColor(GeoPoint geoPoint, Ray ray) {
-        return geoPoint._geometry.getEmission();
+        return geoPoint._geometry.getEmission().add(calcLocalEffects(geoPoint,ray));
     }
     private Color calcLocalEffects(GeoPoint intersection, Ray ray) {
         Vector v = ray.getDir();
@@ -44,7 +43,7 @@ public class RayTracerBasic extends RayTracer {
         for (LightSource lightSource: _scene.lights) {
             Vector l = lightSource.getL(intersection._point);
             double nl= alignZero(n.dotProduct(l));
-            if (nl* nv> 0) { // sign(nl) == sing(nv)
+            if (nl * nv> 0) { // sign(nl) == sing(nv)
                 Color lightIntensity= lightSource.getIntensity(intersection._point);
                 color = color.add(calcDiffusive(kd, l, n, lightIntensity),
                         calcSpecular(ks, l, n, v, nShininess, lightIntensity));

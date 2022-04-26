@@ -87,9 +87,11 @@ public class Color {
 		double rg = rgb._d2;
 		double rb = rgb._d3;
 		for (Color c : colors) {
-			rr += c.rgb._d1;
-			rg += c.rgb._d2;
-			rb += c.rgb._d3;
+			if(c!=null) {
+				rr += c.rgb._d1;
+				rg += c.rgb._d2;
+				rb += c.rgb._d3;
+			}
 		}
 		return new Color(rr, rg, rb);
 	}
