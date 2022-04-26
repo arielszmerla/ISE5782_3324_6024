@@ -10,7 +10,7 @@ import org.xml.sax.SAXException;
 import primitives.Color;
 import primitives.Double3;
 import primitives.Point;
-import scene.Scene;
+import renderer.scene.Scene;
 
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;

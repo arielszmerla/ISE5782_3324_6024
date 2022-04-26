@@ -5,19 +5,10 @@ import org.junit.jupiter.api.Test;
 import lighting.AmbientLight;
 import geometries.*;
 import primitives.*;
-import scene.Scene;
+import renderer.scene.Scene;
 
-import javax.xml.XMLConstants;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import java.io.File;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
-import jdk.jshell.spi.ExecutionControl;
 import xml.DalXml;
 
 import static java.awt.Color.*;
