@@ -23,8 +23,7 @@ public class LightsTests {
 	private Camera camera2 = new Camera(new Point(0, 0, 1000), new Vector(0, 0, -1), new Vector(0, 1, 0)) //
 			.setVPSize(200, 200) //
 			.setVPDistance(1000);
-	private Double3 kD=new Double3(0.5,0.5,0.5);
-	private Double3 kS=kD;
+
 	private Point[] p = { // The Triangles' vertices:
 			new Point(-110, -110, -150), // the shared left-bottom
 			new Point(95, 100, -150), // the shared right-top
@@ -35,7 +34,7 @@ public class LightsTests {
 	private Color trCL = new Color(800, 500, 250); // Triangles test Color of Light
 	private Color spCL = new Color(800, 500, 0); // Sphere test Color of Light
 	private Vector trDL = new Vector(-2, -2, -2); // Triangles test Direction of Light
-	private Material material = new Material().setKd(kD).setKs(kS).setnShininess(300);
+	private Material material = new Material().setKd(0.5).setKs(0.5).setnShininess(300);
 	private Geometry triangle1 = new Triangle(p[0], p[1], p[2]).setMaterial(material);
 	private Geometry triangle2 = new Triangle(p[0], p[1], p[3]).setMaterial(material);
 	private Geometry sphere = new Sphere(new Point(0, 0, -50), 50d) //

@@ -10,7 +10,6 @@ import geometries.*;
 import primitives.*;
 import renderer.*;
 import renderer.scene.Scene;
-import scene.Scene;
 
 /**
  * Testing basic shadows
@@ -37,8 +36,8 @@ public class ShadowTests {
 				new SpotLight(new Color(400, 240, 0), spotLocation, new Vector(1, 1, -3)) //
 						.setKl(1E-5).setKq(1.5E-7));
 		camera.setImageWriter(new ImageWriter(pictName, 400, 400)) //
-				.renderImage() //
-				.writeToImage();
+				.renderImage(); //
+		camera.writeToImage();
 	}
 
 	/**
@@ -113,8 +112,8 @@ public class ShadowTests {
 						.setKl(4E-4).setKq(2E-5));
 
 		camera.setImageWriter(new ImageWriter("shadowTrianglesSphere", 600, 600)) //
-				.renderImage() //
-				.writeToImage();
+				.renderImage(); //
+		camera.writeToImage();
 	}
 
 }
