@@ -66,13 +66,13 @@ public class RayTracerBasic extends RayTracer {
         Vector r = new Vector(l.add(n.scale(n.dotProduct(l) * -2)).get_xyz()).normalize();
         double vR;
         try {
-            vR = v.scale(-1).normalize().dotProduct(r.normalize());
+            vR = v.scale(-1).dotProduct(r);
         } catch (Exception exception) {
             //if vR is 0 vector
             return lightIntensity.scale(1);
         }
         //color = ks * max(0, -v.r)^nSh @ppt 7 theoretical course
-        return lightIntensity.scale(ks .scale( Math.pow(Math.max(0, vR), nShininess)));
+        return lightIntensity.scale(ks.scale( Math.pow(Math.max(0, vR), nShininess)));
     }
 
     /**
