@@ -11,6 +11,7 @@ import java.util.List;
 import static primitives.Util.*;
 
 public class RayTracerBasic extends RayTracer {
+    private static final double DELTA = 0.1;
     /**
      * scene setter
      *
@@ -52,10 +53,13 @@ public class RayTracerBasic extends RayTracer {
         for (LightSource lightSource: _scene.lights) {
             Vector l = lightSource.getL(intersection._point);
             double nl= alignZero(n.dotProduct(l));
-            if (nl * nv> 0) { // sign(nl) == sing(nv)
+            if (nl * nv> 0) { // sign(nl) == sing(nv)\
+                if (unshaded(intersection, l, n)){
+
                 Color lightIntensity= lightSource.getIntensity(intersection._point);
                 color = color.add(calcDiffusive(kd, l, n, lightIntensity).add(
                         calcSpecular(ks, l, n, v, nShininess, lightIntensity)));
+                }
             }
         }
         return color;
@@ -93,5 +97,14 @@ public class RayTracerBasic extends RayTracer {
         }
         //color = light * |l.n| * kd
         return lightIntensity.scale(kd.scale(Math.abs(lN)));
+    }
+
+    private boolean unshaded(GeoPoint gp, Vector l, Vector n){
+        Vector lightDir = l.scale(-1);
+        Ray lightRay = new Ray(gp._point, n, lightDir);
+        List<GeoPoint> intersections = _scene._geometries.findGeoIntersections(lightRay);
+        if (intersections == null)
+            return true;
+        return false;
     }
 }

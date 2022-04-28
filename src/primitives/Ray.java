@@ -11,6 +11,7 @@ import static primitives.Util.isZero;
  * @author Gal&Ariel
  */
 public class Ray {
+    private static final double EPS = 0.1;
     /**
      * Ray's start point
      */
@@ -29,6 +30,17 @@ public class Ray {
         _p0 = p0;
         _dir = dir.normalize();
     }
+
+    /**
+     * Ray constructor based on start point p0 and direction vector
+     * @param p0 start point
+     * @param dir direction vector
+     */
+    public Ray(Point p0, Vector n, Vector dir) {
+        _p0 = p0.add(n.scale(EPS));
+        _dir = dir.normalize();
+    }
+
     /**
      * get the start point of ray
      * @return Rays's start point

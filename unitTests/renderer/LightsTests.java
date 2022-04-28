@@ -27,7 +27,7 @@ public class LightsTests {
 	private Double3 kS=kD;
 	private Point[] p = { // The Triangles' vertices:
 			new Point(-110, -110, -150), // the shared left-bottom
-			new Point(80, 100, -150), // the shared right-top
+			new Point(95, 100, -150), // the shared right-top
 			new Point(110, -110, -150), // the right-bottom
 			new Point(-75, 85, 0) }; // the left-top
 	private Point trPL = new Point(50, 30, -100); // Triangles test Position of Light

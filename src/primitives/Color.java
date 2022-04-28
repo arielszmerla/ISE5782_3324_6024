@@ -87,11 +87,9 @@ public class Color {
 		double rg = rgb._d2;
 		double rb = rgb._d3;
 		for (Color c : colors) {
-			if(c!=null) {
-				rr += c.rgb._d1;
-				rg += c.rgb._d2;
-				rb += c.rgb._d3;
-			}
+			rr += c.rgb._d1;
+			rg += c.rgb._d2;
+			rb += c.rgb._d3;
 		}
 		return new Color(rr, rg, rb);
 	}
@@ -144,4 +142,8 @@ public class Color {
 		return new Color(rgb._d1 / k._d1, rgb._d2 / k._d2, rgb._d3 / k._d3);
 	}
 
+	@Override
+	public String toString() {
+		return "rgb:" + rgb;
+	}
 }
