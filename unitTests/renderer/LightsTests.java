@@ -5,8 +5,7 @@ import org.junit.jupiter.api.Test;
 import lighting.*;
 import geometries.*;
 import primitives.*;
-import renderer.*;
-import scene.Scene;
+import renderer.scene.Scene;
 import static java.awt.Color.*;
 
 /**
@@ -131,5 +130,32 @@ public class LightsTests {
 				.renderImage() ; //
 		camera2.writeToImage();
 	}
+	/**
+	 * Produce a picture of two triangles lighted by a spotlight
+	 */
+	@Test
+	public void trianglesSpotShortened() {
+		scene2._geometries.add(triangle1, triangle2);
+		scene2.lights.add(new SpotLight(trCL, trPL, trDL,0.5).setkL(0.001).setkQ(0.0001));
 
+		ImageWriter imageWriter = new ImageWriter("lightTrianglesSpotShortened", 500, 500);
+		camera2.setImageWriter(imageWriter) //
+				.setRayTracer(new RayTracerBasic(scene2)) //
+				.renderImage() ; //
+		camera2.writeToImage();
+	}
+	/**
+	 * Produce a picture of a sphere lighted by a spot light
+	 */
+	@Test
+	public void sphereSpotShortened() {
+		scene1._geometries.add(sphere);
+		scene1.lights.add(new SpotLight(spCL, spPL, new Vector(1, 1, -0.5),0.1).setkL(0.001).setkQ(0.0001));
+
+		ImageWriter imageWriter = new ImageWriter("lightSphereSpotShortened", 500, 500);
+		camera1.setImageWriter(imageWriter) //
+				.setRayTracer(new RayTracerBasic(scene1)) //
+				.renderImage() ; //
+		camera1.writeToImage();//
+	}
 }

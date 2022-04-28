@@ -1,4 +1,4 @@
-package scene;
+package renderer.scene;
 
 import lighting.AmbientLight;
 import geometries.Geometries;
@@ -21,7 +21,7 @@ public class Scene {
     /**
      * Ambient light of the scene
      */
-    public AmbientLight _ambientLight= new AmbientLight(Color.BLACK,new Double3(1,1,1));
+    public AmbientLight _ambientLight;
     /**
      * Geometries figures of the scene
      */
@@ -68,7 +68,7 @@ public class Scene {
         /**
          * Ambient light of the scene
          */
-        public AmbientLight _ambientLight;
+        public AmbientLight _ambientLight=new AmbientLight(Color.BLACK,new Double3(1,1,1));
         /**
          * geometries in the scene
          */

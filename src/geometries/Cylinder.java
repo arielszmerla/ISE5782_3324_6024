@@ -61,7 +61,7 @@ public class Cylinder extends Tube {
             return _axisRay.getDir().scale(-1);
         } else { // side
             return super.getNormal(p1);
-            // I think that there isn't check if the point on the cylinder side
         }
-    }}
+    }
+}
 
