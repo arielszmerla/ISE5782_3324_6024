@@ -45,8 +45,8 @@ public class RayTracerBasic extends RayTracer {
         Vector n = intersection._geometry.getNormal(intersection._point);
         double nv= alignZero(n.dotProduct(v));
         if (nv== 0) return Color.BLACK;
-        int nShininess= intersection._geometry.getMaterial().getnShininess();
-        Double3 kd= intersection._geometry.getMaterial().getkD();
+        int nShininess = intersection._geometry.getMaterial().getnShininess();
+        Double3 kd = intersection._geometry.getMaterial().getkD();
         Double3 ks = intersection._geometry.getMaterial().getkS();
         Color color= Color.BLACK;
         for (LightSource lightSource: _scene.lights) {
@@ -63,7 +63,7 @@ public class RayTracerBasic extends RayTracer {
 
     private Color calcSpecular(Double3 ks, Vector l, Vector n, Vector v, int nShininess, Color lightIntensity) {
 
-        Vector r = new Vector(l.add(n.scale(n.dotProduct(l) * -2)).get_xyz()).normalize();
+        Vector r = new Vector(l.add(n.scale(n.dotProduct(l) * -2)).get_xyz());
         double vR;
         try {
             vR = v.scale(-1).dotProduct(r);

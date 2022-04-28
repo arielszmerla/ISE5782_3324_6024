@@ -16,17 +16,17 @@ public class PointLight extends Light implements LightSource{
 
 
 
-    public PointLight setkC(double kC) {
+    public PointLight setKc(double kC) {
         _kC = kC;
         return this;
     }
 
-    public PointLight setkL(double kL) {
+    public PointLight setKl(double kL) {
         _kL = kL;
         return this;
     }
 
-    public PointLight setkQ(double kQ) {
+    public PointLight setKq(double kQ) {
         _kQ = kQ;
         return this;
     }
