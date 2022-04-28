@@ -54,7 +54,7 @@ public class RayTracerBasic extends RayTracer {
             Vector l = lightSource.getL(intersection._point);
             double nl= alignZero(n.dotProduct(l));
             if (nl * nv> 0) { // sign(nl) == sing(nv)\
-                if (unshaded(intersection, l, n)){
+                if (unshaded(intersection, l, n, lightSource)){
 
                 Color lightIntensity= lightSource.getIntensity(intersection._point);
                 color = color.add(calcDiffusive(kd, l, n, lightIntensity).add(
@@ -99,12 +99,18 @@ public class RayTracerBasic extends RayTracer {
         return lightIntensity.scale(kd.scale(Math.abs(lN)));
     }
 
-    private boolean unshaded(GeoPoint gp, Vector l, Vector n){
+    private boolean unshaded(GeoPoint gp, Vector l, Vector n, LightSource ls){
         Vector lightDir = l.scale(-1);
         Ray lightRay = new Ray(gp._point, n, lightDir);
         List<GeoPoint> intersections = _scene._geometries.findGeoIntersections(lightRay);
         if (intersections == null)
             return true;
-        return false;
+        else{
+            for (GeoPoint gp2 : intersections){
+                if (ls.getDistance(gp2._point) < ls.getDistance(gp._point))
+                    return false;
+            }
+        }
+        return true;
     }
 }
