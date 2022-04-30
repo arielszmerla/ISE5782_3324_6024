@@ -107,7 +107,7 @@ public class Ray {
      * @return the closest point
      */
     public GeoPoint getClosestGeoPoint(List<GeoPoint> points) {
-        if (points == null)
+        if (points == null || points.size()==0)
             return null;
         GeoPoint myPoint = points.get(0);
         for (var point : points
