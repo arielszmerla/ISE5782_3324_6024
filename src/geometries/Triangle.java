@@ -36,15 +36,20 @@ public class Triangle extends Polygon{
         Vector v1= l.get(0).substract(ray.getP0());
         Vector v2= l.get(1).substract(ray.getP0());
         Vector v3= l.get(2).substract(ray.getP0());
-        Vector n1= (v1.crossProduct(v2)).normalize();
-        Vector n2= (v2.crossProduct(v3)).normalize();
-        Vector n3= (v3.crossProduct(v1)).normalize();
+        Vector n1=(v1.crossProduct(v2)).normalize();//new Vector(0.001,0.001,0.001);
+        Vector n2=(v2.crossProduct(v3)).normalize();//new Vector(0.001,0.001,0.001);
+        Vector n3=(v3.crossProduct(v1)).normalize();//new Vector(0.001,0.001,0.001);
+       /* try {
+            n1= (v1.crossProduct(v2)).normalize();
+            n2= (v2.crossProduct(v3)).normalize();
+            n3= (v3.crossProduct(v1)).normalize();
+        }
+        catch (IllegalArgumentException e){}*/
+        double num1 = n1.dotProduct(ray.getDir());
+        double num2 = n2.dotProduct(ray.getDir());
+        double num3 = n3.dotProduct(ray.getDir());
 
-        double num1= n1.dotProduct(ray.getDir());
-        double num2= n2.dotProduct(ray.getDir());
-        double num3= n3.dotProduct(ray.getDir());
-
-        // if there is an intersection point inside the triangle
+    // if there is an intersection point inside the triangle
         if((num1>0&&num2>0&&num3>0)||(num1<0&&num2<0&&num3<0)) {
             Plane pl = new Plane(l.get(0), l.get(1), l.get(2));
             List<GeoPoint> geoPoints =new LinkedList<>();
