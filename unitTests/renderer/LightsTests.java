@@ -40,7 +40,9 @@ public class LightsTests {
 	private Geometry sphere = new Sphere(new Point(0, 0, -50), 50d) //
 			.setEmission(new Color(BLUE).reduce(2)) //
 			.setMaterial(material);
-
+	private Geometry sphere2 = new Sphere(new Point(4, 8, -20), 20d) //
+			.setEmission(new Color(YELLOW).reduce(2)) //
+			.setMaterial(material);
 	/**
 	 * Produce a picture of a sphere lighted by a directional light
 	 */
@@ -153,6 +155,20 @@ public class LightsTests {
 		scene1.lights.add(new SpotLight(spCL, spPL, new Vector(1, 1, -0.5),0.1).setKl(0.001).setKq(0.0001));
 
 		ImageWriter imageWriter = new ImageWriter("lightSphereSpotShortened", 500, 500);
+		camera1.setImageWriter(imageWriter) //
+				.setRayTracer(new RayTracerBasic(scene1)) //
+				.renderImage() ; //
+		camera1.writeToImage();//
+	}
+	/**
+	 * Produce a picture of a sphere lighted by a spot light
+	 */
+	@Test
+	public void mySphereSpotShortened() {
+		scene1._geometries.add(sphere,sphere2);
+		scene1.lights.add(new SpotLight(spCL, spPL, new Vector(1, 1, -0.5),0.1).setKl(0.001).setKq(0.0001));
+		scene1.lights.add(new PointLight(new Color (555,0,500), new Point(30, 60, 100)).setKl(0.002).setKq(0.0002));
+		ImageWriter imageWriter = new ImageWriter("myLightSphereSpotShortened", 500, 500);
 		camera1.setImageWriter(imageWriter) //
 				.setRayTracer(new RayTracerBasic(scene1)) //
 				.renderImage() ; //
