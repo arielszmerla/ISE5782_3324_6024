@@ -37,7 +37,8 @@ public class Ray {
      * @param dir direction vector
      */
     public Ray(Point p0, Vector n, Vector dir) {
-        _p0 = p0.add(n.scale(EPS));
+        double eps= dir.dotProduct(n)>=0?EPS:-EPS;
+        _p0 = p0.add(n.scale(eps));
         _dir = dir.normalize();
     }
 

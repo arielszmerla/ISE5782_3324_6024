@@ -39,7 +39,7 @@ public class Triangle extends Polygon{
         Vector n1=(v1.crossProduct(v2)).normalize();//new Vector(0.001,0.001,0.001);
         Vector n2=(v2.crossProduct(v3)).normalize();//new Vector(0.001,0.001,0.001);
         Vector n3=(v3.crossProduct(v1)).normalize();//new Vector(0.001,0.001,0.001);
-       /* try {
+     /*  try {
             n1= (v1.crossProduct(v2)).normalize();
             n2= (v2.crossProduct(v3)).normalize();
             n3= (v3.crossProduct(v1)).normalize();

@@ -134,5 +134,7 @@ public class Double3 {
 	public boolean lowerThan(double k) {
 		return _d1 < k && _d2 < k && _d3 < k;
 	}
-
+	public boolean biggerThan(double k) {
+		return _d1 > k && _d2 > k && _d3 > k;
+	}
 }
