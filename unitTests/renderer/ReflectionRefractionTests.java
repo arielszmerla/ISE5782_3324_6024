@@ -108,4 +108,71 @@ public class ReflectionRefractionTests {
 				.renderImage() ;
 		camera.writeToImage();
 	}
+	/**
+	 * Produce a picture of a two triangles lighted by a spot light with a partially
+	 * transparent Sphere producing partial shadow
+	 */
+	@Test
+	public void triangleCylinderTransparentSphere() {
+		Camera camera = new Camera(new Point(0, 0, 1000), new Vector(0, 0, -1), new Vector(0, 1, 0)) //
+				.setVPSize(200, 200).setVPDistance(1000);
+
+		scene._ambientLight=new AmbientLight(new Color(WHITE), new Double3(0.15));
+
+		scene._geometries.add( //
+				new Triangle(new Point(-150, -150, -115), new Point(150, -150, -135), new Point(75, 75, -150)) //
+						.setMaterial(new Material().setKd(0.5).setKs(0.5).setnShininess(10)), //
+				new Cylinder(new Ray(new Point(5, 5, -50),new Vector(50,-20,15)),5d,100d).setEmission(new Color(YELLOW)) //
+						.setMaterial(new Material().setKd(0.5).setKs(0.5).setnShininess(60).setKt(0.2)), //
+				new Tube(new Ray(new Point(70, 60, -50),new Vector(-1,-11,40)),3d).setEmission(new Color(BLUE)) //
+						.setMaterial(new Material().setKd(0.7).setKs(0.7).setnShininess(20).setKt(0.1)),
+				new Tube(new Ray(new Point(70, 60, -50),new Vector(30,30,-60)),3d).setEmission(new Color(3,0,3)) //
+						.setMaterial(new Material().setKd(0.5).setKs(0.9).setnShininess(20).setKt(0.8)),
+				new Sphere(new Point(60, 20, -50), 30d).setEmission(new Color(BLUE)) //
+						.setMaterial(new Material().setKd(0.2).setKs(0.2).setnShininess(30).setKt(0.6)));
+
+		scene.lights.add(new SpotLight(new Color(700, 400, 400), new Point(60, 50, 0), new Vector(0, 0, -1),0.1) //
+				.setKl(4E-5).setKq(2E-7));
+		scene.lights.add(new PointLight(new Color(500, 200, 200),new Point(40,40,10)).setKq(2E-8).setKl(2E-4));
+
+		ImageWriter imageWriter = new ImageWriter("refractionCylinderShadow", 600, 600);
+		camera.setImageWriter(imageWriter) //
+				.setRayTracer(new RayTracerBasic(scene)) //
+				.renderImage() ;
+		camera.writeToImage();
+	}
+	/**
+	 * Produce a picture of a two triangles lighted by a spot light with a partially
+	 * transparent Sphere producing partial shadow
+	 */
+	@Test
+	public void trianglesTransparentSpheres() {
+		Camera camera = new Camera(new Point(0, 0, 1000), new Vector(0, 0, -1), new Vector(0, 1, 0)) //
+				.setVPSize(200, 200).setVPDistance(1000);
+
+		scene._ambientLight=new AmbientLight(new Color(WHITE), new Double3(0.15));
+
+		scene._geometries.add( //
+				new Triangle(new Point(-150, -150, -115), new Point(150, -150, -135), new Point(75, 75, -150)) //
+						.setMaterial(new Material().setKd(0.5).setKs(0.5).setnShininess(60)), //
+				new Triangle(new Point(-150, -150, -115), new Point(-70, 70, -140), new Point(75, 75, -150)) //
+						.setMaterial(new Material().setKd(0.5).setKs(0.5).setnShininess(60)), //
+				new Sphere(new Point(40, 40, -50), 45d).setEmission(new Color(BLUE)) //
+						.setMaterial(new Material().setKd(0.1).setKs(0.1).setnShininess(30).setKt(0.1)),
+		new Sphere(new Point(28, 0, -50), 10d).setEmission(new Color(YELLOW)) //
+				.setMaterial(new Material().setKd(0.5).setKs(0.5).setnShininess(100).setKt(0.6)),
+		new Sphere(new Point(52, 0, -50), 10d).setEmission(new Color(GREEN)) //
+				.setMaterial(new Material().setKd(0.2).setKs(0.2).setnShininess(30).setKt(0.6)));
+
+		scene.lights.add(new SpotLight(new Color(700, 400, 400), new Point(60, 50, 0), new Vector(0, 0, -1)) //
+				.setKl(4E-5).setKq(2E-7));
+		scene.lights.add(new PointLight(new Color(700, 400, 400), new Point(10, 10, 10)) //
+				.setKl(4E-5).setKq(2E-7));
+
+		ImageWriter imageWriter = new ImageWriter("refractionSpheresShadow", 600, 600);
+		camera.setImageWriter(imageWriter) //
+				.setRayTracer(new RayTracerBasic(scene)) //
+				.renderImage() ;
+		camera.writeToImage();
+	}
 }

@@ -7,26 +7,29 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.util.LinkedList;
 import java.util.List;
 class PointTest {
-
+    Point p1= new Point (0,0,0);
+    Point p2= new Point(1,1,0);
     /**
-     * test for get normal
-     */
+     * test for /**
+     *      * test for adding points
+     *      */
+
     @Test
     void testAdd() {
-        fail("Not yet implemented");
+        assertEquals(p2,p1.add(new Vector(1,1,0)),"incorrect calculated add");
+
     }
     /**
-     * test for get normal
+     * test for substracting points
      */
     @Test
     void testSubtract() {
-
+        assertEquals(p2,p2.substract(p1),"incorrect calculated substraction");
     }
 
     @Test
     void testDistance(){
-        Point p1= new Point (0,0,0);
-        Point p2= new Point(1,1,0);
+
         assertEquals(Math.sqrt(2),p1.distance(p2),"incorrect calculated distance");
     }
 
