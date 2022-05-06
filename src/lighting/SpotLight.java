@@ -8,9 +8,16 @@ import static java.lang.Math.pow;
 import static primitives.Util.isZero;
 
 public class SpotLight extends PointLight{
+    /**
+     * direction of light ray
+     */
     private Vector _direction;
+    /**
+     * shortener for getting narrow Beam
+     */
     public double _shorten=1;
     public SpotLight(Color intensity, Point position, Vector direction,double shorten) throws IllegalArgumentException {
+
         super(intensity, position);
         _direction=direction.normalize();
         if(shorten>1 || shorten<0)
@@ -21,6 +28,7 @@ public class SpotLight extends PointLight{
         super(intensity, position);
         _direction=direction.normalize();
     }
+
     @Override
     public Color getIntensity(Point p) {
         double projection = _direction.dotProduct(getL(p));
@@ -29,7 +37,7 @@ public class SpotLight extends PointLight{
             return Color.BLACK;
         }
 
-        double factor =(Math.max(0,projection)); //Math.pow(_shorten,Math.max(0, projection));
+        double factor =(Math.max(0,projection));
         Color pointLightIntensity = super.getIntensity(p);
         factor=pow(factor,1/_shorten);
 

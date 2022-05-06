@@ -9,7 +9,7 @@ import primitives.*;
  */
 public abstract class Geometry extends Intersectable {
     /**
-     * emission color
+     * emission color with default value
      */
     protected Color _emission=Color.BLACK;
     /**

@@ -65,16 +65,23 @@ public class Cylinder extends Tube {
             return super.getNormal(p1);
         }
     }
-
+    /**
+     * Get the list of Cylinder ray intersections
+     * @param ray {@link Ray} the ray entering
+     * @return list of {@link GeoPoint}
+     */
     @Override
     public List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
 
         List<GeoPoint> result = new LinkedList<>();
-        Vector va = this._axisRay.getDir();
-        Point p1 = this._axisRay.getP0();
-        Point p2 = p1.add(this._axisRay.getDir().scale(_height));
+        Vector va = _axisRay.getDir();
+        Point p1 = _axisRay.getP0();
+        Point p2 = p1.add(_axisRay.getDir().scale(_height));
 
-        Plane plane1 = new Plane(p1, this._axisRay.getDir()); //get plane of bottom base
+        //1) get the intersections with bottom plane
+        //2) get the intersections with tube that includes the cylinder
+        //3) get the intersections with top plane
+        Plane plane1 = new Plane(p1,_axisRay.getDir()); //get plane of bottom base
         List<GeoPoint> result2 = plane1.findGeoIntersectionsHelper(ray); //intersections with bottom's plane
         if (result2 != null){
             //Add all intersections of bottom's plane that are in the base's bounders
@@ -125,7 +132,7 @@ public class Cylinder extends Tube {
                 }
             }
         }
-
+        //if any result return it
         if (result.size() > 0)
             return result;
 

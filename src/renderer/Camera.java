@@ -122,7 +122,7 @@ public class Camera {
      * @param right Horizontal side distance
      * @param to Horizontal to distance
      */
-    public void moveCamera(double up, double right, double to) {
+  /*  public void moveCamera(double up, double right, double to) {
         //move Point0 according to params
         Point myPoint = new Point(_p0.get_xyz());
         if (up == 0 && right == 0 && to == 0) return; //don't create Vector.Zero
@@ -130,6 +130,12 @@ public class Camera {
         if (right != 0) myPoint = myPoint.add(_vRight.scale(right));
         if (to != 0) myPoint = myPoint.add(_vTo.scale(to));
         this._p0 = myPoint;
+    }*/
+    public void moveCamera(Vector move) {
+        //move Point0 according to params
+        Point myPoint = new Point(_p0.get_xyz());
+        myPoint=  myPoint.add(move);
+        _p0 = myPoint;
     }
 
     /**
@@ -211,33 +217,6 @@ public class Camera {
      * @return the {@link  Color} through pixel's center
      */
     private Color castRay(int nX, int nY, double j, double i) {
-
-//        //Pc = P0 + d * vTo
-//        Point pc = _p0.add(_vTo.scale(_distance));
-//        Point pIJ = pc;
-//
-//        //Ry = height / nY : height of a pixel
-//        double rY = alignZero(_height / nY);
-//        //Ry = weight / nX : width of a pixel
-//        double rX = alignZero(_width / nX);
-//        //xJ is the value of width we need to move from center to get to the point
-//        double xJ = alignZero((j - ((nX - 1) / 2d)) * rX);
-//        //yI is the value of height we need to move from center to get to the point
-//        double yI = alignZero(-(i - ((nY - 1) / 2d)) * rY);
-//
-//        if (xJ != 0) {
-//            pIJ = pIJ.add(_vRight.scale(xJ)); // move to the point
-//        }
-//        if (yI != 0) {
-//            pIJ = pIJ.add(_vUp.scale(yI)); // move to the point
-//        }
-//
-//        //get vector from camera p0 to the point
-//        Vector vIJ = pIJ.substract(_p0);
-//
-//        //return ray to the center of the pixel
-//        Ray myRay = new Ray(_p0, vIJ);
-
             return _rayTracer.traceRay(constructRay(nX,nY,(int)j,(int)i));
         }
 

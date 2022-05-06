@@ -23,6 +23,6 @@ public class AmbientLight extends Light {
      * default constructor
      */
     public AmbientLight() {
-        super(Color.BLACK.scale(1));
+        super(Color.BLACK);
     }
 }

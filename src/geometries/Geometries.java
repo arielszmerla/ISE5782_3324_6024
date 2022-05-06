@@ -14,7 +14,7 @@ public class Geometries extends Intersectable {
 
     /**
      * Geometries constructor
-     * @param geometries
+     * @param  geometries {@link Intersectable}
      */
     public Geometries(Intersectable ... geometries) {
         add(geometries);

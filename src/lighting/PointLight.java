@@ -4,17 +4,29 @@ import primitives.Color;
 import primitives.Point;
 import primitives.Vector;
 
+/**
+ * Pointlight class
+ */
 public class PointLight extends Light implements LightSource{
+    /**
+     * position of the start point
+     */
    private Point _position;
+
    private double _kC=1d;
    private double _kL=0d;
    private double _kQ=0d;
+
+    /**
+     * ctor with values
+     * @param c {@link Color} of the light
+     * @param pos {@link Point} start position
+     */
+
     public PointLight(Color c, Point pos) {
         super(c);
         _position = pos;
     }
-
-
 
     public PointLight setKc(double kC) {
         _kC = kC;
