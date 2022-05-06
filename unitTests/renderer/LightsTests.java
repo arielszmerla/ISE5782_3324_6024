@@ -246,5 +246,12 @@ public class LightsTests {
 				.setRayTracer(new RayTracerBasic(scene3)) //
 				.renderImage() ; //
 		camera3.writeToImage();//
+		imageWriter = new ImageWriter("israelFlagRightMoveRotateLeft", 500, 500);
+		camera3.moveCamera(new Vector(1100,0,-300));
+		camera3.rotateCamera(new Vector(0,1,0),50);
+		camera3.setImageWriter(imageWriter) //
+				.setRayTracer(new RayTracerBasic(scene3)) //
+				.renderImage() ; //
+		camera3.writeToImage();//
 	}
 }

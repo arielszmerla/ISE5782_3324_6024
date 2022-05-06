@@ -118,19 +118,8 @@ public class Camera {
 
     /**
      * Move camera (move point of view of the camera)
-     * @param up Vertical distance
-     * @param right Horizontal side distance
-     * @param to Horizontal to distance
+     * @param move {@link Vector} Vertical distance
      */
-  /*  public void moveCamera(double up, double right, double to) {
-        //move Point0 according to params
-        Point myPoint = new Point(_p0.get_xyz());
-        if (up == 0 && right == 0 && to == 0) return; //don't create Vector.Zero
-        if (up != 0) myPoint = myPoint.add(_vUp.scale(up));
-        if (right != 0) myPoint = myPoint.add(_vRight.scale(right));
-        if (to != 0) myPoint = myPoint.add(_vTo.scale(to));
-        this._p0 = myPoint;
-    }*/
     public void moveCamera(Vector move) {
         //move Point0 according to params
         Point myPoint = new Point(_p0.get_xyz());
