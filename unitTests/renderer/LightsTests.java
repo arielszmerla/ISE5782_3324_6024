@@ -6,6 +6,9 @@ import lighting.*;
 import geometries.*;
 import primitives.*;
 import renderer.scene.Scene;
+
+import java.util.Random;
+
 import static java.awt.Color.*;
 
 /**
@@ -253,5 +256,166 @@ public class LightsTests {
 				.setRayTracer(new RayTracerBasic(scene3)) //
 				.renderImage() ; //
 		camera3.writeToImage();//
+	}
+
+
+
+	/**
+	 * Produce a picture of snow man
+	 */
+	@Test
+	public void snowMan() {
+		Sphere sphere1 = (Sphere) new Sphere(new Point(0,-90,-500), 60)
+				.setMaterial(new Material().setKd(0.8).setKs(0.2).setKt(0.2).setnShininess(30));
+		sphere1.setEmission(new Color(DARK_GRAY));
+		Sphere sphere2 = (Sphere) new Sphere(new Point(0,0,-500), 50)
+				.setMaterial(new Material().setKd(0.8).setKs(0.2).setKt(0.2).setnShininess(30));
+		sphere2.setEmission(new Color(DARK_GRAY));
+		Sphere sphere3 = new Sphere(new Point(0,70,-500), 40);
+		sphere3.setEmission(new Color(DARK_GRAY))
+				.setMaterial(new Material().setKd(0.8).setKs(0.2).setKt(0.2).setnShininess(30));
+		Sphere sphere4 = new Sphere(new Point(-12,80,-463), 3);
+		sphere4.setEmission(new Color(0,100,0));
+		Sphere sphere5 = new Sphere(new Point(12,80,-463), 3);
+		sphere5.setEmission(new Color(0,100,0));
+		Sphere sphere6 = (Sphere) new Sphere(new Point(0,0,-450), 4).setEmission(new Color(BLACK));
+		Sphere sphere7 = (Sphere) new Sphere(new Point(0,12,-452), 4).setEmission(new Color(BLACK));
+		Sphere sphere8 = (Sphere) new Sphere(new Point(0,-12,-452), 4).setEmission(new Color(BLACK));
+		Triangle triangle1 = (Triangle) new Triangle(
+				new Point(-3,70,-459),
+				new Point(3,70,-459),
+				new Point(0,60,-440)
+		).setEmission(new Color(238,125,0));
+		Cylinder cylinder1 = (Cylinder) new Cylinder(new Ray(new Point(35,9,-500),new Vector(1,0.7d,1)), 3, 40)
+				.setEmission(new Color(50,16,0));
+		Cylinder cylinder2 = (Cylinder) new Cylinder(new Ray(new Point(-35,9,-500),new Vector(-1,0.7d,-1)), 3, 40)
+				.setEmission(new Color(50,16,0));
+		Cylinder cylinder3 = (Cylinder) new Cylinder(new Ray(new Point(90,11,-500),new Vector(-1,0.7d,-1)), 3, 40)
+				.setEmission(new Color(50,16,0));
+		Cylinder cylinder4 = (Cylinder) new Cylinder(new Ray(new Point(-85,8,-500),new Vector(1,0.7d,1)), 3, 40)
+				.setEmission(new Color(50,16,0));
+
+		Triangle polygon1 = (Triangle) new Triangle(
+				new Point(-200,-200,-560),
+				new Point(200,-200,-560),
+				new Point(200,200,-560)
+		).setEmission(new Color(DARK_GRAY)).setMaterial(new Material().setKs(0.8).setnShininess(60))//
+				;
+
+		Triangle polygon2 = (Triangle) new Triangle(
+				new Point(-200,-200,-560),
+				new Point(-200,200,-560),
+				new Point(200,200,-560)
+		).setEmission(new Color(DARK_GRAY)).setMaterial(new Material().setKs(0.8).setnShininess(60))//
+				;
+
+
+		Polygon pl1 = (Polygon) new Polygon(
+				new Point(-30,-65,-440),
+				new Point(30,-65,-440),
+				new Point(30,-60,-440),
+				new Point(-30,-60,-440))
+				.setEmission(new Color(BLUE));
+
+		Polygon pl2 = (Polygon) new Polygon(
+				new Point(-30,-105,-440),
+				new Point(30,-105,-440),
+				new Point(30,-100,-440),
+				new Point(-30,-100,-440))
+				.setEmission(new Color(BLUE));
+
+		Triangle tr1 = (Triangle) new Triangle(
+				new Point(0,-68,-440),
+				new Point(-15,-90,-440),
+				new Point(15,-90,-440)
+		).setEmission(new Color(BLUE))
+				.setMaterial(new Material().setKs(0.8).setnShininess(60));
+
+		Triangle tr2 = (Triangle) new Triangle(
+				new Point(0,-97,-440),
+				new Point(-15,-75,-440),
+				new Point(15,-75,-440)
+		).setEmission(new Color(BLUE))
+				.setMaterial(new Material().setKs(0.8).setnShininess(60));
+		;
+
+
+
+		scene2._geometries.add(sphere1, sphere2, sphere3, sphere4, sphere5, triangle1, cylinder1, cylinder2, cylinder3,
+				cylinder4, polygon1, polygon2, sphere6, sphere7, sphere8,
+				pl1, pl2, tr1, tr2
+		);
+		//	scene2.lights.add( //
+		//			new SpotLight(new Color(WHITE), new Point(0, 100, -450), new Vector(0, 0, -1)) //
+		//					.setKl(4E-4).setKq(2E-5));
+
+
+
+		scene2.lights.add( //
+				new SpotLight(new Color(WHITE), new Point(0, -85, -380), new Vector(0, 0, -2)) //
+						.setKl(0.0004).setKq(0.0000006));
+		scene2.lights.add( //
+				new SpotLight(new Color(LIGHT_GRAY), new Point(-200, 0, 0), new Vector(1, 1, -2)) //
+						.setKl(0.0004).setKq(0.0000006));
+		scene2.lights.add( //
+				new PointLight(new Color(GRAY), new Point(-50, 0, 0)));
+		scene2.lights.add( //
+				new PointLight(new Color(GRAY), new Point(50, 0, 0)));
+
+		scene2._background = new Color(89,108,143);
+		ImageWriter imageWriter = new ImageWriter("snowMan", 500, 500);
+		camera2.setImageWriter(imageWriter) //
+				.setRayTracer(new RayTracerBasic(scene2)) //
+				.renderImage() ; //
+		camera2.writeToImage();
+	}
+
+	/**
+	 * Produce a picture of snow man
+	 */
+	@Test
+	public void garden() {
+
+		Cylinder cylinder1 = (Cylinder) new Cylinder(new Ray(new Point(0,-100,-50), new Vector(0,1,0)), 10, 100)
+				.setEmission(new Color(50,16,10))
+						.setMaterial(new Material().setKd(0.9).setKs(0.1));
+
+		Polygon polygon = (Polygon) new Polygon(
+				new Point(-110,-110, -50),
+				new Point(110,-110, -50),
+				new Point(110,110, -50),
+				new Point(-110,110, -50)
+		).setEmission(new Color(186, 255, 255))
+				.setMaterial(new Material().setKd(0.9).setKs(0.1));
+		scene2._geometries.add(cylinder1, polygon);
+		for(int i = 0; i<200; i++){
+			Random rand = new Random();
+			Point p1 = new Point(rand.nextInt(100) - 50, rand.nextInt(100) - 15 , 0 );
+			scene2._geometries.add(new Sphere(p1, rand.nextInt(20)+1).setEmission(new Color(GREEN))
+					.setMaterial(new Material().setKs(0.001).setKd(0.9)));
+		}
+
+		for(int i = 0; i<50; i++){
+			Random rand = new Random();
+			Point p1 = new Point(rand.nextInt(90) - 50, rand.nextInt(90) - 15 , 20 );
+			scene2._geometries.add(new Sphere(p1, 2).setEmission(new Color(RED)));
+		}
+		scene2.lights.add( //
+				new SpotLight(new Color(WHITE), new Point(0, 500, 700), new Vector(0, -400, -1)) //
+						.setKl(0.0004).setKq(0.0000006));
+/*
+		scene2.lights.add( //
+				new SpotLight(new Color(WHITE), new Point(-200, 0, 0), new Vector(1, 1, -2)) //
+						.setKl(0.0004).setKq(0.0000006));
+		scene2.lights.add( //
+				new PointLight(new Color(WHITE), new Point(0, 0, 10000)));
+						*/
+
+		scene2._background = new Color(89,108,143);
+		ImageWriter imageWriter = new ImageWriter("garden", 500, 500);
+		camera2.setImageWriter(imageWriter) //
+				.setRayTracer(new RayTracerBasic(scene2)) //
+				.renderImage() ; //
+		camera2.writeToImage();
 	}
 }
