@@ -11,6 +11,8 @@ import primitives.*;
 import renderer.*;
 import renderer.scene.Scene;
 
+import java.util.Random;
+
 /**
  * Testing basic shadows
  * 
@@ -89,9 +91,39 @@ public class ShadowTests {
 				new Triangle(new Point(-70, -40, 0), new Point(-40, -70, 0), new Point(-68, -68, -4)), //
 				new Point(-76, -76, 70));
 	}
+	/**
+	 *  Produce a picture of a cube lighted by a spot light
+	 * Cube- shading -
+	 */
+	@Test
+	public void cubeSpot() {
+		scene._ambientLight = new AmbientLight(new Color(java.awt.Color.WHITE), new Double3(0.15));
+		Cube myCube=new Cube(100, new Point(-130, -130, -115), new Point(-80, -130, -115),
+				new Point(-80, -80, -115), new Point(-130, -80, -115));
+		Random r= new Random();
+		myCube.setMaterial(new Material().setKd(0.5).setKs(0.5).setnShininess(30));
+		for (Polygon  p: myCube.getPolygons()) {
+			p.setMaterial(new Material().setKd(0.5).setKs(0.5).setnShininess(30)).setEmission(new Color(r.nextInt(255),r.nextInt(255),r.nextInt(255)));
+		}
+
+		scene._geometries.add( myCube
+			); //
+		scene.lights.add( //
+				new SpotLight(new Color(700, 400, 400), new Point(40, 40, 115), new Vector(-1, -1, -4)) //
+						.setKl(4E-4).setKq(2E-5));
+		camera.moveCamera(new Vector(50,-40,0));
+
+		camera.rotateCamera(new Vector(0, 1, 0), 10);
+
+
+		camera.setImageWriter(new ImageWriter("cube", 600, 600)) //
+				.renderImage(); //
+		camera.writeToImage();
+
+	}
 
 	/**
-	 * Produce a picture of a two triangles lighted by a spot light with a Sphere
+	 * Produce a picture of a cube lighted by a spot light with a Sphere
 	 * producing a shading
 	 */
 	@Test

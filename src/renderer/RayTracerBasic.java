@@ -196,7 +196,6 @@ public class RayTracerBasic extends RayTracer {
         } catch (Exception e) {
             return null;
         }
-
         return new Ray(point, n,r);
     }
 
@@ -209,7 +208,4 @@ public class RayTracerBasic extends RayTracer {
         List<GeoPoint> geoPoints = _scene._geometries.findGeoIntersections(ray);
         return ray.getClosestGeoPoint(geoPoints);
     }
-
-
-
 }

@@ -43,5 +43,4 @@ public class SpotLight extends PointLight{
 
         return (pointLightIntensity.scale(factor));
     }
-
 }

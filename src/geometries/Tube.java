@@ -94,7 +94,7 @@ public class Tube extends Geometry {
      */
 
     @Override
-    public List<GeoPoint> findGeoIntersectionsHelper(Ray ray ) {
+    public List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
         /*
         The equation for a tube of radius r oriented along a line pa + vat:
         (q - pa - (va,q - pa)va)2 - r2 = 0
@@ -120,7 +120,7 @@ public class Tube extends Geometry {
         double b = 0;
         double c = 0;
 
-        //check every variables to avoid ZERO vector
+        //check every variable to avoid ZERO vector
         if (ray.getP0().equals(_axisRay.getP0())){
             vva = v.dotProduct(va);
             if (vva == 0){
@@ -157,13 +157,13 @@ public class Tube extends Geometry {
                     }
                 } catch (Exception e) {
                     b = 2 * v.dotProduct(deltaP);
-                    c = (deltaP).dotProduct(deltaP) - this._radius * this._radius;
+                    c = (deltaP).dotProduct(deltaP) - _radius * _radius;
                 }
             }
             else if (pva == 0){
                 a = (v.substract(va.scale(vva))).dotProduct(v.substract(va.scale(vva)));
                 b = 2 * v.substract(va.scale(vva)).dotProduct(deltaP);
-                c = (deltaP.dotProduct(deltaP)) - this._radius * this._radius;
+                c = (deltaP.dotProduct(deltaP)) - _radius * _radius;
             }
             else {
                 Vector vSubstractScaleVa;
@@ -184,11 +184,11 @@ public class Tube extends Geometry {
                     }
                     else{
                         b = 2 * vSubstractScaleVa.dotProduct(deltaP.substract(scale));
-                        c = (deltaP.substract(scale).dotProduct(deltaP.substract(scale))) - this._radius * this._radius;
+                        c = (deltaP.substract(scale).dotProduct(deltaP.substract(scale))) - _radius * _radius;
                     }
                 } catch (Exception e) {
                     b = 2 * vSubstractScaleVa.dotProduct(deltaP);
-                    c = (deltaP.dotProduct(deltaP)) - this._radius * this._radius;
+                    c = (deltaP.dotProduct(deltaP)) - _radius * _radius;
                 }
 
             }
