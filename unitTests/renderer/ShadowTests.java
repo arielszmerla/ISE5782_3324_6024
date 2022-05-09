@@ -71,7 +71,22 @@ public class ShadowTests {
 				new Triangle(new Point(-49, -19, 0), new Point(-19, -49, 0), new Point(-47, -47, -4)), //
 				new Point(-100, -100, 200));
 	}
+	/**
+	 * Sphere-Triangle shading - move triangle upper-righter
+	 */
+	@Test
+	public void SpringTest() {
+		scene._geometries.add(new Sphere(new Point(0, 0, -500), 60d) //
+				.setEmission(new Color(BLUE)) //
+				.setMaterial(new Material().setKd(0.5).setKs(0.5).setnShininess(30)), new Spring(new Point(-50,-50 ,-100),30,1));
+		scene.lights.add( //
+				new SpotLight(new Color(400, 240, 0), new Point(-47, -47, -4), new Vector(1, 1, -3)) //
+						.setKl(1E-5).setKq(1.5E-7));
+		camera.setImageWriter(new ImageWriter("string", 400, 400)) .setVPDistance(1500) //
+				.renderImage(); //
 
+		camera.writeToImage();
+	}
 	/**
 	 * Sphere-Triangle shading - move spot closer
 	 */
