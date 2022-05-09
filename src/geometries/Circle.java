@@ -6,6 +6,7 @@ import primitives.Vector;
 
 import java.util.List;
 
+import static primitives.Util.alignZero;
 import static primitives.Util.isZero;
 
 public class Circle extends Geometry{
@@ -78,7 +79,7 @@ public class Circle extends Geometry{
         if (geoIntersections!=null) {
             double distance = _radius.length();
             for (GeoPoint point : geoIntersections) {
-                if (point._point.distance(_center) == distance)
+                if (point._point.distance(_center)-distance<=-distance/2)
                     return List.of(new GeoPoint(this, point._point));
             }
         }

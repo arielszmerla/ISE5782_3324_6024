@@ -1,9 +1,10 @@
 package geometries;
 
 import primitives.*;
+import primitives.Vector;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
+
 
 import static java.awt.Color.*;
 
@@ -13,8 +14,8 @@ public class Spring extends Geometry {
 public double height;
     public Spring(Point start,double height,double radius ) {
         _start = start;
-        for(double t=0; t<height ;t+=0.01)
-            _points.add( new Circle(new Point(t,Math.cos(t),Math.sin(t)),new Point(t+radius,Math.cos(t+radius),Math.sin(t+radius))).setEmission(new Color(PINK)).setMaterial(new Material().setKd(0.5).setKs(0.5).setnShininess(30)));
+        for(double t=0; t<height ;t+=0.1)
+            _points.add( new Circle(new Point(t,Math.cos(t),Math.sin(t)),new Point(t,Math.cos(t),Math.sin(t)).add( new Vector(new Double3(radius)))).setEmission(new Color(PINK)).setMaterial(new Material().setKd(0.5).setKs(0.5).setnShininess(30)));
     }
 
     @Override

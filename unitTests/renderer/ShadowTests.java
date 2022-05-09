@@ -76,14 +76,22 @@ public class ShadowTests {
 	 */
 	@Test
 	public void SpringTest() {
-		scene._geometries.add(new Sphere(new Point(0, 0, -500), 60d) //
+		/*scene._geometries.add(new Sphere(new Point(0, 0, -200), 6d) //
 				.setEmission(new Color(BLUE)) //
-				.setMaterial(new Material().setKd(0.5).setKs(0.5).setnShininess(30)), new Spring(new Point(-50,-50 ,-100),30,1));
+				.setMaterial(new Material().setKd(0.5).setKs(0.5).setnShininess(30)), new Spring(new Point(-50,-50 ,-100),100,3)
+				.setEmission(new Color(BLUE)).setMaterial(new Material().setKd(0.5).setKs(0.5).setnShininess(30)));
+
+		 */
+		scene._geometries.add(new Spring(new Point(-50, -50, -1), 21, 1)
+		);
 		scene.lights.add( //
 				new SpotLight(new Color(400, 240, 0), new Point(-47, -47, -4), new Vector(1, 1, -3)) //
 						.setKl(1E-5).setKq(1.5E-7));
-		camera.setImageWriter(new ImageWriter("string", 400, 400)) .setVPDistance(1500) //
-				.renderImage(); //
+		camera.moveCamera(new Vector(-10, -10, 0));
+
+			camera.rotateCamera(new Vector(0, 1, 0), -2);
+		   camera.setImageWriter(new ImageWriter("string", 400, 400)).setVPDistance(1500) ;//
+
 
 		camera.writeToImage();
 	}
