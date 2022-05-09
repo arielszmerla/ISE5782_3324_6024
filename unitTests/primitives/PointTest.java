@@ -20,11 +20,11 @@ class PointTest {
 
     }
     /**
-     * test for substracting points
+     * test for subtracting points
      */
     @Test
     void testSubtract() {
-        assertEquals(p2,p2.substract(p1),"incorrect calculated substraction");
+        assertEquals(p2._xyz,p2.substract(p1)._xyz,"incorrect calculated subtraction");
     }
 
     @Test
