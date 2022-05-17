@@ -186,6 +186,7 @@ public class Camera {
             int nX = _imageWriter.getNx();
             int nY = _imageWriter.getNy();
             for (int i = 0; i < nY; i++) {
+
                 for (int j = 0; j < nX; j++) {
                     _imageWriter.writePixel(j, i, castRay(nY, nX, j, i));
                 }

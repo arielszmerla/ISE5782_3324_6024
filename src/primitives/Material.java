@@ -5,6 +5,7 @@ public class Material {
    public Double3 _kS=new Double3(0d);
    public Double3 _kT=new Double3(0d);
    public Double3 _kR=new Double3(0d);
+   public Double3 _kG=new Double3(1d);
     public int nShininess=0;
 
     public Material setKd(double kD) {
@@ -17,7 +18,10 @@ public class Material {
         _kS = new Double3(kS);
         return this;
     }
-
+    public Material setKg(double kG) {
+        _kG = new Double3(Math.pow(kG, 0.5));
+        return this;
+    }
 
     public Material setnShininess(int nShininess) {
         this.nShininess = nShininess;
