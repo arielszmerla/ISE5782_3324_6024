@@ -54,7 +54,7 @@ public class RayTracerBasic extends RayTracer {
     private Color calcColor(GeoPoint intersection, Ray ray,int level,Double3 k) {
         Color color = intersection._geometry.getEmission()
                 .add(calcLocalEffects(intersection,ray,k));
-        return 1 == level ? color : color.add(calcGlobalEffects2(intersection, ray, level, k));
+        return 1 == level ? color : color.add(calcGlobalEffects(intersection, ray, level, k));
 
     }
     /**

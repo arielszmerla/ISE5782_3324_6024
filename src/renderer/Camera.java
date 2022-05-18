@@ -48,16 +48,16 @@ private Random random = new Random();
     /**
      * Distance of the depth of field plane from the view plane
      */
-    private double _focusField;
+    private double _focusField=1000;
 
     /**
      * Radius of the aperture
      */
-    private double _apertureFieldDistance;
+    private double _apertureFieldDistance=250;
 
 
     // The radius of the aperture.
-    private double _apertureFieldRadius;
+    private double _apertureFieldRadius=1d;
     /**
      * Set the aperture field of the camera.
      *
@@ -236,7 +236,7 @@ private Random random = new Random();
             for (int i = 0; i < nY; i++) {
 
                 for (int j = 0; j < nX; j++) {
-                    _imageWriter.writePixel(j, i, castRay(nY, nX, j, i));
+                    _imageWriter.writePixel(j, i, castRayDepth(nY, nX, j, i));
                 }
             }
         } catch (MissingResourceException e) {
@@ -255,9 +255,26 @@ private Random random = new Random();
      * @return the {@link  Color} through pixel's center
      */
     private Color castRay(int nX, int nY, double j, double i) {
-            return _rayTracer.traceRay(constructRay(nX,nY,(int)j,(int)i));
-        }
+        Ray centerRay=constructRay(nX,nY,(int)j,(int)i);
 
+            return _rayTracer.traceRay(centerRay).add();
+    }
+    private Color castRayDepth(int nX, int nY, double j, double i) {
+        Ray centerRay=constructRay(nX,nY,(int)j,(int)i);
+        Point focalPoint= calcFocalFieldPoint(centerRay);
+        List<Point> aperturePoints= get4PointOnAperture(centerRay);
+        List<Ray> apertureRays=contructRays(aperturePoints,focalPoint);
+        return averageColor(apertureRays,centerRay);
+
+    }
+    public Color averageColor(List<Ray> rays,Ray centerRay){
+        Color color=Color.BLACK;
+        for( Ray ray:rays){
+            color=color.add(_rayTracer.traceRay(ray));
+        }
+        color= color.add(_rayTracer.traceRay(centerRay));
+        return color.reduce(Double.valueOf(rays.size()+1));
+    }
 
     private Point calcFocalFieldPoint(Ray ray) {
         double len= _focusField /_vTo.dotProduct(ray.getDir());
@@ -267,19 +284,25 @@ private Random random = new Random();
         double len= _apertureFieldDistance /_vTo.dotProduct(ray.getDir());
         return ray.getPoint(len);
     }
-    private      List<Point> get4PointOnAperture(Ray ray)
+
+    private List<Point> get4PointOnAperture(Ray ray)
     {
         List<Point> points=new LinkedList<>() ;
             Point apertureCenter= calcApertureFieldPoint( ray);
 
-        for (int i=0 ;i<4;i++){
-            Point p = apertureCenter.add(_vUp.scale(random(0,_apertureFieldRadius))).add(_vRight.scale(random(0,_apertureFieldRadius)));
+        for (int i=0 ;i<10;i++){
+            Point p = apertureCenter.add(_vUp.scale(random(-_apertureFieldRadius,_apertureFieldRadius))).add(_vRight.scale(random(-_apertureFieldRadius,_apertureFieldRadius)));
             points.add(p);
         }
         return points;
     }
-
-
+    private List<Ray> contructRays(List<Point> aperturePoints ,Point focusPlaneIntersection){
+        List<Ray> rays = new LinkedList<>();
+        for (Point point : aperturePoints){
+            rays.add( new Ray(point, new Vector(focusPlaneIntersection.substract(point).get_xyz())));
+        }
+        return rays;
+    }
 }
 
 

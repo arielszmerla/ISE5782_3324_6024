@@ -84,6 +84,11 @@ public class LightsTests {
 	@Test
 	public void sphereSpot() {
 		scene1._geometries.add(sphere);
+		scene1._geometries.add(new Sphere(new Point(-20, -20, 400), 20d) .setMaterial(material)//
+				.setEmission(new Color(RED).reduce(2)));
+		scene1._geometries.add(new Sphere(new Point(60, 30, -600), 30d) .setMaterial(material)//
+				.setEmission(new Color(MAGENTA).reduce(2)));
+
 		scene1.lights.add(new SpotLight(spCL, spPL, new Vector(1, 1, -0.5)).setKl(0.001).setKq(0.0001));
 
 		ImageWriter imageWriter = new ImageWriter("lightSphereSpot", 500, 500);
