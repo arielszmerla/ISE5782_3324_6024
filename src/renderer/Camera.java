@@ -5,7 +5,7 @@ import primitives.Point;
 import primitives.Ray;
 import primitives.Vector;
 
-import java.util.MissingResourceException;
+import java.util.*;
 
 import static primitives.Util.*;
 
@@ -39,16 +39,58 @@ public class Camera {
      * height of view plane
      */
     private int _height;
-
+// A random number generator.
+private Random random = new Random();
+    // A private variable that is used to write the image to the screen.
     private ImageWriter _imageWriter;
+    // A private variable that is used to write the image to the screen.
     private RayTracer _rayTracer;
+    /**
+     * Distance of the depth of field plane from the view plane
+     */
+    private double _focusField;
+
+    /**
+     * Radius of the aperture
+     */
+    private double _apertureFieldDistance;
+
+
+    // The radius of the aperture.
+    private double _apertureFieldRadius;
+    /**
+     * Set the aperture field of the camera.
+     *
+     * @param focusField The aperture field of the camera.
+     * @return The camera object itself.
+     */
+
+    public Camera setFocusField(double focusField) {
+        _focusField = focusField;
+        return this;
+    }
+
+    /**
+     * This function sets the aperture field radius of the camera
+     *
+     * @param apertureFieldRadius The radius of the aperture field.
+     * @return The camera object itself.
+     */
+    public Camera setApertureFieldRadius(double apertureFieldRadius) {
+        _apertureFieldRadius = apertureFieldRadius;
+        return this;
+    }
+
+
 
     /**
      * Camera constructor based-on point and 2 vectors
      * @param p0 {@link Point} position
-     * @param vto {@link java.util.Vector}
-     * @param vup {@link  java.util.Vector}
+     * @param vto {@link Vector}
+     * @param vup {@link  Vector}
      */
+    // This is the constructor of the camera. It receives 3 vectors: p0, vto and vup. The function checks if the vectors
+    // are orthogonal. If they are not, it throws an exception. If they are, it sets the vectors to the camera.
     public Camera(Point p0, Vector vto, Vector vup) {
         if (!isZero(vto.dotProduct(vup))) {
             throw new IllegalArgumentException("vup and vto aren't orthogonal");
@@ -161,6 +203,12 @@ public class Camera {
         _imageWriter.writeToImage();
     }
 
+    /**
+     * This function prints a grid on the image
+     *
+     * @param interval the interval between the lines.
+     * @param color the color of the grid lines.
+     */
     public void printGrid(int interval, Color color) {
         if (_imageWriter == null) {
             throw new MissingResourceException("missing resource", ImageWriter.class.getName(), "");
@@ -210,7 +258,29 @@ public class Camera {
             return _rayTracer.traceRay(constructRay(nX,nY,(int)j,(int)i));
         }
 
+
+    private Point calcFocalFieldPoint(Ray ray) {
+        double len= _focusField /_vTo.dotProduct(ray.getDir());
+        return ray.getPoint(len);
     }
+    private Point calcApertureFieldPoint(Ray ray) {
+        double len= _apertureFieldDistance /_vTo.dotProduct(ray.getDir());
+        return ray.getPoint(len);
+    }
+    private      List<Point> get4PointOnAperture(Ray ray)
+    {
+        List<Point> points=new LinkedList<>() ;
+            Point apertureCenter= calcApertureFieldPoint( ray);
+
+        for (int i=0 ;i<4;i++){
+            Point p = apertureCenter.add(_vUp.scale(random(0,_apertureFieldRadius))).add(_vRight.scale(random(0,_apertureFieldRadius)));
+            points.add(p);
+        }
+        return points;
+    }
+
+
+}
 
 
 

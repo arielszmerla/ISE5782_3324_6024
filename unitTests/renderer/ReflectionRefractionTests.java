@@ -36,8 +36,8 @@ public class ReflectionRefractionTests {
 
 		scene._geometries.add( //
 				new Sphere(new Point(0, 0, -50), 50d).setEmission(new Color(BLUE)) //
-						.setMaterial(new Material().setKd(0.4).setKs(0.3).setnShininess(100).setKt(0.3)),
-				new Sphere(new Point(0, 0, -50), 25d).setEmission(new Color(RED)) //
+						.setMaterial(new Material().setKd(0.4).setKs(0.3).setnShininess(100).setKt(0.3).setKg(0.7)),
+	            new Sphere(new Point(0, 0, -50), 25d).setEmission(new Color(RED)) //
 						.setMaterial(new Material().setKd(0.5).setKs(0.5).setnShininess(100)));
 		scene.lights.add( //
 				new SpotLight(new Color(1000, 600, 0), new Point(-100, -100, 500), new Vector(-1, -1, -2)) //

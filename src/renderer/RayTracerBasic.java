@@ -47,7 +47,6 @@ public class RayTracerBasic extends RayTracer {
         if (glossinessRays <= 0) {
             throw new IllegalArgumentException("number of glossiness rays should be greater than 0");
         }
-
         _glossinessRays = glossinessRays;
         return this;
     }
@@ -325,7 +324,7 @@ public class RayTracerBasic extends RayTracer {
       //  Vector r = v.add(n2vn);
         Vector r=new Vector(v.add(n2vn).get_xyz());
         // If kG is equals to 1 then return only 1 ray, the specular ray (r)
-        if (new Double3(1d)==kG) {
+        if ( Double3.ONE==kG) {
             return new Ray[]{new Ray(point, n, r)};
         }
 
