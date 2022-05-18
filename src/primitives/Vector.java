@@ -119,7 +119,14 @@ public class Vector extends Point {
     public Vector scale(double t) {
         return new Vector (_xyz.scale(t));
     }
-
+    /**
+     * Change vector to scalized vector
+     *
+     * @return scalized vector
+     */
+    public Vector scale(Double3 t) {
+        return new Vector (_xyz._d1*t._d1, _xyz._d2*t._d2,_xyz._d3*t._d3);
+    }
     /***
      * Rotate the vector by angle (in degrees) and axis of rotation
      * @param axis Axis of rotation
