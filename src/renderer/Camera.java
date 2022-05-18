@@ -259,49 +259,145 @@ private Random random = new Random();
 
             return _rayTracer.traceRay(centerRay).add();
     }
+    /**
+     * The function casts a ray from the camera to the focal point, and then casts rays from the focal point to the scene
+     *
+     * @param nX the x coordinate of the pixel in the image
+     * @param nY the y coordinate of the pixel in the image
+     * @param j the x coordinate of the pixel in the image
+     * @param i the x coordinate of the pixel in the image
+     * @return The color of the pixel.
+     */
     private Color castRayDepth(int nX, int nY, double j, double i) {
         Ray centerRay=constructRay(nX,nY,(int)j,(int)i);
         Point focalPoint= calcFocalFieldPoint(centerRay);
-        List<Point> aperturePoints= get4PointOnAperture(centerRay);
-        List<Ray> apertureRays=contructRays(aperturePoints,focalPoint);
-        return averageColor(apertureRays,centerRay);
-
+        return colorSecundaryRays(centerRay,focalPoint);
     }
-    public Color averageColor(List<Ray> rays,Ray centerRay){
-        Color color=Color.BLACK;
-        for( Ray ray:rays){
-            color=color.add(_rayTracer.traceRay(ray));
-        }
-        color= color.add(_rayTracer.traceRay(centerRay));
-        return color.reduce(Double.valueOf(rays.size()+1));
+    /**
+     * Given a color and a length, return the average color of the color and the length.
+     *
+     * @param color The color to average
+     * @param len the length of the array
+     * @return The average color of the pixels in the image.
+     */
+    public Color averageColor(Color color, int len){
+        return color.reduce(Double.valueOf(len+1));
     }
 
+    /**
+     * The focal point is the point on the focal plane that is the same distance from the focal plane as the intersection
+     * point is from the view plane
+     *
+     * @param ray the ray that is being traced
+     * @return The point on the focal plane that the ray intersects.
+     */
     private Point calcFocalFieldPoint(Ray ray) {
         double len= _focusField /_vTo.dotProduct(ray.getDir());
         return ray.getPoint(len);
     }
+    /**
+     * > Given a ray, calculate the point on the aperture field that the ray would hit
+     *
+     * @param ray the ray to be traced
+     * @return The point on the aperture field that the ray intersects.
+     */
     private Point calcApertureFieldPoint(Ray ray) {
         double len= _apertureFieldDistance /_vTo.dotProduct(ray.getDir());
         return ray.getPoint(len);
     }
 
-    private List<Point> get4PointOnAperture(Ray ray)
+    /**
+     * The function creates a random point on the aperture field, and then creates a ray from that point to the focus plane
+     * intersection point. The color of the ray is then added to the color of the primary ray
+     *
+     * @param ray The ray that hit the focus plane.
+     * @param focusPlaneIntersection The point on the focus plane where the primary ray intersects.
+     * @return The color of the point in the focus plane.
+     */
+    private Color colorSecundaryRays(Ray ray,Point focusPlaneIntersection)
     {
-        List<Point> points=new LinkedList<>() ;
-            Point apertureCenter= calcApertureFieldPoint( ray);
-
-        for (int i=0 ;i<10;i++){
+        Color color=  _rayTracer.traceRay(ray);
+        Point apertureCenter= calcApertureFieldPoint( ray);
+        int i=0;
+        for (;i<10;i++){
             Point p = apertureCenter.add(_vUp.scale(random(-_apertureFieldRadius,_apertureFieldRadius))).add(_vRight.scale(random(-_apertureFieldRadius,_apertureFieldRadius)));
-            points.add(p);
+            Ray depthRay= new Ray(p, new Vector(focusPlaneIntersection.substract( p).get_xyz()));
+            color=color.add(_rayTracer.traceRay(depthRay));
         }
-        return points;
+
+        return averageColor(color,i);
     }
-    private List<Ray> contructRays(List<Point> aperturePoints ,Point focusPlaneIntersection){
-        List<Ray> rays = new LinkedList<>();
-        for (Point point : aperturePoints){
-            rays.add( new Ray(point, new Vector(focusPlaneIntersection.substract(point).get_xyz())));
+    /**
+     * This function get a ray launched in the center of a pixel and launch a beam n * m others rays
+     * on the same pixel
+     *
+     * @param nX  number of pixels in a row of view plane
+     * @param nY  number of pixels in a column of view plane
+     * @param n   number of the rays to launch in pixel
+     * @param m   number of the ray to launch in the pixel
+     * @param ray the ray that it is already launched in the center of the pixel
+     * @return list of rays when every ray is launched inside a pixel with random emplacement
+     */
+    public List<Ray> constructRaysGridFromRay(int nX, int nY, int n, int m, Ray ray) {
+
+        Point p0 = ray.getPoint(_distance); //center of the pixel
+        List<Ray> myRays = new LinkedList<>(); //to save all the rays
+
+        double pixelHeight = alignZero(_height / nY);
+        double pixelHWidth = alignZero(_width / nX);
+
+        //We call the function constructRayThroughPixel like we used to but this time we launch m * n ray in the same pixel
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                myRays.add(constructRayThroughPixel(m, n, j, i, pixelHeight, pixelHWidth, p0));
+            }
         }
-        return rays;
+
+        return myRays;
+    }
+
+    /**
+     * The function constructs a ray from Camera location through a point (i,j) on the grid of a
+     * pixel in the view plane
+     *
+     * @param m      grid's height
+     * @param n      grid's width
+     * @param j      number of the pixel in the row
+     * @param i      number of the pixel in the column
+     * @param pixelH height of the pixel
+     * @param pixelW width of the pixel
+     * @param pc     pixel center
+     * @return the ray through pixel's center
+     */
+    private Ray constructRayThroughPixel(int m, int n, double j, double i, double pixelH, double pixelW, Point pc) {
+
+        Point pIJ = pc;
+
+        //Ry = height / nY : height of a pixel
+        double rY = pixelH / n;
+        //Ry = weight / nX : width of a pixel
+        double rX = pixelW / m;
+        //xJ is the value of width we need to move from center to get to the point
+        //we get to the bottom/top of the pixel and then we move randomly in the pixel to get the point
+        double xJ = ((j + random.nextDouble() / (random.nextBoolean() ? 2 : -2)) - ((m - 1) / 2d)) * rX;
+        //yI is the value of height we need to move from center to get to the point
+        //we get to the side of the pixel and then we move randomly in the pixel to get the point
+        double yI = -((i + random.nextDouble() / (random.nextBoolean() ? 2 : -2)) - ((n - 1) / 2d)) * rY;
+
+        if (xJ != 0) {
+            pIJ = pIJ.add(_vRight.scale(xJ));
+        }
+        if (yI != 0) {
+            pIJ = pIJ.add(_vUp.scale(yI));
+        }
+
+        //get vector from camera p0 to the point
+        Vector vIJ = pIJ.substract(_p0);
+
+        //return ray to the center of the pixel
+        return new Ray(_p0, vIJ);
+
     }
 }
 
