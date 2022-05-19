@@ -18,7 +18,9 @@ import javax.imageio.*;
  * @author Dan
  */
 public class ImageWriter {
+	// A private variable that is used to store the number of pixels in the x direction.
 	private int _nX;
+	// A private variable that is used to store the number of pixels in the y direction.
 	private int _nY;
 
 	private static final String FOLDER_PATH = System.getProperty("user.dir") + "/images";

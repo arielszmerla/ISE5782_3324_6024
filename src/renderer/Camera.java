@@ -236,7 +236,7 @@ private Random random = new Random();
             for (int i = 0; i < nY; i++) {
 
                 for (int j = 0; j < nX; j++) {
-                    _imageWriter.writePixel(j, i, castRayDepth(nY, nX, j, i));
+                    _imageWriter.writePixel(j, i, castRays_AntiAliasing(nY, nX, j, i));
                 }
             }
         } catch (MissingResourceException e) {
@@ -334,63 +334,81 @@ double d =random(0,360);
         return averageColor(color,i);
     }
 
-    /**
-     * This function get a ray launched in the center of a pixel and launch a beam n * m others rays
-     * on the same pixel
-     *
-     * @param nX  number of pixels in a row of view plane
-     * @param nY  number of pixels in a column of view plane
-     * @param n   number of the rays to launch in pixel
-     * @param m   number of the ray to launch in the pixel
-     * @param ray the ray that it is already launched in the center of the pixel
-     * @return list of rays when every ray is launched inside a pixel with random emplacement
-     */
-    public List<Ray> constructRaysGridFromRay(int nX, int nY, int n, int m, Ray ray) {
 
-        Point p0 = ray.getPoint(_distance); //center of the pixel
+
+    public List <Ray> constructRays(int nX, int nY, int j, int i) {
+        double Ry = (double) _height / nY;
+        double Rx = (double) _width / nX;
+
+        // Image center
+        Point Pc = _p0.add(_vTo.scale(_distance));
+
+        Point Pij = Pc;
+
+        double yI = -(i - ((nY - 1) / 2d)) * Ry;
+        double xJ = (j - ((nX - 1) / 2d)) * Rx;
+
+        if (xJ != 0)
+            Pij = Pij.add(_vRight.scale(xJ));
+        if (yI != 0)
+            Pij = Pij.add(_vUp.scale(yI));
+
         List<Ray> myRays = new LinkedList<>(); //to save all the rays
-
-        double pixelHeight = alignZero(_height / nY);
-        double pixelHWidth = alignZero(_width / nX);
 
         //We call the function constructRayThroughPixel like we used to but this time we launch m * n ray in the same pixel
 
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < m; j++) {
-                myRays.add(constructRayThroughPixel(m, n, j, i, pixelHeight, pixelHWidth, p0));
-            }
+        for (int k = 0; k < 1000; k++) {
+            Point tmp = Pij;
+            myRays.add(constructRayThroughPixel(nX, nY, Pij));
+            Pij = tmp;
         }
 
         return myRays;
     }
 
+
+
     /**
-     * The function constructs a ray from Camera location through a point (i,j) on the grid of a
-     * pixel in the view plane
+     * The function casts rays from the camera to the scene, and returns the color of the pixel (anti-aliasing)
      *
-     * @param m      grid's height
-     * @param n      grid's width
-     * @param j      number of the pixel in the row
-     * @param i      number of the pixel in the column
-     * @param pixelH height of the pixel
-     * @param pixelW width of the pixel
-     * @param pc     pixel center
-     * @return the ray through pixel's center
+     * @param nX the number of pixels in the X axis
+     * @param nY the number of pixels in the y direction
+     * @param j the x coordinate of the pixel in the image
+     * @param i the current pixel's row
+     * @return The color of the pixel.
      */
-    private Ray constructRayThroughPixel(int m, int n, double j, double i, double pixelH, double pixelW, Point pc) {
+    private Color castRays_AntiAliasing(int nX, int nY, int j, int i) {
+        List <Ray> rays = constructRays(nX, nY, j, i);
+        Color color = Color.BLACK;
+        int d;
+        for (Ray ray : rays) {
+            color = color.add(_rayTracer.traceRay(ray));
+        }
+        return averageColor(color, rays.size());
+    }
+
+
+    /**
+     * We start from the center of the pixel and move randomly in the pixel to get the point
+     *
+     * @param nX number of pixels in the width
+     * @param nY number of pixels in the height
+     * @param pc the center of the pixel
+     * @return A ray from the camera to the center of the pixel.
+     */
+    private Ray constructRayThroughPixel(int nX, int nY, Point pc) {
 
         Point pIJ = pc;
-
         //Ry = height / nY : height of a pixel
-        double rY = pixelH / n;
+        double rY = (double) _height / nY;
         //Ry = weight / nX : width of a pixel
-        double rX = pixelW / m;
+        double rX = (double) _width / nX;
         //xJ is the value of width we need to move from center to get to the point
         //we get to the bottom/top of the pixel and then we move randomly in the pixel to get the point
-        double xJ = ((j + random.nextDouble() / (random.nextBoolean() ? 2 : -2)) - ((m - 1) / 2d)) * rX;
+        double xJ = random.nextDouble () * (rX/ (random.nextBoolean()?2:-2));
         //yI is the value of height we need to move from center to get to the point
         //we get to the side of the pixel and then we move randomly in the pixel to get the point
-        double yI = -((i + random.nextDouble() / (random.nextBoolean() ? 2 : -2)) - ((n - 1) / 2d)) * rY;
+        double yI = random.nextDouble ()* (rY/ (random.nextBoolean()?2:-2));
 
         if (xJ != 0) {
             pIJ = pIJ.add(_vRight.scale(xJ));
@@ -401,7 +419,9 @@ double d =random(0,360);
 
         //get vector from camera p0 to the point
         Vector vIJ = pIJ.substract(_p0);
-
+        Color c = _rayTracer.traceRay(new Ray(_p0, vIJ));
+        if(!c.equals(Color.BLACK))
+            c = c;
         //return ray to the center of the pixel
         return new Ray(_p0, vIJ);
 
