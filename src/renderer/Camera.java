@@ -57,7 +57,7 @@ private Random random = new Random();
 
 
     // The radius of the aperture.
-    private double _apertureFieldRadius=1d;
+    private double _apertureFieldRadius=2d;
     /**
      * Set the aperture field of the camera.
      *
@@ -319,14 +319,21 @@ private Random random = new Random();
         Color color=  _rayTracer.traceRay(ray);
         Point apertureCenter= calcApertureFieldPoint( ray);
         int i=0;
-        for (;i<10;i++){
-            Point p = apertureCenter.add(_vUp.scale(random(-_apertureFieldRadius,_apertureFieldRadius))).add(_vRight.scale(random(-_apertureFieldRadius,_apertureFieldRadius)));
-            Ray depthRay= new Ray(p, new Vector(focusPlaneIntersection.substract( p).get_xyz()));
+        for (;i<20;i++){
+            //Point p = apertureCenter.add(_vUp.scale(random(-_apertureFieldRadius,_apertureFieldRadius))).add(_vRight.scale(random(-_apertureFieldRadius,_apertureFieldRadius)));
+         //   double one=random(-_apertureFieldRadius,_apertureFieldRadius);
+           // double sec=one>0? _apertureFieldRadius-one :  Math.abs(_apertureField-one);
+double d =random(0,360);
+            double d2 =random(0,360);
+          Vector v=  _vUp.rotateVector(_vRight,d).scale(_apertureFieldRadius).rotateVector(_vUp,d2);
+            Point p=apertureCenter.add(v);
+            Ray depthRay=new Ray(p,new Vector(focusPlaneIntersection.substract(p).get_xyz()));
             color=color.add(_rayTracer.traceRay(depthRay));
         }
 
         return averageColor(color,i);
     }
+
     /**
      * This function get a ray launched in the center of a pixel and launch a beam n * m others rays
      * on the same pixel
