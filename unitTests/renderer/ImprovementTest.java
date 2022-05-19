@@ -131,7 +131,6 @@ new Polygon(new Point(-19.5,10.01,-160),new Point(-19.5,10.01,-145),new Point(-2
         }
 
 
-
         //scene1.lights.add(new SpotLight(spCL, spPL, new Vector(1, 1, -0.5)).setKl(0.001).setKq(0.0001));
         //scene1.lights.add(new SpotLight(new Color(WHITE),new Point(0,20,0),new Vector(0,0,1) ));
         scene1.lights.add(new SpotLight(new Color(WHITE), new Point(100,200,-200), new Vector(-0.5,-1,0)));
@@ -151,6 +150,26 @@ new Polygon(new Point(-19.5,10.01,-160),new Point(-19.5,10.01,-145),new Point(-2
                 .setRayTracer(new RayTracerBasic(scene1)) //
                 .renderImage() ; //
         camera1.writeToImage();//
+
+       /* //scene1.lights.add(new SpotLight(spCL, spPL, new Vector(1, 1, -0.5)).setKl(0.001).setKq(0.0001));
+        //scene1.lights.add(new SpotLight(new Color(WHITE),new Point(0,20,0),new Vector(0,0,1) ));
+        scene1.lights.add(new SpotLight(new Color(WHITE), new Point(100,200,-200), new Vector(-0.5,-1,0)));
+        scene1.lights.add(new SpotLight(new Color(WHITE), new Point(-400,-400,0), new Vector(0.2d,0.5d,-1)));
+        //scene1.lights.add(new DirectionalLight(new Color(GREEN), new Vector(1,1,1)));
+        //scene1.lights.add(_directionalLight);
+        //scene1.lights.add(_directionalLight1);
+        //scene1.lights.add(new PointLight(spCL, spPL).setKl(0.001).setKq(0.0002));
+        ImageWriter imageWriter = new ImageWriter("table", 500, 500);
+        camera1.setFocusField(1800);
+        camera1.moveCamera(new Vector(-3000,400,-1200));
+        //camera1.moveCamera(new Vector(0,700,1000));
+
+        camera1.rotateCamera(new Vector(0,1,0), 270);
+        //camera1.rotateCamera(new Vector(-0.5,0,0), 35);
+        camera1.setImageWriter(imageWriter) //
+                .setRayTracer(new RayTracerBasic(scene1)) //
+                .renderImage() ; //
+        camera1.writeToImage();//*/
     }
 
 }
