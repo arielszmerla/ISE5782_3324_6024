@@ -185,15 +185,18 @@ public class RayTracerBasic extends RayTracer {
      */
     private Color calcSpecular(Double3 ks, Vector l, Vector n, Vector v, int nShininess, Color lightIntensity) {
 
+        // Calculating the reflection vector.
         Vector r = new Vector(l.add(n.scale(n.dotProduct(l) * -2)).get_xyz());
         double vR;
         try {
+            // Calculating the dot product of the vector -v and the vector r.
             vR = v.scale(-1).dotProduct(r);
         } catch (Exception exception) {
             //if vR is 0 vector
             return lightIntensity.scale(1);
         }
         //color = ks * max(0, -v.r)^nSh @ppt 7 theoretical course
+        // Calculating the specular component of the light intensity.
         return lightIntensity.scale(ks.scale( Math.pow(Math.max(0, vR), nShininess)));
     }
 
@@ -217,8 +220,17 @@ public class RayTracerBasic extends RayTracer {
         return lightIntensity.scale(kd.scale(Math.abs(lN)));
     }
 
-    // The above code is checking if the point is unshaded. If it is unshaded, it will return true. If it is shaded, it
+    // The below code is checking if the point is unshaded. If it is unshaded, it will return true. If it is shaded, it
     // will return false.
+    /**
+     * If the point is not shaded, return true
+     *
+     * @param gp the point on the geometry that we are currently shading
+     * @param l the vector from the point to the light source
+     * @param n the normal vector of the point
+     * @param ls the light source
+     * @return If the point is not shaded.
+     */
     private boolean unshaded(GeoPoint gp, Vector l, Vector n, LightSource ls){
         Vector lightDir = l.scale(-1);// from point to light source
         Vector epsVector= n.scale(n.dotProduct(lightDir)>0?DELTA:-DELTA);
@@ -302,6 +314,7 @@ public class RayTracerBasic extends RayTracer {
     }
 
     @Override
+    // Creating a method called averageColor that takes in a linked list of rays and returns a color.
     public Color averageColor(LinkedList<Ray> rays){
         Color color=Color.BLACK;
         for( Ray ray:rays){
@@ -389,6 +402,7 @@ public class RayTracerBasic extends RayTracer {
         // to the normal and eventually creating zero vector
         Vector axis;
 
+        // Finding the axis that is closest to the normal vector.
         if (Math.abs(n.getX()) < Math.abs(n.getY()) && Math.abs(n.getX()) < Math.abs(n.getZ())) {
             axis = new Vector(1, 0, 0);
         } else if (Math.abs(n.getY()) < Math.abs(n.getZ())) {

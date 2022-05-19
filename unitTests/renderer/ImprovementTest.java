@@ -11,6 +11,7 @@ import java.util.Random;
 
 import static java.awt.Color.*;
 
+
 public class ImprovementTest {
     private Scene scene1 = new Scene.SceneBuilder("Test scene").build();
     private Camera camera1 = new Camera(new Point(0, 0, 1000), new Vector(0, 0, -1), new Vector(0, 1, 0)) //
@@ -45,6 +46,7 @@ private Geometry backBone= new Polygon(new Point(-1000,1000,-9000),
     private Color spCL = new Color(800, 500, 0); // Sphere test Color of Light
 
     @Test
+    // A test for the scene of the spheres.
     public void sphereSpot() {
         scene1._geometries.add(    new Tube(new Ray(new Point(0, 0, -7000),new Vector(0.01,0.01,1)),4d).setEmission(new Color(BLUE)) //
                 .setMaterial(new Material().setKd(0.7).setKs(0.7).setnShininess(20).setKt(0.1)),
@@ -69,6 +71,7 @@ private Geometry backBone= new Polygon(new Point(-1000,1000,-9000),
     }
 
     @Test
+    // A test for the table scene.
     public void table() {
         scene1._geometries.add(    new Cylinder(new Ray(new Point(0, 0, -200),new Vector(0,1,0)),80d, 10d).setEmission(new Color(new java.awt.Color(119, 79, 61))) //
                 .setMaterial(new Material().setKd(0.7).setKs(0.7).setnShininess(20).setKt(0.1)),
