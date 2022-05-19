@@ -142,11 +142,11 @@ new Polygon(new Point(-19.5,10.01,-160),new Point(-19.5,10.01,-145),new Point(-2
         //scene1.lights.add(new PointLight(spCL, spPL).setKl(0.001).setKq(0.0002));
         ImageWriter imageWriter = new ImageWriter("table", 500, 500);
         camera1.setFocusField(1800);
-        //camera1.moveCamera(new Vector(-3000,400,-1200));
-        camera1.moveCamera(new Vector(0,700,1000));
+        camera1.moveCamera(new Vector(-3000,400,-1200));
+        //camera1.moveCamera(new Vector(0,700,1000));
 
-        //camera1.rotateCamera(new Vector(0,1,0), 270);
-        camera1.rotateCamera(new Vector(-0.5,0,0), 35);
+        camera1.rotateCamera(new Vector(0,1,0), 270);
+        //camera1.rotateCamera(new Vector(-0.5,0,0), 35);
         camera1.setImageWriter(imageWriter) //
                 .setRayTracer(new RayTracerBasic(scene1)) //
                 .renderImage() ; //
