@@ -257,7 +257,7 @@ private Random random = new Random();
     private Color castRay(int nX, int nY, double j, double i) {
         Ray centerRay=constructRay(nX,nY,(int)j,(int)i);
 
-            return _rayTracer.traceRay(centerRay).add();
+            return _rayTracer.traceRay(centerRay);
     }
     /**
      * The function casts a ray from the camera to the focal point, and then casts rays from the focal point to the scene
@@ -271,7 +271,13 @@ private Random random = new Random();
     private Color castRayDepth(int nX, int nY, double j, double i) {
         Ray centerRay=constructRay(nX,nY,(int)j,(int)i);
         Point focalPoint= calcFocalFieldPoint(centerRay);
-        return colorSecundaryRays(centerRay,focalPoint);
+        List<Ray> rays = constructRaysGridFromRay(nX, nY, 10 , 10, centerRay);
+        Color color = Color.BLACK;
+        for (Ray ray : rays){
+        color.add(_rayTracer.traceRay(ray));
+        }
+
+        return colorSecondaryRays(centerRay,focalPoint, color, rays.size());
     }
     /**
      * Given a color and a length, return the average color of the color and the length.
@@ -314,18 +320,18 @@ private Random random = new Random();
      * @param focusPlaneIntersection The point on the focus plane where the primary ray intersects.
      * @return The color of the point in the focus plane.
      */
-    private Color colorSecundaryRays(Ray ray,Point focusPlaneIntersection)
+    private Color colorSecondaryRays(Ray ray, Point focusPlaneIntersection, Color col1, int len)
     {
         Color color=  _rayTracer.traceRay(ray);
         Point apertureCenter= calcApertureFieldPoint( ray);
         int i=0;
-        for (;i<10;i++){
+        for (;i<5;i++){
             Point p = apertureCenter.add(_vUp.scale(random(-_apertureFieldRadius,_apertureFieldRadius))).add(_vRight.scale(random(-_apertureFieldRadius,_apertureFieldRadius)));
             Ray depthRay= new Ray(p, new Vector(focusPlaneIntersection.substract( p).get_xyz()));
             color=color.add(_rayTracer.traceRay(depthRay));
         }
 
-        return averageColor(color,i);
+        return averageColor(color.add(col1),i+len);
     }
     /**
      * This function get a ray launched in the center of a pixel and launch a beam n * m others rays
