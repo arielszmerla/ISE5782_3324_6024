@@ -236,7 +236,7 @@ private Random random = new Random();
             for (int i = 0; i < nY; i++) {
 
                 for (int j = 0; j < nX; j++) {
-                    _imageWriter.writePixel(j, i, castRays_AntiAliasing(nY, nX, j, i));
+                    _imageWriter.writePixel(j, i, castRay(nY, nX, j, i));
                 }
             }
         } catch (MissingResourceException e) {
@@ -357,7 +357,7 @@ double d =random(0,360);
 
         //We call the function constructRayThroughPixel like we used to but this time we launch m * n ray in the same pixel
 
-        for (int k = 0; k < 1000; k++) {
+        for (int k = 0; k < 50; k++) {
             Point tmp = Pij;
             myRays.add(constructRayThroughPixel(nX, nY, Pij));
             Pij = tmp;
