@@ -34,7 +34,7 @@ public class Material {
      * @return The material object itself.
      */
     public Material setKg(double kG) {
-        _kG = new Double3(Math.pow(kG, 0.5));
+        _kG = new Double3(kG);
         return this;
     }
 

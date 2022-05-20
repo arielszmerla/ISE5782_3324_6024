@@ -21,13 +21,13 @@ import java.util.Random;
 public class ShadowTests {
 	private Intersectable sphere = new Sphere(new Point(0, 0, -200), 60d) //
 			.setEmission(new Color(BLUE)) //
-			.setMaterial(new Material().setKd(0.5).setKs(0.5).setnShininess(30).setKg(5));
-	private Material trMaterial = new Material().setKd(0.5).setKs(0.5).setnShininess(30).setKg(5);
+			.setMaterial(new Material().setKd(0.5).setKs(0.5).setnShininess(30).setKg(0.8));
+	private Material trMaterial = new Material().setKd(0.5).setKs(0.5).setnShininess(30).setKg(0.8);
 
 	private Scene scene = new Scene.SceneBuilder("Test scene").build();
 	private Camera camera = new Camera(new Point(0, 0, 1000), new Vector(0, 0, -1), new Vector(0, 1, 0)) //
 			.setVPSize(200, 200).setVPDistance(1000) //
-			.setRayTracer(new RayTracerBasic(scene).setGlossinessRays(60));
+			.setRayTracer(new RayTracerBasic(scene).setGlossinessRays(50));
 
 	/**
 	 * Helper function for the tests in this module
@@ -74,7 +74,7 @@ public class ShadowTests {
 	/**
 	 * Sphere-Triangle shading - move triangle upper-righter
 	 */
-	/*@Test
+	@Test
 	public void SpringTest() {
 
 		scene._geometries.add(new Spring(new Point(-50, -50, -1), 21, 1)
@@ -89,7 +89,7 @@ public class ShadowTests {
 
 
 		camera.writeToImage();
-	}*/
+	}
 	/**
 	 * Sphere-Triangle shading - move spot closer
 	 */
@@ -119,7 +119,7 @@ public class ShadowTests {
 		Cube myCube=new Cube(100, new Point(-130, -130, -115), new Point(-80, -130, -115),
 				new Point(-80, -80, -115), new Point(-130, -80, -115));
 		Random r= new Random();
-		myCube.setMaterial(new Material().setKd(0.5).setKs(0.5).setnShininess(30).setKg(0.5));
+		myCube.setMaterial(new Material().setKd(0.5).setKs(0.5).setnShininess(30));
 		for (Polygon  p: myCube.getPolygons()) {
 			p.setMaterial(new Material().setKd(0.5).setKs(0.5).setnShininess(30)).setEmission(new Color(r.nextInt(255),r.nextInt(255),r.nextInt(255)));
 		}
@@ -150,12 +150,12 @@ public class ShadowTests {
 
 		scene._geometries.add( //
 				new Triangle(new Point(-150, -150, -115), new Point(150, -150, -135), new Point(75, 75, -150)) //
-						.setMaterial(new Material().setKs(0.8).setnShininess(60).setKg(0.5)), //
+						.setMaterial(new Material().setKs(0.8).setnShininess(60).setKg(0.0001)), //
 				new Triangle(new Point(-150, -150, -115), new Point(-70, 70, -140), new Point(75, 75, -150)) //
 						.setMaterial(new Material().setKs(0.8).setnShininess(60)), //
 				new Sphere(new Point(0, 0, -11), 30d) //
 						.setEmission(new Color(java.awt.Color.BLUE)) //
-						.setMaterial(new Material().setKd(0.5).setKs(0.5).setKg(1).setnShininess(30)) //
+						.setMaterial(new Material().setKd(0.5).setKs(0.5).setKg(0.0001).setnShininess(30).setKt(0.9)) //
 		);
 		scene.lights.add( //
 				new SpotLight(new Color(700, 400, 400), new Point(40, 40, 115), new Vector(-1, -1, -4)) //

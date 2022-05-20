@@ -6,7 +6,7 @@ import primitives.Ray;
 import primitives.Vector;
 
 import java.util.*;
-
+import java.util.stream.*;
 import static primitives.Util.*;
 
 public class Camera {
@@ -39,8 +39,8 @@ public class Camera {
      * height of view plane
      */
     private int _height;
-// A random number generator.
-private Random random = new Random();
+    // A random number generator.
+    private Random random = new Random();
     // A private variable that is used to write the image to the screen.
     private ImageWriter _imageWriter;
     // A private variable that is used to write the image to the screen.
@@ -233,12 +233,21 @@ private Random random = new Random();
             //rendering the image
             int nX = _imageWriter.getNx();
             int nY = _imageWriter.getNy();
-            for (int i = 0; i < nY; i++) {
+
+            IntStream.range(0, nY).parallel().forEach(i -> {
+                IntStream.range(0, nX).parallel().forEach(j -> {
+                    _imageWriter.writePixel(j, i, castRays_AntiAliasing(nY, nX, j, i));
+
+                });
+            });
+
+
+           /* for (int i = 0; i < nY; i++) {
 
                 for (int j = 0; j < nX; j++) {
                     _imageWriter.writePixel(j, i, castRays_AntiAliasing(nY, nX, j, i));
                 }
-            }
+            }*/
         } catch (MissingResourceException e) {
             throw new UnsupportedOperationException("Not implemented yet" + e.getClassName());
         }
@@ -257,7 +266,7 @@ private Random random = new Random();
     private Color castRay(int nX, int nY, double j, double i) {
         Ray centerRay=constructRay(nX,nY,(int)j,(int)i);
 
-            return _rayTracer.traceRay(centerRay).add();
+        return _rayTracer.traceRay(centerRay).add();
     }
     /**
      * The function casts a ray from the camera to the focal point, and then casts rays from the focal point to the scene
@@ -321,11 +330,11 @@ private Random random = new Random();
         int i=0;
         for (;i<20;i++){
             //Point p = apertureCenter.add(_vUp.scale(random(-_apertureFieldRadius,_apertureFieldRadius))).add(_vRight.scale(random(-_apertureFieldRadius,_apertureFieldRadius)));
-         //   double one=random(-_apertureFieldRadius,_apertureFieldRadius);
-           // double sec=one>0? _apertureFieldRadius-one :  Math.abs(_apertureField-one);
-double d =random(0,360);
+            //   double one=random(-_apertureFieldRadius,_apertureFieldRadius);
+            // double sec=one>0? _apertureFieldRadius-one :  Math.abs(_apertureField-one);
+            double d =random(0,360);
             double d2 =random(0,360);
-          Vector v=  _vUp.rotateVector(_vRight,d).scale(_apertureFieldRadius).rotateVector(_vUp,d2);
+            Vector v=  _vUp.rotateVector(_vRight,d).scale(_apertureFieldRadius).rotateVector(_vUp,d2);
             Point p=apertureCenter.add(v);
             Ray depthRay=new Ray(p,new Vector(focusPlaneIntersection.substract(p).get_xyz()));
             color=color.add(_rayTracer.traceRay(depthRay));
@@ -357,11 +366,12 @@ double d =random(0,360);
 
         //We call the function constructRayThroughPixel like we used to but this time we launch m * n ray in the same pixel
 
-        for (int k = 0; k < 1000; k++) {
+        for (int k = 0; k < 50;k++) {
             Point tmp = Pij;
             myRays.add(constructRayThroughPixel(nX, nY, Pij));
             Pij = tmp;
         }
+
 
         return myRays;
     }
@@ -378,15 +388,54 @@ double d =random(0,360);
      * @return The color of the pixel.
      */
     private Color castRays_AntiAliasing(int nX, int nY, int j, int i) {
-        List <Ray> rays = constructRays(nX, nY, j, i);
-        Color color = Color.BLACK;
-        int d;
-        for (Ray ray : rays) {
-            color = color.add(_rayTracer.traceRay(ray));
-        }
-        return averageColor(color, rays.size());
-    }
+        if(calcFourEdges(nX,nY,j,i)) {
+            List<Ray> rays = constructRays(nX, nY, j, i);
+            Color color = Color.BLACK;
+            int d;
+            for (Ray ray : rays) {
+                color = color.add(_rayTracer.traceRay(ray));
+            }
 
+
+        return color.scale(1d/rays.size());
+        }
+        return castRay(nX, nY, j, i);
+    }
+    private boolean calcFourEdges(int nX, int nY, int j, int i){
+      //  double Ry = (double) _height / nY;
+       // double Rx = (double) _width / nX;
+
+        // Image center
+        Point pC = _p0.add(_vTo.scale(_distance));
+
+        Point pIJ = pC;
+        //Ry = height / nY : height of a pixel
+        double halfRy = (double) _height / nY;
+        //Ry = weight / nX : width of a pixel
+        double halfRx = (double) _width / nX;
+        //xJ is the value of width we need to move from center to get to the point
+        //we get to the b
+        // double yI =  (rY/ (random.nextBoolean()?1:-1));
+        Point leftDown=pIJ.add(new Vector(-halfRx,-halfRy,0));
+        Point leftTop=pIJ.add(new Vector(-halfRx,+halfRy,0));
+        Point rightDown=pIJ.add(new Vector(halfRx,-halfRy,0));
+        Point  rightTop=pIJ.add(new Vector(halfRx,halfRy,0));
+
+        //get vector from camera p0 to the point
+        Vector vIJ = leftDown.substract(_p0);
+        Color c1 = _rayTracer.traceRay(new Ray(_p0, vIJ));
+         vIJ = rightDown.substract(_p0);
+        Color c2 = _rayTracer.traceRay(new Ray(_p0, vIJ));
+         vIJ = rightTop.substract(_p0);
+        Color c3 = _rayTracer.traceRay(new Ray(_p0, vIJ));
+         vIJ = leftTop.substract(_p0);
+        Color c4 = _rayTracer.traceRay(new Ray(_p0, vIJ));
+        return c1==c2&&c2==c3&&c1==c4;
+
+
+
+
+    }
 
     /**
      * We start from the center of the pixel and move randomly in the pixel to get the point
@@ -409,7 +458,7 @@ double d =random(0,360);
         //yI is the value of height we need to move from center to get to the point
         //we get to the side of the pixel and then we move randomly in the pixel to get the point
         double yI = random.nextDouble ()* (rY/ (random.nextBoolean()?2:-2));
-
+       // double yI =  (rY/ (random.nextBoolean()?1:-1));
         if (xJ != 0) {
             pIJ = pIJ.add(_vRight.scale(xJ));
         }
@@ -427,6 +476,3 @@ double d =random(0,360);
 
     }
 }
-
-
-

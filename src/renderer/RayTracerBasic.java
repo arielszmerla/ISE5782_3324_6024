@@ -52,9 +52,11 @@ public class RayTracerBasic extends RayTracer {
     }
 
     private Color calcColor(GeoPoint intersection, Ray ray,int level,Double3 k) {
+        if(intersection==null)
+            return _scene._background;
         Color color = intersection._geometry.getEmission()
                 .add(calcLocalEffects(intersection,ray,k));
-        return 1 == level ? color : color.add(calcGlobalEffects(intersection, ray, level, k));
+        return 1 == level ? color : color.add(calcGlobalEffects2(intersection, ray, level, k));
 
     }
     /**
@@ -68,6 +70,7 @@ public class RayTracerBasic extends RayTracer {
         return calcColor(geopoint, ray, MAX_CALC_COLOR_LEVEL,new Double3(INITIAL_K))
                 .add(_scene._ambientLight.getIntensity());
     }
+
     private Color calcGlobalEffects(GeoPoint intersection, Ray ray, int level, Double3 k) {
         Color color = Color.BLACK;
         Double3 kr= intersection._geometry.getMaterial()._kR;Double3 kkr=kr.product(k);
@@ -116,13 +119,11 @@ public class RayTracerBasic extends RayTracer {
         Material material=intersection._geometry.getMaterial();
         Double3 kr= material._kR;Double3 kkr=kr.product(k);
         Vector n = intersection._geometry.getNormal(intersection._point);
-
-
         Vector v = ray.getDir();
-
-       /* if (v.dotProduct(n) > 0) {
+        if (v.dotProduct(n) > 0) {
             n = n.scale(-1);
-        }*/
+        }
+        // Calculating the reflected rays and adding them to the color.
         if(kkr.biggerThan(MIN_CALC_COLOR_K)){
             Ray[] reflectedRays = constructReflectedRays(intersection._point, v, n, material._kG);
             for (Ray reflectedRay : reflectedRays) {
@@ -335,9 +336,9 @@ public class RayTracerBasic extends RayTracer {
     private Ray[] constructReflectedRays(Point point, Vector v, Vector n, Double3 kG) {
         Vector n2vn = n.scale(-2 * v.dotProduct(n));
       //  Vector r = v.add(n2vn);
-        Vector r=new Vector(v.add(n2vn).get_xyz());
+        Vector r= new Vector(v.add(n2vn).get_xyz());
         // If kG is equals to 1 then return only 1 ray, the specular ray (r)
-        if ( Double3.ONE==kG) {
+        if (Double3.ONE.equals(kG)) {
             return new Ray[]{new Ray(point, n, r)};
         }
 
@@ -369,14 +370,15 @@ public class RayTracerBasic extends RayTracer {
      */
     private Ray[] constructRefractedRays(Point point, Vector v, Vector n, Double3 kG) {
         // If kG is equals to 1 then return only 1 ray, the specular ray (v)
-        if (new Double3(1d)==kG) {
+       Double3 one= new Double3(1.0,1.0,1.0);
+        if (one.equals(kG)) {
             return new Ray[]{new Ray(point, n, v)};
         }
 
         Vector[] randomizedVectors = createRandomVectorsOnSphere(n, _glossinessRays);
 
         // If kG is equals to 0 then select all the randomized vectors
-        if (Double3.ZERO==kG) {
+        if (Double3.ZERO.equals(kG)) {
             return Arrays.stream(randomizedVectors)
                     .map(vector -> new Ray(point, n,vector))
                     .toArray(Ray[]::new);
@@ -390,11 +392,11 @@ public class RayTracerBasic extends RayTracer {
     }
 
     /**
-     * Creates random vectors on the unit hemisphere with a given normal on the hemisphere's bottom.<br>
+     * We create a random vector on the hemisphere, and then we rotate it around the normal vector
      * source: https://my.eng.utah.edu/~cs6958/slides/pathtrace.pdf#page=18
-     *
-     * @param n normal to the hemisphere's bottom
-     * @return the randomized vectors
+     * @param n The normal vector of the surface.
+     * @param numOfVectors The number of vectors to be generated.
+     * @return A vector that is orthogonal to the normal vector.
      */
     private Vector[] createRandomVectorsOnSphere(Vector n, int numOfVectors) {
         // pick axis with smallest component in normal
@@ -430,7 +432,7 @@ public class RayTracerBasic extends RayTracer {
             double w = Math.sqrt(1 - u2 - v2);
 
             // create the new vector according to the base (x, n, z) and the coordinates (u, w, v)
-            randomVectors[i] = new Vector(x.scale(u).add(z.scale(v)).add(n.scale(w)).get_xyz());
+            randomVectors[i] =new Vector( x.scale(u).add(z.scale(v)).add(n.scale(w)).get_xyz());
 
         }
 
