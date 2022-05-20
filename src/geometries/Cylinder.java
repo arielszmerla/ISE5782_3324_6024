@@ -57,9 +57,9 @@ public class Cylinder extends Tube {
         // we assume point is on cylinder, so we check if it is on top bottom or side.
         Point centerBottom = _axisRay.getP0();
         Point centerTop = _axisRay.getP0().add(_axisRay.getDir().scale(_height));
-        if(p1.equals(centerTop) || isZero(p1.substract(centerTop).dotProduct(_axisRay.getDir()))) { // top
+        if(p1.equals(centerTop) || isZero(p1.subtract(centerTop).dotProduct(_axisRay.getDir()))) { // top
             return _axisRay.getDir();
-        } else if (p1.equals(centerBottom) || isZero(p1.substract(centerBottom).dotProduct(_axisRay.getDir()))) { // bottom
+        } else if (p1.equals(centerBottom) || isZero(p1.subtract(centerBottom).dotProduct(_axisRay.getDir()))) { // bottom
             return _axisRay.getDir().scale(-1);
         } else { // side
             return super.getNormal(p1);
@@ -92,7 +92,7 @@ public class Cylinder extends Tube {
 
                 }
                 //Formula that checks that point is inside the base
-                else if ((point._point.substract(p1).dotProduct(point._point.substract(p1)) < _radius * _radius)){
+                else if ((point._point.subtract(p1).dotProduct(point._point.subtract(p1)) < _radius * _radius)){
                   //  if (point._point.distance(ray.getP0()) <= maxDistance){
                         result.add(new GeoPoint(this, point._point));
 
@@ -105,7 +105,7 @@ public class Cylinder extends Tube {
         if (result1 != null){
             //Add all intersections of tube that are in the cylinder's bounders
             for (GeoPoint point:result1) {
-                if (va.dotProduct(point._point.substract(p1)) > 0 && va.dotProduct(point._point.substract(p2)) < 0){
+                if (va.dotProduct(point._point.subtract(p1)) > 0 && va.dotProduct(point._point.subtract(p2)) < 0){
                   //  if (point._point.distance(ray.getP0()) <= maxDistance){
                         result.add(new GeoPoint(this, point._point));
 
@@ -125,7 +125,7 @@ public class Cylinder extends Tube {
 
                 }
                 //Formula that checks that point is inside the base
-                else if ((point._point.substract(p2).dotProduct(point._point.substract(p2)) < _radius * _radius)){
+                else if ((point._point.subtract(p2).dotProduct(point._point.subtract(p2)) < _radius * _radius)){
                     //if (point._point.distance(ray.getP0()) <= maxDistance){
                         result.add(new GeoPoint(this, point._point));
 

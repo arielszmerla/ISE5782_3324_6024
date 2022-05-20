@@ -297,7 +297,7 @@ public class RayTracerBasic extends RayTracer {
         Vector v = innerRay.getDir();
         Vector r = null;
         try {
-            r = v.substract(n.scale(v.dotProduct(n)).scale(2)).normalize();
+            r = v.subtract(n.scale(v.dotProduct(n)).scale(2)).normalize();
         } catch (Exception e) {
             return null;
         }

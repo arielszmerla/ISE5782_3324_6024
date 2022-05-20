@@ -27,8 +27,8 @@ public class Plane extends Geometry{
      * @param p3 {@link Point #3}
      */
     public Plane(Point p1, Point p2, Point p3) throws IllegalArgumentException {
-       Vector v = p2.substract(p1);
-       Vector u = p3.substract(p1);
+       Vector v = p2.subtract(p1);
+       Vector u = p3.subtract(p1);
        Vector n = v.crossProduct(u);
        _q0 = p1;
        _normal = n.normalize();
@@ -78,7 +78,7 @@ public class Plane extends Geometry{
         if (isZero(nv))
             return null;
 
-        Vector P0_Q0 = _q0.substract(p0); // Q - P0
+        Vector P0_Q0 = _q0.subtract(p0); // Q - P0
         double nP0Q0 = alignZero(n.dotProduct(P0_Q0));
 
         if (isZero(nP0Q0))

@@ -63,7 +63,7 @@ public class Point {
      * @param p1
      * @return
      */
-    public Vector substract(Point p1) {
+    public Vector subtract(Point p1) {
         return new Vector(_xyz.subtract(p1._xyz));
     }
 

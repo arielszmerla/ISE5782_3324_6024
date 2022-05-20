@@ -42,7 +42,7 @@ public class Sphere extends Geometry {
      */
     @Override
     public Vector getNormal(Point point) {
-        return point.substract(_center).normalize();
+        return point.subtract(_center).normalize();
     }
 
     /**
@@ -79,7 +79,7 @@ public class Sphere extends Geometry {
     public List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
         if (ray.getP0().equals(_center))
             throw new IllegalArgumentException("can't start from center");
-        Vector u = _center.substract(ray.getP0());
+        Vector u = _center.subtract(ray.getP0());
         double tm = ray.getDir().dotProduct(u);
         double d = Math.sqrt(u.lengthSquared() - (tm * tm));
         if (d >= _radius || isZero(d - _radius))

@@ -6,9 +6,6 @@ import primitives.Vector;
 
 import java.util.List;
 
-import static primitives.Util.alignZero;
-import static primitives.Util.isZero;
-
 public class Circle extends Geometry{
     /**
      * Sphere's center
@@ -28,7 +25,7 @@ public class Circle extends Geometry{
         if (radius == center)
             throw new IllegalArgumentException("Radius cannot be lower than 0");
         _center=center;
-        _radius=new Vector(radius.substract(_center).get_xyz());
+        _radius=new Vector(radius.subtract(_center).get_xyz());
     }
 
     /**
@@ -38,7 +35,7 @@ public class Circle extends Geometry{
      */
     @Override
     public Vector getNormal(Point point) {
-        return point.substract(_center).normalize();
+        return point.subtract(_center).normalize();
     }
 
     /**

@@ -34,11 +34,11 @@ public class Camera {
     /**
      * width of view plane
      */
-    private int _width;
+    private double _width;
     /**
      * height of view plane
      */
-    private int _height;
+    private double _height;
 // A random number generator.
 private Random random = new Random();
     // A private variable that is used to write the image to the screen.
@@ -141,7 +141,7 @@ private Random random = new Random();
         if (yI != 0)
             Pij = Pij.add(_vUp.scale(yI));
 
-        return new Ray(_p0, Pij.substract(_p0));
+        return new Ray(_p0, Pij.subtract(_p0));
     }
 
 
@@ -236,7 +236,7 @@ private Random random = new Random();
             for (int i = 0; i < nY; i++) {
 
                 for (int j = 0; j < nX; j++) {
-                    _imageWriter.writePixel(j, i, castRay(nY, nX, j, i));
+                    _imageWriter.writePixel(j, i, castRays_AntiAliasing(nY, nX, j, i));
                 }
             }
         } catch (MissingResourceException e) {
@@ -327,7 +327,7 @@ double d =random(0,360);
             double d2 =random(0,360);
           Vector v=  _vUp.rotateVector(_vRight,d).scale(_apertureFieldRadius).rotateVector(_vUp,d2);
             Point p=apertureCenter.add(v);
-            Ray depthRay=new Ray(p,new Vector(focusPlaneIntersection.substract(p).get_xyz()));
+            Ray depthRay=new Ray(p,new Vector(focusPlaneIntersection.subtract(p).get_xyz()));
             color=color.add(_rayTracer.traceRay(depthRay));
         }
 
@@ -357,10 +357,11 @@ double d =random(0,360);
 
         //We call the function constructRayThroughPixel like we used to but this time we launch m * n ray in the same pixel
 
-        for (int k = 0; k < 50; k++) {
+        for (int k = 0; k < 100; k++) {
             Point tmp = Pij;
             myRays.add(constructRayThroughPixel(nX, nY, Pij));
             Pij = tmp;
+
         }
 
         return myRays;
@@ -378,16 +379,60 @@ double d =random(0,360);
      * @return The color of the pixel.
      */
     private Color castRays_AntiAliasing(int nX, int nY, int j, int i) {
-        List <Ray> rays = constructRays(nX, nY, j, i);
-        Color color = Color.BLACK;
-        int d;
-        for (Ray ray : rays) {
-            color = color.add(_rayTracer.traceRay(ray));
+        if(calcFourEdges(nX,nY,j,i)==false) {
+            List<Ray> rays = constructRays(nX, nY, j, i);
+            Color color = Color.BLACK;
+            int d;
+            for (Ray ray : rays) {
+                color = color.add(_rayTracer.traceRay(ray));
+            }
+            return color.scale(1d/rays.size());
         }
-        return averageColor(color, rays.size());
+        return castRay(nX, nY, j, i);
     }
 
 
+    /**
+     * The function gets a pixel and checks if the color of the pixel is the same as the color of the pixel's neighbors
+     *
+     * @param nX number of pixels in the width
+     * @param nY number of pixels in the height
+     * @param j the number of pixels in the width
+     * @param i the row number of the pixel
+     * @return true if all the colors are the same and false otherwise
+     */
+    private boolean calcFourEdges(int nX, int nY, int j, int i){
+        //  double Ry = (double) _height / nY;
+        // double Rx = (double) _width / nX;
+
+        // Image center
+        Point pC = _p0.add(_vTo.scale(_distance));
+
+        Point pIJ = pC;
+        //Ry = height / nY : height of a pixel
+        double halfRy = alignZero( _height /(2 *nY));
+        //Ry = weight / nX : width of a pixel
+        double halfRx = alignZero(_width /(2* nX));
+        //xJ is the value of width we need to move from center to get to the point
+        //we get to the b
+        // double yI =  (rY/ (random.nextBoolean()?1:-1));
+        Point leftDown=pIJ.add(new Vector(-halfRx,-halfRy,0));
+        Point leftTop=pIJ.add(new Vector(-halfRx,+halfRy,0));
+        Point rightDown=pIJ.add(new Vector(halfRx,-halfRy,0));
+        Point  rightTop=pIJ.add(new Vector(halfRx,halfRy,0));
+        new Ray(_p0, pC.add(_vRight.scale(halfRx)).add(_vUp.scale(halfRy)).subtract(_p0));
+        //get vector from camera p0 to the point
+        Color c1 = _rayTracer.traceRay(new Ray(_p0, pC.add(_vRight.scale(halfRx)).add(_vUp.scale(halfRy)).subtract(_p0)));
+
+        Color c2 = _rayTracer.traceRay(new Ray(_p0, pC.add(_vRight.scale(-halfRx)).add(_vUp.scale(-halfRy)).subtract(_p0)));
+
+        Color c3 = _rayTracer.traceRay(new Ray(_p0, pC.add(_vRight.scale(-halfRx)).add(_vUp.scale(halfRy)).subtract(_p0)));
+        Color c4 = _rayTracer.traceRay(new Ray(_p0, pC.add(_vRight.scale(halfRx)).add(_vUp.scale(-halfRy)).subtract(_p0)));
+        //return c1!=c2||c2!=c3||c1!=c4;
+        return isZero( c1.getColor().getRGB()-c2.getColor().getRGB())
+                && isZero( c2.getColor().getRGB()-c3.getColor().getRGB())
+                && isZero( c2.getColor().getRGB()-c4.getColor().getRGB());
+    }
     /**
      * We start from the center of the pixel and move randomly in the pixel to get the point
      *
@@ -418,7 +463,7 @@ double d =random(0,360);
         }
 
         //get vector from camera p0 to the point
-        Vector vIJ = pIJ.substract(_p0);
+        Vector vIJ = pIJ.subtract(_p0);
         Color c = _rayTracer.traceRay(new Ray(_p0, vIJ));
         if(!c.equals(Color.BLACK))
             c = c;

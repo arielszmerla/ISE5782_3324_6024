@@ -6,9 +6,6 @@ import primitives.Vector;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
-
-import static primitives.Util.isZero;
 
 /**
  * Triangle class represents 2D triangle (flat-shape) in 3D Cartesian coordinate system
@@ -33,9 +30,9 @@ public class Triangle extends Polygon{
     @Override
     protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
         List<Point> l = _vertices;
-        Vector v1= l.get(0).substract(ray.getP0());
-        Vector v2= l.get(1).substract(ray.getP0());
-        Vector v3= l.get(2).substract(ray.getP0());
+        Vector v1= l.get(0).subtract(ray.getP0());
+        Vector v2= l.get(1).subtract(ray.getP0());
+        Vector v3= l.get(2).subtract(ray.getP0());
         Vector n1=(v1.crossProduct(v2)).normalize();//new Vector(0.001,0.001,0.001);
         Vector n2=(v2.crossProduct(v3)).normalize();//new Vector(0.001,0.001,0.001);
         Vector n3=(v3.crossProduct(v1)).normalize();//new Vector(0.001,0.001,0.001);

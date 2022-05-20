@@ -44,7 +44,7 @@ public class Tube extends Geometry {
     public Vector getNormal(Point point) {
         Point P0 = _axisRay.getP0();
         Vector v = _axisRay.getDir();
-        Vector P0_P = point.substract(P0);
+        Vector P0_P = point.subtract(P0);
         double t = alignZero(v.dotProduct(P0_P));
 
         //if the point given is located on the tube bottom
@@ -57,7 +57,7 @@ public class Tube extends Geometry {
         if (point.equals(o)) {
             throw new IllegalArgumentException("point cannot be on the tube axis");
         }
-        Vector n = point.substract(o).normalize();
+        Vector n = point.subtract(o).normalize();
         return n;
     }
 
@@ -127,13 +127,13 @@ public class Tube extends Geometry {
                 a = v.dotProduct(v);
             }
             else{
-                a = (v.substract(va.scale(vva))).dotProduct(v.substract(va.scale(vva)));
+                a = (v.subtract(va.scale(vva))).dotProduct(v.subtract(va.scale(vva)));
             }
             b = 0;
             c = - _radius * _radius;
         }
         else{
-            Vector deltaP = ray.getP0().substract(_axisRay.getP0());
+            Vector deltaP = ray.getP0().subtract(_axisRay.getP0());
             vva = v.dotProduct(va);
             pva = deltaP.dotProduct(va);
 
@@ -152,8 +152,8 @@ public class Tube extends Geometry {
                         c = - _radius * _radius;
                     }
                     else{
-                        b = 2 * v.dotProduct(deltaP.substract(scale));
-                        c = (deltaP.substract(scale).dotProduct(deltaP.substract(scale))) - _radius * _radius;
+                        b = 2 * v.dotProduct(deltaP.subtract(scale));
+                        c = (deltaP.subtract(scale).dotProduct(deltaP.subtract(scale))) - _radius * _radius;
                     }
                 } catch (Exception e) {
                     b = 2 * v.dotProduct(deltaP);
@@ -161,15 +161,15 @@ public class Tube extends Geometry {
                 }
             }
             else if (pva == 0){
-                a = (v.substract(va.scale(vva))).dotProduct(v.substract(va.scale(vva)));
-                b = 2 * v.substract(va.scale(vva)).dotProduct(deltaP);
+                a = (v.subtract(va.scale(vva))).dotProduct(v.subtract(va.scale(vva)));
+                b = 2 * v.subtract(va.scale(vva)).dotProduct(deltaP);
                 c = (deltaP.dotProduct(deltaP)) - _radius * _radius;
             }
             else {
                 Vector vSubstractScaleVa;
                 Vector scale;
                 try {
-                    vSubstractScaleVa = v.substract(va.scale(vva));
+                    vSubstractScaleVa = v.subtract(va.scale(vva));
 
                 }
                 catch (Exception e){
@@ -183,8 +183,8 @@ public class Tube extends Geometry {
                         c = - _radius * _radius;
                     }
                     else{
-                        b = 2 * vSubstractScaleVa.dotProduct(deltaP.substract(scale));
-                        c = (deltaP.substract(scale).dotProduct(deltaP.substract(scale))) - _radius * _radius;
+                        b = 2 * vSubstractScaleVa.dotProduct(deltaP.subtract(scale));
+                        c = (deltaP.subtract(scale).dotProduct(deltaP.subtract(scale))) - _radius * _radius;
                     }
                 } catch (Exception e) {
                     b = 2 * vSubstractScaleVa.dotProduct(deltaP);
