@@ -353,7 +353,25 @@ double d =random(0,360);
         if (yI != 0)
             Pij = Pij.add(_vUp.scale(yI));
 
+        //Ry = height / nY : height of a pixel
+        double halfRy = alignZero( _height /(2 *nY));
+        //Ry = weight / nX : width of a pixel
+        double halfRx = alignZero(_width /(2* nX));
+
+        Color c1 = _rayTracer.traceRay(constructRayThroughPixel(nX,nY,Pij.add(_vRight.scale(halfRx)).add(_vUp.scale(halfRy)).subtract(_p0)));;
+
+        Color c2 = _rayTracer.traceRay(constructRayThroughPixel(nX,nY,Pij.add(_vRight.scale(-halfRx)).add(_vUp.scale(halfRy)).subtract(_p0)));
+
+        Color c3 = _rayTracer.traceRay(constructRayThroughPixel(nX,nY,Pij.add(_vRight.scale(-halfRx)).add(_vUp.scale(-halfRy)).subtract(_p0)));
+        Color c4 = _rayTracer.traceRay(constructRayThroughPixel(nX,nY,Pij.add(_vRight.scale(halfRx)).add(_vUp.scale(-halfRy)).subtract(_p0)));
+        //return c1!=c2||c2!=c3||c1!=c4;
+        boolean checkEdges = c1.equals(c2) && c1.equals(c3) && c1.equals(c4);
+
+
         List<Ray> myRays = new LinkedList<>(); //to save all the rays
+
+        if (!checkEdges){
+
 
         //We call the function constructRayThroughPixel like we used to but this time we launch m * n ray in the same pixel
 
@@ -361,7 +379,12 @@ double d =random(0,360);
             Point tmp = Pij;
             myRays.add(constructRayThroughPixel(nX, nY, Pij));
             Pij = tmp;
+        }
 
+
+        }
+        else {
+            myRays.add(constructRayThroughPixel(nX, nY, Pij));
         }
 
         return myRays;
@@ -379,7 +402,6 @@ double d =random(0,360);
      * @return The color of the pixel.
      */
     private Color castRays_AntiAliasing(int nX, int nY, int j, int i) {
-        if(calcFourEdges(nX,nY,j,i)==false) {
             List<Ray> rays = constructRays(nX, nY, j, i);
             Color color = Color.BLACK;
             int d;
@@ -387,8 +409,6 @@ double d =random(0,360);
                 color = color.add(_rayTracer.traceRay(ray));
             }
             return color.scale(1d/rays.size());
-        }
-        return castRay(nX, nY, j, i);
     }
 
 
@@ -413,15 +433,6 @@ double d =random(0,360);
         double halfRy = alignZero( _height /(2 *nY));
         //Ry = weight / nX : width of a pixel
         double halfRx = alignZero(_width /(2* nX));
-        //xJ is the value of width we need to move from center to get to the point
-        //we get to the b
-        // double yI =  (rY/ (random.nextBoolean()?1:-1));
-       // Point leftDown=pIJ.add(new Vector(-halfRx,-halfRy,0));
-      //  Point leftTop=pIJ.add(new Vector(-halfRx,+halfRy,0));
-       // Point rightDown=pIJ.add(new Vector(halfRx,-halfRy,0));
-       // Point  rightTop=pIJ.add(new Vector(halfRx,halfRy,0));
-      //  new Ray(_p0, pC.add(_vRight.scale(halfRx)).add(_vUp.scale(halfRy)).subtract(_p0));
-        //get vector from camera p0 to the point
 
         Color c1 = _rayTracer.traceRay(constructRayThroughPixel(nX,nY,pC.add(_vRight.scale(halfRx)).add(_vUp.scale(halfRy)).subtract(_p0)));;
 
