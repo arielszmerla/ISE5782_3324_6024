@@ -19,7 +19,7 @@ public class RayTracerBasic extends RayTracer {
     private static final int MAX_CALC_COLOR_LEVEL = 10;
     private static final double MIN_CALC_COLOR_K = 0.001;
     private static final double INITIAL_K = 1.0;
-    private int _glossinessRays = 10;
+    private int _glossinessRays = 1;
 
     /**
      * scene setter
@@ -38,10 +38,9 @@ public class RayTracerBasic extends RayTracer {
      */
     @Override
     public Color traceRay(Ray ray) {
-          if (this.findClosestIntersection(ray) != null)
+          if (findClosestIntersection(ray) != null)
                return calcColor(this.findClosestIntersection(ray), ray);
             return _scene._background;
-
     }
     public RayTracerBasic setGlossinessRays(int glossinessRays) {
         if (glossinessRays <= 0) {
