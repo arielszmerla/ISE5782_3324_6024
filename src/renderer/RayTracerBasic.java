@@ -19,7 +19,7 @@ public class RayTracerBasic extends RayTracer {
     private static final int MAX_CALC_COLOR_LEVEL = 10;
     private static final double MIN_CALC_COLOR_K = 0.001;
     private static final double INITIAL_K = 1.0;
-    private int _glossinessRays = 1;
+    private int _glossinessRays = 5;
 
     /**
      * scene setter
