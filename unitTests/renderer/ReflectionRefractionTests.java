@@ -7,11 +7,9 @@ import org.junit.jupiter.api.Test;
 
 import static java.awt.Color.*;
 
-import renderer.ImageWriter;
 import lighting.*;
 import geometries.*;
 import primitives.*;
-import renderer.*;
 import renderer.scene.Scene;
 
 import java.util.Random;
@@ -39,7 +37,7 @@ public class ReflectionRefractionTests {
 						.setMaterial(new Material().setKd(0.4).setKs(0.3).setnShininess(100).setKt(0.3).setKg(0.7)),
 	            new Sphere(new Point(0, 0, -50), 25d).setEmission(new Color(RED)) //
 						.setMaterial(new Material().setKd(0.5).setKs(0.5).setnShininess(100)));
-		scene.lights.add( //
+		scene._lights.add( //
 				new SpotLight(new Color(1000, 600, 0), new Point(-100, -100, 500), new Vector(-1, -1, -2)) //
 						.setKl(0.0004).setKq(0.0000006));
 
@@ -72,7 +70,7 @@ public class ReflectionRefractionTests {
 						.setEmission(new Color(20, 20, 20)) //
 						.setMaterial(new Material().setKr(0.5).setKg(0.99)));
 
-		scene.lights.add(new SpotLight(new Color(1020, 400, 400), new Point(-750, -750, -150), new Vector(-1, -1, -4)) //
+		scene._lights.add(new SpotLight(new Color(1020, 400, 400), new Point(-750, -750, -150), new Vector(-1, -1, -4)) //
 				.setKl(0.00001).setKq(0.000005));
 
 		ImageWriter imageWriter = new ImageWriter("reflectionTwoSpheresMirrored", 500, 500);
@@ -101,7 +99,7 @@ public class ReflectionRefractionTests {
 				new Sphere(new Point(60, 50, -50), 30d).setEmission(new Color(BLUE)) //
 						.setMaterial(new Material().setKd(0.2).setKs(0.2).setnShininess(30).setKt(0.6)));
 
-		scene.lights.add(new SpotLight(new Color(700, 400, 400), new Point(60, 50, 0), new Vector(0, 0, -1)) //
+		scene._lights.add(new SpotLight(new Color(700, 400, 400), new Point(60, 50, 0), new Vector(0, 0, -1)) //
 				.setKl(4E-5).setKq(2E-7));
 
 		ImageWriter imageWriter = new ImageWriter("refractionShadow", 600, 600);
@@ -133,9 +131,9 @@ public class ReflectionRefractionTests {
 				new Sphere(new Point(60, 20, -50), 30d).setEmission(new Color(BLUE)) //
 						.setMaterial(new Material().setKd(0.2).setKs(0.2).setnShininess(30).setKt(0.6)));
 
-		scene.lights.add(new SpotLight(new Color(700, 400, 400), new Point(60, 50, 0), new Vector(0, 0, -1),0.1) //
+		scene._lights.add(new SpotLight(new Color(700, 400, 400), new Point(60, 50, 0), new Vector(0, 0, -1),0.1) //
 				.setKl(4E-5).setKq(2E-7));
-		scene.lights.add(new PointLight(new Color(500, 200, 200),new Point(40,40,10)).setKq(2E-8).setKl(2E-4));
+		scene._lights.add(new PointLight(new Color(500, 200, 200),new Point(40,40,10)).setKq(2E-8).setKl(2E-4));
 
 		ImageWriter imageWriter = new ImageWriter("refractionCylinderShadow", 600, 600);
 		camera.setImageWriter(imageWriter) //
@@ -166,9 +164,9 @@ public class ReflectionRefractionTests {
 		new Sphere(new Point(52, 0, -50), 10d).setEmission(new Color(GREEN)) //
 				.setMaterial(new Material().setKd(0.2).setKs(0.2).setnShininess(30).setKt(0.6)));
 
-		scene.lights.add(new SpotLight(new Color(700, 400, 400), new Point(60, 50, 0), new Vector(0, 0, -1)) //
+		scene._lights.add(new SpotLight(new Color(700, 400, 400), new Point(60, 50, 0), new Vector(0, 0, -1)) //
 				.setKl(4E-5).setKq(2E-7));
-		scene.lights.add(new PointLight(new Color(700, 400, 400), new Point(10, 10, 10)) //
+		scene._lights.add(new PointLight(new Color(700, 400, 400), new Point(10, 10, 10)) //
 				.setKl(4E-5).setKq(2E-7));
 
 		ImageWriter imageWriter = new ImageWriter("refractionSpheresShadow", 600, 600);
@@ -199,8 +197,8 @@ public class ReflectionRefractionTests {
 		scene._geometries.add(myCube,new Sphere(new Point(-130 , -130, -115),500).setMaterial(new Material().setKd(0.5).setKs(0.5).setKt(0.5).setnShininess(30))); //
 				new Polygon(new Point(-200,-200,-100),new Point(200,-200,-100), new Point(200,-200,-230),new Point(-200, -200,-200)).setEmission(new Color(BLUE)).setMaterial(new Material().setKd(1).setKs(1).setnShininess(30));
 
-		scene.lights.add(new SpotLight(new Color(1020, 400, 400), new Point(-750, -750, -150), new Vector(-1, -1, -4))//
-				.setKl(0.00001).setKq(0.000005)); scene.lights.add(new PointLight(new Color(1020, 400, 400), new Point(-750, -750, -150)) //
+		scene._lights.add(new SpotLight(new Color(1020, 400, 400), new Point(-750, -750, -150), new Vector(-1, -1, -4))//
+				.setKl(0.00001).setKq(0.000005)); scene._lights.add(new PointLight(new Color(1020, 400, 400), new Point(-750, -750, -150)) //
 				.setKl(0.00001).setKq(0.000005));
 
 		ImageWriter imageWriter = new ImageWriter("reflec", 500, 500);

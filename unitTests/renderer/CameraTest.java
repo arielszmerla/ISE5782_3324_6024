@@ -73,7 +73,7 @@ class CameraTest {
     @Test
     void testRotateCamera() {
         scene1._geometries.add(sphere);
-        scene1.lights.add(new DirectionalLight(spCL, new Vector(1, 1, -0.5)));
+        scene1._lights.add(new DirectionalLight(spCL, new Vector(1, 1, -0.5)));
         ImageWriter imageWriter = new ImageWriter("moveCameraSphereRotate", 500, 500);
         camera1.rotateCamera(new Vector(0.1,0,0), 20);
         camera1.setImageWriter(imageWriter) //
@@ -100,7 +100,7 @@ class CameraTest {
     @Test
     void testMoveCamera() {
         scene1._geometries.add(sphere);
-        scene1.lights.add(new DirectionalLight(spCL, new Vector(1, 1, -0.5)));
+        scene1._lights.add(new DirectionalLight(spCL, new Vector(1, 1, -0.5)));
         ImageWriter imageWriter = new ImageWriter("moveCameraSphereUp", 500, 500);
         camera1.moveCamera(new Vector(40,0,0));
         camera1.setImageWriter(imageWriter) //

@@ -29,17 +29,17 @@ public class Scene {
     /**
      * light sources list
      */
-    public List<LightSource> lights=new LinkedList<>();
+    public List<LightSource> _lights =new LinkedList<>();
 
     /**
      * Scene Constructor based-on SceneBuilder
      * @param builder {@link SceneBuilder}
      */
     private Scene(SceneBuilder builder) {
-        this._name = builder._name;
-        this._background = builder._background;
-        this._ambientLight = builder._ambientLight;
-        this._geometries = builder._geometries;
+       _name = builder._name;
+       _background = builder._background;
+       _ambientLight = builder._ambientLight;
+       _geometries = builder._geometries;
     }
 
     /**
@@ -48,7 +48,7 @@ public class Scene {
      * @return updated scene {@link Scene}
      */
     public Scene setLights(List<LightSource> lights) {
-        this.lights = lights;
+        _lights = lights;
         return this;
     }
 

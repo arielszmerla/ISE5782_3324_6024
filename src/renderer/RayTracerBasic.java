@@ -19,7 +19,7 @@ public class RayTracerBasic extends RayTracer {
     private static final int MAX_CALC_COLOR_LEVEL = 10;
     private static final double MIN_CALC_COLOR_K = 0.001;
     private static final double INITIAL_K = 1.0;
-    private int _glossinessRays = 5;
+    private int _glossinessRays = 10;
 
     /**
      * scene setter
@@ -154,7 +154,7 @@ public class RayTracerBasic extends RayTracer {
         Double3 ks = intersection._geometry.getMaterial().getkS();
 
         Color color= Color.BLACK;
-        for (LightSource lightSource: _scene.lights) {
+        for (LightSource lightSource: _scene._lights) {
             Vector l = lightSource.getL(intersection._point);
             double nl= alignZero(n.dotProduct(l));
             if (nl * nv> 0) { // sign(nl) == sing(nv)\
@@ -369,8 +369,7 @@ public class RayTracerBasic extends RayTracer {
      */
     private Ray[] constructRefractedRays(Point point, Vector v, Vector n, Double3 kG) {
         // If kG is equals to 1 then return only 1 ray, the specular ray (v)
-       Double3 one= new Double3(1.0,1.0,1.0);
-        if (one.equals(kG)) {
+        if (Double3.ONE.equals(kG)) {
             return new Ray[]{new Ray(point, n, v)};
         }
 
@@ -416,7 +415,7 @@ public class RayTracerBasic extends RayTracer {
         Vector x = n.crossProduct(axis);
         Vector z = n.crossProduct(x);
 
-        Vector[] randomVectors = new Vector[numOfVectors];
+        Hashtable<Vector,Vector> randomVectors = new Hashtable<>();
         for (int i = 0; i < numOfVectors; i++) {
             // pick a point on the hemisphere bottom
             double u, v, u2, v2;
@@ -431,10 +430,15 @@ public class RayTracerBasic extends RayTracer {
             double w = Math.sqrt(1 - u2 - v2);
 
             // create the new vector according to the base (x, n, z) and the coordinates (u, w, v)
-            randomVectors[i] =new Vector( x.scale(u).add(z.scale(v)).add(n.scale(w)).get_xyz());
-
+            Vector vec=new Vector( x.scale(u).add(z.scale(v)).add(n.scale(w)).get_xyz());
+            randomVectors.put(vec,vec);
         }
-
-        return randomVectors;
+        Set<Vector> keys = randomVectors.keySet();
+        Vector[] vectors=new Vector[numOfVectors];
+        int i =0;
+        for(Vector key: keys){
+            vectors[i++]=key;
+        }
+        return vectors;
     }
 }

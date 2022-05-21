@@ -54,7 +54,7 @@ public class LightsTests {
 	@Test
 	public void sphereDirectional() {
 		scene1._geometries.add(sphere);
-		scene1.lights.add(new DirectionalLight(spCL, new Vector(1, 1, -0.5)));
+		scene1._lights.add(new DirectionalLight(spCL, new Vector(1, 1, -0.5)));
 
 		ImageWriter imageWriter = new ImageWriter("lightSphereDirectional", 500, 500);
 		camera1.setImageWriter(imageWriter) //
@@ -69,7 +69,7 @@ public class LightsTests {
 	@Test
 	public void spherePoint() {
 		scene1._geometries.add(sphere);
-		scene1.lights.add(new PointLight(spCL, spPL).setKl(0.001).setKq(0.0002));
+		scene1._lights.add(new PointLight(spCL, spPL).setKl(0.001).setKq(0.0002));
 
 		ImageWriter imageWriter = new ImageWriter("lightSpherePoint", 500, 500);
 		camera1.setImageWriter(imageWriter) //
@@ -89,7 +89,7 @@ public class LightsTests {
 		scene1._geometries.add(new Sphere(new Point(60, 30, -600), 30d) .setMaterial(material)//
 				.setEmission(new Color(MAGENTA).reduce(2)));
 
-		scene1.lights.add(new SpotLight(spCL, spPL, new Vector(1, 1, -0.5)).setKl(0.001).setKq(0.0001));
+		scene1._lights.add(new SpotLight(spCL, spPL, new Vector(1, 1, -0.5)).setKl(0.001).setKq(0.0001));
 
 		ImageWriter imageWriter = new ImageWriter("lightSphereSpot", 500, 500);
 		camera1.setImageWriter(imageWriter) //
@@ -104,7 +104,7 @@ public class LightsTests {
 	@Test
 	public void trianglesDirectional() {
 		scene2._geometries.add(triangle1, triangle2);
-		scene2.lights.add(new DirectionalLight(trCL, trDL));
+		scene2._lights.add(new DirectionalLight(trCL, trDL));
 
 		ImageWriter imageWriter = new ImageWriter("lightTrianglesDirectional", 500, 500);
 		camera2.setImageWriter(imageWriter) //
@@ -119,7 +119,7 @@ public class LightsTests {
 	@Test
 	public void trianglesPoint() {
 		scene2._geometries.add(triangle1, triangle2);
-		scene2.lights.add(new PointLight(trCL, trPL).setKl(0.001).setKq(0.0002));
+		scene2._lights.add(new PointLight(trCL, trPL).setKl(0.001).setKq(0.0002));
 
 		ImageWriter imageWriter = new ImageWriter("lightTrianglesPoint", 500, 500);
 		camera2.setImageWriter(imageWriter) //
@@ -134,7 +134,7 @@ public class LightsTests {
 	@Test
 	public void trianglesSpot() {
 		scene2._geometries.add(triangle1, triangle2);
-		scene2.lights.add(new SpotLight(trCL, trPL, trDL).setKl(0.001).setKq(0.0001));
+		scene2._lights.add(new SpotLight(trCL, trPL, trDL).setKl(0.001).setKq(0.0001));
 
 		ImageWriter imageWriter = new ImageWriter("lightTrianglesSpot", 500, 500);
 		camera2.setImageWriter(imageWriter) //
@@ -148,7 +148,7 @@ public class LightsTests {
 	@Test
 	public void trianglesSpotShortened() {
 		scene2._geometries.add(triangle1, triangle2);
-		scene2.lights.add(new SpotLight(trCL, trPL, trDL,0.5).setKl(0.001).setKq(0.0001));
+		scene2._lights.add(new SpotLight(trCL, trPL, trDL,0.5).setKl(0.001).setKq(0.0001));
 
 		ImageWriter imageWriter = new ImageWriter("lightTrianglesSpotShortened", 500, 500);
 		camera2.setImageWriter(imageWriter) //
@@ -162,7 +162,7 @@ public class LightsTests {
 	@Test
 	public void sphereSpotShortened() {
 		scene1._geometries.add(sphere);
-		scene1.lights.add(new SpotLight(spCL, spPL, new Vector(1, 1, -0.5),0.1).setKl(0.001).setKq(0.0001));
+		scene1._lights.add(new SpotLight(spCL, spPL, new Vector(1, 1, -0.5),0.1).setKl(0.001).setKq(0.0001));
 
 		ImageWriter imageWriter = new ImageWriter("lightSphereSpotShortened", 500, 500);
 		camera1.setImageWriter(imageWriter) //
@@ -176,8 +176,8 @@ public class LightsTests {
 	@Test
 	public void mySphereSpotShortened() {
 		scene1._geometries.add(sphere,sphere2);
-		scene1.lights.add(new SpotLight(spCL, spPL, new Vector(1, 1, -0.5),0.1).setKl(0.001).setKq(0.0001));
-		scene1.lights.add(new PointLight(new Color (555,0,500), new Point(30, 60, 100)).setKl(0.002).setKq(0.0002));
+		scene1._lights.add(new SpotLight(spCL, spPL, new Vector(1, 1, -0.5),0.1).setKl(0.001).setKq(0.0001));
+		scene1._lights.add(new PointLight(new Color (555,0,500), new Point(30, 60, 100)).setKl(0.002).setKq(0.0002));
 		ImageWriter imageWriter = new ImageWriter("myLightSphereSpotShortened", 500, 500);
 		camera1.setImageWriter(imageWriter) //
 				.setRayTracer(new RayTracerBasic(scene1)) //
@@ -247,8 +247,8 @@ public class LightsTests {
 				new Polygon(internalPolygon[0],internalPolygon[1],internalPolygon[2],internalPolygon[3],internalPolygon[4],internalPolygon[5]).setEmission(new Color(white).reduce(2)).setMaterial(material.setKr(0.5)),
 				new Triangle(topTriangle[0],topTriangle[1],topTriangle[2]).setEmission(new Color(BLUE).reduce(2)).setMaterial(material),
 		sphereLeft,sphereRight,leftCylinder,rightCylinder);
-		scene3.lights.add(new PointLight(new Color(WHITE), trDL));
-		scene3.lights.add(new SpotLight(trCL, trPL, trDL,0.5).setKl(0.001).setKq(0.001));
+		scene3._lights.add(new PointLight(new Color(WHITE), trDL));
+		scene3._lights.add(new SpotLight(trCL, trPL, trDL,0.5).setKl(0.001).setKq(0.001));
 		ImageWriter imageWriter = new ImageWriter("israelFlag", 500, 500);
 		camera3.setImageWriter(imageWriter) //
 				.setRayTracer(new RayTracerBasic(scene3)) //
@@ -356,15 +356,15 @@ public class LightsTests {
 
 
 
-		scene2.lights.add( //
+		scene2._lights.add( //
 				new SpotLight(new Color(WHITE), new Point(0, -85, -380), new Vector(0, 0, -2)) //
 						.setKl(0.0004).setKq(0.0000006));
-		scene2.lights.add( //
+		scene2._lights.add( //
 				new SpotLight(new Color(LIGHT_GRAY), new Point(-200, 0, 0), new Vector(1, 1, -2)) //
 						.setKl(0.0004).setKq(0.0000006));
-		scene2.lights.add( //
+		scene2._lights.add( //
 				new PointLight(new Color(GRAY), new Point(-50, 0, 0)));
-		scene2.lights.add( //
+		scene2._lights.add( //
 				new PointLight(new Color(GRAY), new Point(50, 0, 0)));
 
 		scene2._background = new Color(89,108,143);
@@ -405,7 +405,7 @@ public class LightsTests {
 			Point p1 = new Point(rand.nextInt(90) - 50, rand.nextInt(90) - 15 , 20 );
 			scene2._geometries.add(new Sphere(p1, 2).setEmission(new Color(RED)));
 		}
-		scene2.lights.add( //
+		scene2._lights.add( //
 				new SpotLight(new Color(WHITE), new Point(0, 500, 700), new Vector(0, -400, -1)) //
 						.setKl(0.0004).setKq(0.0000006));
 /*

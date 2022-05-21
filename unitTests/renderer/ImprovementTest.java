@@ -7,8 +7,6 @@ import geometries.*;
 import primitives.*;
 import renderer.scene.Scene;
 
-import java.util.Random;
-
 import static java.awt.Color.*;
 
 
@@ -58,11 +56,11 @@ private Geometry backBone= new Polygon(new Point(-1000,1000,-9000),
                         .setMaterial(new Material().setKd(0.7).setKs(0.7).setnShininess(20).setKt(0.1)),
                sphere,sphere2,sphere3,sphere4,sphere5,backBone);
 
-        scene1.lights.add(new SpotLight(spCL, spPL, new Vector(1, 1, -0.5)).setKl(0.001).setKq(0.0001));
-        scene1.lights.add(new SpotLight(new Color(WHITE),new Point(0,0,1000),new Vector(0.1,0.1,-1) ));
-        scene1.lights.add(_directionalLight);
-        scene1.lights.add(_directionalLight1);
-        scene1.lights.add(		new PointLight(spCL, spPL).setKl(0.001).setKq(0.0002));
+        scene1._lights.add(new SpotLight(spCL, spPL, new Vector(1, 1, -0.5)).setKl(0.001).setKq(0.0001));
+        scene1._lights.add(new SpotLight(new Color(WHITE),new Point(0,0,1000),new Vector(0.1,0.1,-1) ));
+        scene1._lights.add(_directionalLight);
+        scene1._lights.add(_directionalLight1);
+        scene1._lights.add(		new PointLight(spCL, spPL).setKl(0.001).setKq(0.0002));
         ImageWriter imageWriter = new ImageWriter("Cylinder depth test", 500, 500);
         camera1.setImageWriter(imageWriter) //
                 .setRayTracer(new RayTracerBasic(scene1)) //
@@ -129,9 +127,19 @@ new Polygon(new Point(-19.5,10.01,-160),new Point(-19.5,10.01,-145),new Point(-2
                     dal.setMaterial(blackMaterial).setEmission(new Color(BLACK));
                 scene1._geometries.add(dal);
             }
-            scene1._geometries.add( new Polygon(new Point(-160,-80,260),new Point(-160,-80,200-1200),new Point(-160,300,200-1200),new Point(-160,300,260))
+            scene1._geometries.add( new Polygon(new Point(-160,-80,260),new Point(-160,-80,200-500),new Point(-160,300,200-500),new Point(-160,300,260))
                     .setEmission(new Color(PINK))
                     .setMaterial(new Material().setnShininess(30).setKd(0.5).setKs(0.5).setKr(0.8)));
+            scene1._geometries.add( new Polygon(new Point(-160,-80,260-600),new Point(-160,-80,200-1200),new Point(-160,300,200-1200),new Point(-160,300,260-600))
+                    .setEmission(new Color(PINK))
+                    .setMaterial(new Material().setnShininess(30).setKd(0.5).setKs(0.5).setKr(0.8)));
+            scene1._geometries.add( new Polygon(new Point(-160,-80,200-500),new Point(-160,-80,260-600),new Point(-160,100,260-600),new Point(-160,100,200-500))
+                    .setEmission(new Color(PINK))
+                    .setMaterial(new Material().setnShininess(30).setKd(0.5).setKs(0.5).setKr(0.8)));
+            scene1._geometries.add( new Polygon(new Point(-160,180,200-500),new Point(-160,180,260-600),new Point(-160,300,260-600),new Point(-160,300,200-500))
+                    .setEmission(new Color(PINK))
+                    .setMaterial(new Material().setnShininess(30).setKd(0.5).setKs(0.5).setKr(0.8)));
+            scene1._lights.add(new PointLight(new Color(YELLOW), new Point(-300, 280 , -400)));
             scene1._geometries.add( new Polygon(new Point(-160+315,-80,260),new Point(-160+315,-80,200-1200),new Point(-160+315,300,200-1200),new Point(-160+315,300,260))
                     .setEmission(new Color(PINK))
                     .setMaterial(new Material().setnShininess(30).setKd(0.5).setKs(0.5).setKr(0.8)));
@@ -141,8 +149,8 @@ new Polygon(new Point(-19.5,10.01,-160),new Point(-19.5,10.01,-145),new Point(-2
 
         //scene1.lights.add(new SpotLight(spCL, spPL, new Vector(1, 1, -0.5)).setKl(0.001).setKq(0.0001));
         //scene1.lights.add(new SpotLight(new Color(WHITE),new Point(0,20,0),new Vector(0,0,1) ));
-        scene1.lights.add(new SpotLight(new Color(WHITE), new Point(100,200,-200), new Vector(-0.5,-1,0)));
-        scene1.lights.add(new SpotLight(new Color(WHITE), new Point(-400,-400,0), new Vector(0.2d,0.5d,-1)));
+        scene1._lights.add(new SpotLight(new Color(WHITE), new Point(100,200,-200), new Vector(-0.5,-1,0)));
+        scene1._lights.add(new SpotLight(new Color(WHITE), new Point(-400,-400,0), new Vector(0.2d,0.5d,-1)));
         //scene1.lights.add(new DirectionalLight(new Color(GREEN), new Vector(1,1,1)));
         //scene1.lights.add(_directionalLight);
         //scene1.lights.add(_directionalLight1);

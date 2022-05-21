@@ -319,24 +319,19 @@ private Random random = new Random();
         Color color=  _rayTracer.traceRay(ray);
         Point apertureCenter= calcApertureFieldPoint( ray);
         int i=0;
-        for (;i<20;i++){
-            //Point p = apertureCenter.add(_vUp.scale(random(-_apertureFieldRadius,_apertureFieldRadius))).add(_vRight.scale(random(-_apertureFieldRadius,_apertureFieldRadius)));
-         //   double one=random(-_apertureFieldRadius,_apertureFieldRadius);
-           // double sec=one>0? _apertureFieldRadius-one :  Math.abs(_apertureField-one);
-double d =random(0,360);
-            double d2 =random(0,360);
-          Vector v=  _vUp.rotateVector(_vRight,d).scale(_apertureFieldRadius).rotateVector(_vUp,d2);
+        double d = 360d/5d;
+        for (;i<5;i++){
+            Vector v=  _vUp.rotateVector(_vRight,d*i).scale(_apertureFieldRadius).rotateVector(_vUp,d*i);
             Point p=apertureCenter.add(v);
             Ray depthRay=new Ray(p,new Vector(focusPlaneIntersection.subtract(p).get_xyz()));
             color=color.add(_rayTracer.traceRay(depthRay));
         }
-
-        return averageColor(color,i);
+        return color.scale(1/5d);
     }
 
 
 
-    public List <Ray> constructRays(int nX, int nY, int j, int i) {
+    public Hashtable <Ray,Ray> constructRays(int nX, int nY, int j, int i) {
         double Ry =  _height / nY;
         double Rx =  _width / nX;
 
@@ -369,25 +364,28 @@ double d =random(0,360);
 
 
         List<Ray> myRays = new LinkedList<>(); //to save all the rays
-
+        Hashtable<Ray, Ray> myra=new Hashtable<>();
         if (!checkEdges){
 
 
         //We call the function constructRayThroughPixel like we used to but this time we launch m * n ray in the same pixel
 
-        for (int k = 0; k < 500; k++) {
+        for (int k = 0; k < 50; k++) {
             Point tmp = Pij;
-            myRays.add(constructRayThroughPixel(nX, nY, Pij));
+            Ray ray=constructRayThroughPixel(nX, nY, Pij);
+            myra.put(ray,ray);
+           // myRays.add(constructRayThroughPixel(nX, nY, Pij));
             Pij = tmp;
         }
 
 
         }
         else {
-            myRays.add(constructRayThroughPixel(nX, nY, Pij));
+            Ray ray=constructRayThroughPixel(nX, nY, Pij);
+            myra.put(ray,ray);
         }
 
-        return myRays;
+        return myra;
     }
 
 
@@ -402,13 +400,14 @@ double d =random(0,360);
      * @return The color of the pixel.
      */
     private Color castRays_AntiAliasing(int nX, int nY, int j, int i) {
-            List<Ray> rays = constructRays(nX, nY, j, i);
-            Color color = Color.BLACK;
-            int d;
-            for (Ray ray : rays) {
-                color = color.add(_rayTracer.traceRay(ray));
-            }
-            return color.scale(1d/rays.size());
+        Hashtable<Ray,Ray> rays = constructRays(nX, nY, j, i);
+        Color color = Color.BLACK;
+        Set<Ray> keys = rays.keySet();
+        for(Ray ray: keys){
+
+            color = color.add(_rayTracer.traceRay(ray));
+        }
+        return color.scale(1d/rays.size());
     }
 
 

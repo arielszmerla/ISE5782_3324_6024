@@ -4,11 +4,9 @@ import org.junit.jupiter.api.Test;
 
 import static java.awt.Color.*;
 
-import renderer.ImageWriter;
 import lighting.*;
 import geometries.*;
 import primitives.*;
-import renderer.*;
 import renderer.scene.Scene;
 
 import java.util.Random;
@@ -34,7 +32,7 @@ public class ShadowTests {
 	 */
 	void sphereTriangleHelper(String pictName, Triangle triangle, Point spotLocation) {
 		scene._geometries.add(sphere, triangle.setEmission(new Color(BLUE)).setMaterial(trMaterial));
-		scene.lights.add( //
+		scene._lights.add( //
 				new SpotLight(new Color(400, 240, 0), spotLocation, new Vector(1, 1, -3)) //
 						.setKl(1E-5).setKq(1.5E-7));
 		camera.setImageWriter(new ImageWriter(pictName, 400, 400)) //
@@ -79,7 +77,7 @@ public class ShadowTests {
 
 		scene._geometries.add(new Spring(new Point(-50, -50, -1), 21, 1)
 		);
-		scene.lights.add( //
+		scene._lights.add( //
 				new SpotLight(new Color(400, 240, 0), new Point(-47, -47, -4), new Vector(1, 1, -3)) //
 						.setKl(1E-5).setKq(1.5E-7));
 		camera.moveCamera(new Vector(-10, -10, 0));
@@ -126,7 +124,7 @@ public class ShadowTests {
 
 		scene._geometries.add( myCube
 			); //
-		scene.lights.add( //
+		scene._lights.add( //
 				new SpotLight(new Color(700, 400, 400), new Point(40, 40, 115), new Vector(-1, -1, -4)) //
 						.setKl(4E-4).setKq(2E-5));
 		camera.moveCamera(new Vector(50,-40,0));
@@ -157,7 +155,7 @@ public class ShadowTests {
 						.setEmission(new Color(java.awt.Color.BLUE)) //
 						.setMaterial(new Material().setKd(0.5).setKs(0.5).setKg(0.0001).setnShininess(30).setKt(0.9)) //
 		);
-		scene.lights.add( //
+		scene._lights.add( //
 				new SpotLight(new Color(700, 400, 400), new Point(40, 40, 115), new Vector(-1, -1, -4)) //
 						.setKl(4E-4).setKq(2E-5));
 
