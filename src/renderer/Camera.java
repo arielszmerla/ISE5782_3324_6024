@@ -331,7 +331,7 @@ private Random random = new Random();
 
 
 
-    public Hashtable <Ray,Ray> constructRays(int nX, int nY, int j, int i) {
+    public HashSet <Ray> constructRays(int nX, int nY, int j, int i) {
         double Ry =  _height / nY;
         double Rx =  _width / nX;
 
@@ -364,7 +364,7 @@ private Random random = new Random();
 
 
         List<Ray> myRays = new LinkedList<>(); //to save all the rays
-        Hashtable<Ray, Ray> myra=new Hashtable<>();
+        HashSet<Ray> myra= new HashSet<>();
         if (!checkEdges){
 
 
@@ -373,7 +373,7 @@ private Random random = new Random();
         for (int k = 0; k < 50; k++) {
             Point tmp = Pij;
             Ray ray=constructRayThroughPixel(nX, nY, Pij);
-            myra.put(ray,ray);
+            myra.add(ray);
            // myRays.add(constructRayThroughPixel(nX, nY, Pij));
             Pij = tmp;
         }
@@ -382,7 +382,7 @@ private Random random = new Random();
         }
         else {
             Ray ray=constructRayThroughPixel(nX, nY, Pij);
-            myra.put(ray,ray);
+            myra.add(ray);
         }
 
         return myra;
@@ -400,14 +400,13 @@ private Random random = new Random();
      * @return The color of the pixel.
      */
     private Color castRays_AntiAliasing(int nX, int nY, int j, int i) {
-        Hashtable<Ray,Ray> rays = constructRays(nX, nY, j, i);
+        HashSet<Ray> rays = constructRays(nX, nY, j, i);
         Color color = Color.BLACK;
-        Set<Ray> keys = rays.keySet();
-        for(Ray ray: keys){
+        for(Ray ray: rays){
 
             color = color.add(_rayTracer.traceRay(ray));
         }
-        return color.scale(1d/rays.size());
+        return averageColor(color,rays.size());
     }
 
 
