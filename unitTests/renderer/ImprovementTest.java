@@ -138,11 +138,11 @@ new Polygon(new Point(-19.5,10.01,-160),new Point(-19.5,10.01,-145),new Point(-2
                     .setMaterial(new Material().setnShininess(30).setKd(0.5).setKs(0.5).setKr(0.8)));
             scene1._geometries.add( new Polygon(new Point(-160,180,200-500),new Point(-160,180,260-600),new Point(-160,300,260-600),new Point(-160,300,200-500))
                     .setEmission(new Color(PINK))
-                    .setMaterial(new Material().setnShininess(30).setKd(0.5).setKs(0.5).setKr(0.8)));
-            scene1._lights.add(new PointLight(new Color(YELLOW), new Point(-300, 280 , -400)));
+                    .setMaterial(new Material().setnShininess(10).setKd(0.5).setKs(0.1).setKr(0.5)));
+            scene1._lights.add(new PointLight(new Color(YELLOW).reduce(10), new Point(-500, 380 , -400)));
             scene1._geometries.add( new Polygon(new Point(-160+315,-80,260),new Point(-160+315,-80,200-1200),new Point(-160+315,300,200-1200),new Point(-160+315,300,260))
                     .setEmission(new Color(PINK))
-                    .setMaterial(new Material().setnShininess(30).setKd(0.5).setKs(0.5).setKr(0.8)));
+                    .setMaterial(new Material().setnShininess(10).setKd(0.5).setKs(0.1).setKr(0.5)));
 
         }
 

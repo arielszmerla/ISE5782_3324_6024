@@ -19,7 +19,7 @@ public class RayTracerBasic extends RayTracer {
     private static final int MAX_CALC_COLOR_LEVEL = 10;
     private static final double MIN_CALC_COLOR_K = 0.001;
     private static final double INITIAL_K = 1.0;
-    private int _glossinessRays = 10;
+    private int _glossinessRays = 1;
 
     /**
      * scene setter
@@ -55,7 +55,7 @@ public class RayTracerBasic extends RayTracer {
             return _scene._background;
         Color color = intersection._geometry.getEmission()
                 .add(calcLocalEffects(intersection,ray,k));
-        return 1 == level ? color : color.add(calcGlobalEffects2(intersection, ray, level, k));
+        return 1 == level ? color : color.add(calcGlobalEffects(intersection, ray, level, k));
 
     }
     /**
