@@ -239,7 +239,8 @@ private Random random = new Random();
             Pixel.initialize(nY, nX, printInterval);
             IntStream.range(0, nY).parallel().forEach(i -> {
                 IntStream.range(0, nX).parallel().forEach(j -> {
-                    _imageWriter.writePixel(j, i, castRays_AntiAliasing(nY, nX, j, i));                    Pixel.pixelDone();
+                    _imageWriter.writePixel(j, i, castRays_AntiAliasing(nY, nX, j, i));
+                    Pixel.pixelDone();
                     Pixel.printPixel();
                 });
             });
@@ -377,7 +378,7 @@ private Random random = new Random();
 
         if (!checkEdges){
         //We call the function constructRayThroughPixel like we used to but this time we launch m * n ray in the same pixel
-            for (int k = 0; k < 10; k++) {
+            for (int k = 0; k < 15; k++) {
               //  Point tmp = Pij;
                 Ray ray=constructRayThroughPixel(nX, nY, Pij);
                 myra.add(ray);

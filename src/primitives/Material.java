@@ -10,7 +10,7 @@ public class Material {
     /**
      *glossiness factor
      */
-    public Double3 _kG=new Double3(1);
+    public Double3 _kG= Double3.ONE;
 
     /**
      *shininess factor

@@ -110,7 +110,7 @@ new Polygon(new Point(-19.5,10.01,-160),new Point(-19.5,10.01,-145),new Point(-2
             rightBack= rightBack.add(new Vector(0,0, -60));
             rightTop=   rightTop.add(new Vector(0,0, -60));
             leftTop=  leftTop.add(new Vector(0,0, -60));
-            Material redMaterial=new Material().setnShininess(30).setKd(0.5).setKs(0.5).setKr(0.8).setKg(0.9);
+            Material redMaterial=new Material().setnShininess(30).setKd(0.5).setKs(0.5).setKr(0.8).setKg(0.5);
             Material blackMaterial=new Material().setnShininess(30).setKd(0.5).setKs(0.5);
             for (int j = 1; j < 10; j++) {
                 Polygon dal=new Polygon(leftBack.add(new Vector(35 * j, 0, 0))
