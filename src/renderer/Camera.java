@@ -366,22 +366,22 @@ private Random random = new Random();
 
         Color c1 = _rayTracer.traceRay(constructRayThroughPixel(nX,nY,Pij.add(_vRight.scale(halfRx)).add(_vUp.scale(halfRy)).subtract(_p0)));;
 
-        Color c2 = _rayTracer.traceRay(constructRayThroughPixel(nX,nY,Pij.add(_vRight.scale(-halfRx)).add(_vUp.scale(halfRy)).subtract(_p0)));
+        Color c2 = _rayTracer.traceRay(constructRayThroughPixel(nX,nY,Pij.add(_vRight.scale(-halfRx)).add(_vUp.scale(-halfRy)).subtract(_p0)));
 
-        Color c3 = _rayTracer.traceRay(constructRayThroughPixel(nX,nY,Pij.add(_vRight.scale(-halfRx)).add(_vUp.scale(-halfRy)).subtract(_p0)));
-        Color c4 = _rayTracer.traceRay(constructRayThroughPixel(nX,nY,Pij.add(_vRight.scale(halfRx)).add(_vUp.scale(-halfRy)).subtract(_p0)));
-        boolean checkEdges = c1.equals(c2) && c1.equals(c3) && c1.equals(c4);
+    //    Color c3 = _rayTracer.traceRay(constructRayThroughPixel(nX,nY,Pij.add(_vRight.scale(-halfRx)).add(_vUp.scale(-halfRy)).subtract(_p0)));
+     //   Color c4 = _rayTracer.traceRay(constructRayThroughPixel(nX,nY,Pij.add(_vRight.scale(halfRx)).add(_vUp.scale(-halfRy)).subtract(_p0)));
+        boolean checkEdges = c1.equals(c2); //&& c1.equals(c3) && c1.equals(c4);
 
 
         HashSet<Ray> myra= new HashSet<>();//to save all the different rays created
 
         if (!checkEdges){
         //We call the function constructRayThroughPixel like we used to but this time we launch m * n ray in the same pixel
-            for (int k = 0; k < 1; k++) {
-                Point tmp = Pij;
+            for (int k = 0; k < 10; k++) {
+              //  Point tmp = Pij;
                 Ray ray=constructRayThroughPixel(nX, nY, Pij);
                 myra.add(ray);
-                Pij = tmp;
+                // Pij = tmp;
             }
         }
         else {
@@ -429,7 +429,7 @@ private Random random = new Random();
         // Image center
         Point pC = _p0.add(_vTo.scale(_distance));
 
-        Point pIJ = pC;
+
         //Ry = height / nY : height of a pixel
         double halfRy = alignZero( _height /(2 *nY));
         //Ry = weight / nX : width of a pixel
