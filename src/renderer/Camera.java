@@ -6,8 +6,10 @@ import primitives.Ray;
 import primitives.Vector;
 
 import java.util.*;
+import java.util.stream.IntStream;
 
 import static primitives.Util.*;
+import static renderer.Pixel.printInterval;
 
 public class Camera {
 
@@ -213,6 +215,7 @@ private Random random = new Random();
         if (_imageWriter == null) {
             throw new MissingResourceException("missing resource", ImageWriter.class.getName(), "");
         }
+
         for (int i = 0; i < _imageWriter.getNx(); i++)
             for (int j = 0; j < _imageWriter.getNy(); j++)
                 if (i % interval == 0 || j % interval == 0)
@@ -233,12 +236,21 @@ private Random random = new Random();
             //rendering the image
             int nX = _imageWriter.getNx();
             int nY = _imageWriter.getNy();
-            for (int i = 0; i < nY; i++) {
+            Pixel.initialize(nY, nX, printInterval);
+            IntStream.range(0, nY).parallel().forEach(i -> {
+                IntStream.range(0, nX).parallel().forEach(j -> {
+                    _imageWriter.writePixel(j, i, castRays_AntiAliasing(nY, nX, j, i));
+                    Pixel.pixelDone();
+                    Pixel.printPixel();
+                });
+            });
+
+        /*   for (int i = 0; i < nY; i++) {
 
                 for (int j = 0; j < nX; j++) {
                     _imageWriter.writePixel(j, i, castRays_AntiAliasing(nY, nX, j, i));
                 }
-            }
+            }*/
         } catch (MissingResourceException e) {
             throw new UnsupportedOperationException("Not implemented yet" + e.getClassName());
         }
@@ -281,7 +293,7 @@ private Random random = new Random();
      * @return The average color of the pixels in the image.
      */
     public Color averageColor(Color color, int len){
-        return color.reduce(Double.valueOf(len+1));
+        return color.reduce(len);
     }
 
     /**
@@ -355,33 +367,26 @@ private Random random = new Random();
 
         Color c1 = _rayTracer.traceRay(constructRayThroughPixel(nX,nY,Pij.add(_vRight.scale(halfRx)).add(_vUp.scale(halfRy)).subtract(_p0)));;
 
-        Color c2 = _rayTracer.traceRay(constructRayThroughPixel(nX,nY,Pij.add(_vRight.scale(-halfRx)).add(_vUp.scale(halfRy)).subtract(_p0)));
+        Color c2 = _rayTracer.traceRay(constructRayThroughPixel(nX,nY,Pij.add(_vRight.scale(-halfRx)).add(_vUp.scale(-halfRy)).subtract(_p0)));
 
-        Color c3 = _rayTracer.traceRay(constructRayThroughPixel(nX,nY,Pij.add(_vRight.scale(-halfRx)).add(_vUp.scale(-halfRy)).subtract(_p0)));
-        Color c4 = _rayTracer.traceRay(constructRayThroughPixel(nX,nY,Pij.add(_vRight.scale(halfRx)).add(_vUp.scale(-halfRy)).subtract(_p0)));
-        //return c1!=c2||c2!=c3||c1!=c4;
-        boolean checkEdges = c1.equals(c2) && c1.equals(c3) && c1.equals(c4);
+    //    Color c3 = _rayTracer.traceRay(constructRayThroughPixel(nX,nY,Pij.add(_vRight.scale(-halfRx)).add(_vUp.scale(-halfRy)).subtract(_p0)));
+     //   Color c4 = _rayTracer.traceRay(constructRayThroughPixel(nX,nY,Pij.add(_vRight.scale(halfRx)).add(_vUp.scale(-halfRy)).subtract(_p0)));
+        boolean checkEdges = c1.equals(c2); //&& c1.equals(c3) && c1.equals(c4);
 
 
-        List<Ray> myRays = new LinkedList<>(); //to save all the rays
-        HashSet<Ray> myra= new HashSet<>();
+        HashSet<Ray> myra= new HashSet<>();//to save all the different rays created
+
         if (!checkEdges){
-
-
         //We call the function constructRayThroughPixel like we used to but this time we launch m * n ray in the same pixel
-
-        for (int k = 0; k < 50; k++) {
-            Point tmp = Pij;
-            Ray ray=constructRayThroughPixel(nX, nY, Pij);
-            myra.add(ray);
-           // myRays.add(constructRayThroughPixel(nX, nY, Pij));
-            Pij = tmp;
-        }
-
-
+            for (int k = 0; k < 15; k++) {
+              //  Point tmp = Pij;
+                Ray ray=constructRayThroughPixel(nX, nY, Pij);
+                myra.add(ray);
+                // Pij = tmp;
+            }
         }
         else {
-            Ray ray=constructRayThroughPixel(nX, nY, Pij);
+            Ray ray = constructRayThroughPixel(nX, nY, Pij);
             myra.add(ray);
         }
 
@@ -403,7 +408,6 @@ private Random random = new Random();
         HashSet<Ray> rays = constructRays(nX, nY, j, i);
         Color color = Color.BLACK;
         for(Ray ray: rays){
-
             color = color.add(_rayTracer.traceRay(ray));
         }
         return averageColor(color,rays.size());
@@ -426,23 +430,18 @@ private Random random = new Random();
         // Image center
         Point pC = _p0.add(_vTo.scale(_distance));
 
-        Point pIJ = pC;
+
         //Ry = height / nY : height of a pixel
         double halfRy = alignZero( _height /(2 *nY));
         //Ry = weight / nX : width of a pixel
         double halfRx = alignZero(_width /(2* nX));
 
-        Color c1 = _rayTracer.traceRay(constructRayThroughPixel(nX,nY,pC.add(_vRight.scale(halfRx)).add(_vUp.scale(halfRy)).subtract(_p0)));;
-
+        Color c1 = _rayTracer.traceRay(constructRayThroughPixel(nX,nY,pC.add(_vRight.scale(halfRx)).add(_vUp.scale(halfRy)).subtract(_p0)));
         Color c2 = _rayTracer.traceRay(constructRayThroughPixel(nX,nY,pC.add(_vRight.scale(-halfRx)).add(_vUp.scale(halfRy)).subtract(_p0)));
-
         Color c3 = _rayTracer.traceRay(constructRayThroughPixel(nX,nY,pC.add(_vRight.scale(-halfRx)).add(_vUp.scale(-halfRy)).subtract(_p0)));
         Color c4 = _rayTracer.traceRay(constructRayThroughPixel(nX,nY,pC.add(_vRight.scale(halfRx)).add(_vUp.scale(-halfRy)).subtract(_p0)));
-        //return c1!=c2||c2!=c3||c1!=c4;
-        return c1.getColor().getBlue()==c2.getColor().getBlue()&&c1.getColor().getBlue()==c3.getColor().getBlue()
-                &&c1.getColor().getBlue()==c4.getColor().getBlue()
-        &&c1.getColor().getGreen()==c2.getColor().getGreen()&&c1.getColor().getGreen()==c3.getColor().getGreen()
-                &&c1.getColor().getGreen()==c4.getColor().getGreen();
+
+        return c2.equals(c3) && c1.equals(c2) && c4.equals(c1);
     }
     /**
      * We start from the center of the pixel and move randomly in the pixel to get the point
@@ -456,9 +455,9 @@ private Random random = new Random();
 
         Point pIJ = pc;
         //Ry = height / nY : height of a pixel
-        double rY = (double) _height / nY;
+        double rY =  _height / nY;
         //Ry = weight / nX : width of a pixel
-        double rX = (double) _width / nX;
+        double rX =  _width / nX;
         //xJ is the value of width we need to move from center to get to the point
         //we get to the bottom/top of the pixel and then we move randomly in the pixel to get the point
         double xJ = random.nextDouble () * (rX/ (random.nextBoolean()?2:-2));
@@ -475,9 +474,6 @@ private Random random = new Random();
 
         //get vector from camera p0 to the point
         Vector vIJ = pIJ.subtract(_p0);
-        Color c = _rayTracer.traceRay(new Ray(_p0, vIJ));
-        if(!c.equals(Color.BLACK))
-            c = c;
         //return ray to the center of the pixel
         return new Ray(_p0, vIJ);
 

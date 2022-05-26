@@ -110,7 +110,7 @@ new Polygon(new Point(-19.5,10.01,-160),new Point(-19.5,10.01,-145),new Point(-2
             rightBack= rightBack.add(new Vector(0,0, -60));
             rightTop=   rightTop.add(new Vector(0,0, -60));
             leftTop=  leftTop.add(new Vector(0,0, -60));
-            Material redMaterial=new Material().setnShininess(30).setKd(0.5).setKs(0.5).setKr(0.8).setKg(0.9);
+            Material redMaterial=new Material().setnShininess(30).setKd(0.5).setKs(0.5).setKr(0.8).setKg(0.5);
             Material blackMaterial=new Material().setnShininess(30).setKd(0.5).setKs(0.5);
             for (int j = 1; j < 10; j++) {
                 Polygon dal=new Polygon(leftBack.add(new Vector(35 * j, 0, 0))
@@ -138,17 +138,14 @@ new Polygon(new Point(-19.5,10.01,-160),new Point(-19.5,10.01,-145),new Point(-2
                     .setMaterial(new Material().setnShininess(30).setKd(0.5).setKs(0.5).setKr(0.8)));
             scene1._geometries.add( new Polygon(new Point(-160,180,200-500),new Point(-160,180,260-600),new Point(-160,300,260-600),new Point(-160,300,200-500))
                     .setEmission(new Color(PINK))
-                    .setMaterial(new Material().setnShininess(30).setKd(0.5).setKs(0.5).setKr(0.8)));
-            scene1._lights.add(new PointLight(new Color(YELLOW), new Point(-300, 280 , -400)));
+                    .setMaterial(new Material().setnShininess(80).setKd(0.5).setKs(0.8).setKr(0.5)));
+            scene1._lights.add(new PointLight(new Color(YELLOW).reduce(10), new Point(-500, 330 , -400)));
             scene1._geometries.add( new Polygon(new Point(-160+315,-80,260),new Point(-160+315,-80,200-1200),new Point(-160+315,300,200-1200),new Point(-160+315,300,260))
                     .setEmission(new Color(PINK))
-                    .setMaterial(new Material().setnShininess(30).setKd(0.5).setKs(0.5).setKr(0.8)));
+                    .setMaterial(new Material().setnShininess(80).setKd(0.5).setKs(0.8).setKr(0.5)));
 
         }
 
-
-        //scene1.lights.add(new SpotLight(spCL, spPL, new Vector(1, 1, -0.5)).setKl(0.001).setKq(0.0001));
-        //scene1.lights.add(new SpotLight(new Color(WHITE),new Point(0,20,0),new Vector(0,0,1) ));
         scene1._lights.add(new SpotLight(new Color(WHITE), new Point(100,200,-200), new Vector(-0.5,-1,0)));
         scene1._lights.add(new SpotLight(new Color(WHITE), new Point(-400,-400,0), new Vector(0.2d,0.5d,-1)));
         //scene1.lights.add(new DirectionalLight(new Color(GREEN), new Vector(1,1,1)));
