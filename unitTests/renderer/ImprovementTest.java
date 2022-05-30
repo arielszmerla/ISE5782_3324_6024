@@ -79,8 +79,8 @@ private Geometry backBone= new Polygon(new Point(-1000,1000,-9000),
         Table table1 = new Table(80d,80d,new Point(0, 0, -200) , tableColor, tableMaterial );
         Table table2 = new Table(60d,80d,new Point(100, 0, -400), tableColor, tableMaterial);
         scene1._geometries.addAll(table1._parts);
-        scene1._geometries.addAll(table2._parts);
-        scene1._geometries.add(
+       // scene1._geometries.addAll(table2._parts);
+        /*scene1._geometries.add(
                 new Sphere(new Point(0,20,-200), 10).setEmission(new Color(BLUE)) //
                         .setMaterial(new Material().setKd(0.5).setKs(0.5).setnShininess(20).setKt(0.7)),
                 new Sphere(new Point(0,20,-200), 5).setEmission(new Color(BLUE)) //
@@ -101,7 +101,7 @@ new Polygon(new Point(-19.5,10.01,-160),new Point(-19.5,10.01,-145),new Point(-2
                         .setMaterial(new Material().setKd(0.5).setKs(0.5).setnShininess(20).setKt(0.01)),
                  new Polygon(new Point(-20,10.01,-148),new Point(-20,10.01,-130),new Point(-21.5,10.01,-130),new Point(-21.5,10.01,-148)).setEmission(new Color(BLACK))
                         .setMaterial(new Material().setKd(0.5).setKs(0.5).setnShininess(20).setKt(0.01)) );
-
+*/
       /*  Point leftBack=new Point(-195,-80,260);
         Point rightBack=new Point(-160,-80,260);
         Point rightTop=new Point(-195,-80,200);
@@ -157,7 +157,7 @@ new Polygon(new Point(-19.5,10.01,-160),new Point(-19.5,10.01,-145),new Point(-2
         ImageWriter imageWriter = new ImageWriter("table", 500, 500);
         camera1.setFocusField(1800);
         //camera1.moveCamera(new Vector(-3000,400,-1200));
-        camera1.moveCamera(new Vector(0,700,1000));
+        camera1.moveCamera(new Vector(0,1000,400));
 
         //camera1.rotateCamera(new Vector(0,1,0), 270);
         camera1.rotateCamera(new Vector(-0.5,0,0), 35);
