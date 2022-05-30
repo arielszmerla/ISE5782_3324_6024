@@ -106,14 +106,14 @@ new Polygon(new Point(-19.5,10.01,-160),new Point(-19.5,10.01,-145),new Point(-2
         Point rightBack=new Point(-160,-80,260);
         Point rightTop=new Point(-195,-80,200);
         Point leftTop=new Point(-160,-80,200);
-
+/*Material redMaterial=new Material().setnShininess(30).setKd(0.5).setKs(0.5).setKr(0.8).setKg(0.5);
+        Material blackMaterial=new Material().setnShininess(30).setKd(0.5).setKs(0.5);
         for(int i= 1; i<20;i++) {
             leftBack=leftBack.add(new Vector(0,0, -60));
             rightBack= rightBack.add(new Vector(0,0, -60));
             rightTop=   rightTop.add(new Vector(0,0, -60));
             leftTop=  leftTop.add(new Vector(0,0, -60));
-            Material redMaterial=new Material().setnShininess(30).setKd(0.5).setKs(0.5).setKr(0.8).setKg(0.5);
-            Material blackMaterial=new Material().setnShininess(30).setKd(0.5).setKs(0.5);
+
             for (int j = 1; j < 10; j++) {
                 Polygon dal=new Polygon(leftBack.add(new Vector(35 * j, 0, 0))
                         , rightBack.add(new Vector(35* j, 0, 0)),
@@ -146,8 +146,8 @@ new Polygon(new Point(-19.5,10.01,-160),new Point(-19.5,10.01,-145),new Point(-2
                     .setEmission(new Color(PINK))
                     .setMaterial(new Material().setnShininess(80).setKd(0.5).setKs(0.8).setKr(0.5)));
 
-        }
-*/
+        }*/
+
         scene1._lights.add(new SpotLight(new Color(WHITE), new Point(100,200,-200), new Vector(-0.5,-1,0)));
         scene1._lights.add(new SpotLight(new Color(WHITE), new Point(-400,-400,0), new Vector(0.2d,0.5d,-1)));
         //scene1.lights.add(new DirectionalLight(new Color(GREEN), new Vector(1,1,1)));
