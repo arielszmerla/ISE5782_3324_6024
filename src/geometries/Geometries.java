@@ -35,6 +35,14 @@ public class Geometries extends Intersectable {
            Collections.addAll(_intersectables,geometries);
    }
 
+   /**
+     * add geometries to _intesectables
+     * @param geometries {@link Intersectable}
+     */
+   public void addAll(List <Intersectable> geometries) {
+           _intersectables.addAll(geometries);
+   }
+
 
     /**
      * find intersections (GeoPoints) on geometry based-on given ray

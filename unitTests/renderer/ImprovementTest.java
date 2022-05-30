@@ -1,11 +1,14 @@
 package renderer;
 
+import objects.Table;
 import org.junit.jupiter.api.Test;
 
 import lighting.*;
 import geometries.*;
 import primitives.*;
 import renderer.scene.Scene;
+
+import java.util.Arrays;
 
 import static java.awt.Color.*;
 
@@ -71,14 +74,13 @@ private Geometry backBone= new Polygon(new Point(-1000,1000,-9000),
     @Test
     // A test for the table scene.
     public void table() {
-        scene1._geometries.add(    new Cylinder(new Ray(new Point(0, 0, -200),new Vector(0,1,0)),80d, 10d).setEmission(new Color(new java.awt.Color(119, 79, 61))) //
-                .setMaterial(new Material().setKd(0.7).setKs(0.7).setnShininess(20).setKt(0.1)),
-                new Cylinder(new Ray(new Point(0, 0, -160),new Vector(0,-1,0)),5d, 80d).setEmission(new Color(new java.awt.Color(119, 79, 61))) //
-                        .setMaterial(new Material().setKd(0.7).setKs(0.7).setnShininess(20).setKt(0.1)),
-                new Cylinder(new Ray(new Point(-56, 0, -250),new Vector(0,-1,0)),5d, 80d).setEmission(new Color(new java.awt.Color(119, 79, 61))) //
-                        .setMaterial(new Material().setKd(0.7).setKs(0.7).setnShininess(20).setKt(0.1)),
-                new Cylinder(new Ray(new Point(56, 0, -250),new Vector(0,-1,0)),5d, 80d).setEmission(new Color(new java.awt.Color(119, 79, 61))) //
-                        .setMaterial(new Material().setKd(0.7).setKs(0.7).setnShininess(20).setKt(0.1)),
+        Color tableColor = new Color(new java.awt.Color(119, 79, 61));
+        Material tableMaterial = new Material().setKd(0.7).setKs(0.7).setnShininess(20).setKt(0.1);
+        Table table1 = new Table(80d,80d,new Point(0, 0, -200) , tableColor, tableMaterial );
+        Table table2 = new Table(60d,80d,new Point(100, 0, -400), tableColor, tableMaterial);
+        scene1._geometries.addAll(table1._parts);
+        scene1._geometries.addAll(table2._parts);
+        scene1._geometries.add(
                 new Sphere(new Point(0,20,-200), 10).setEmission(new Color(BLUE)) //
                         .setMaterial(new Material().setKd(0.5).setKs(0.5).setnShininess(20).setKt(0.7)),
                 new Sphere(new Point(0,20,-200), 5).setEmission(new Color(BLUE)) //
