@@ -239,9 +239,9 @@ private Random random = new Random();
             Pixel.initialize(nY, nX, printInterval);
             IntStream.range(0, nY).parallel().forEach(i -> {
                 IntStream.range(0, nX).parallel().forEach(j -> {
-                    _imageWriter.writePixel(j, i, castRays_AntiAliasing(nY, nX, j, i));
-                    Pixel.pixelDone();
-                    Pixel.printPixel();
+                            castRays_AntiAliasing(nX, nY, j, i);
+                            Pixel.pixelDone();
+                            Pixel.printPixel();
                 });
             });
 
