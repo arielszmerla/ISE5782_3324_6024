@@ -100,7 +100,7 @@ new Polygon(new Point(-19.5,10.01,-160),new Point(-19.5,10.01,-145),new Point(-2
                  new Polygon(new Point(-20,10.01,-148),new Point(-20,10.01,-130),new Point(-21.5,10.01,-130),new Point(-21.5,10.01,-148)).setEmission(new Color(BLACK))
                         .setMaterial(new Material().setKd(0.5).setKs(0.5).setnShininess(20).setKt(0.01)) );
 
-        Point leftBack=new Point(-195,-80,260);
+      /*  Point leftBack=new Point(-195,-80,260);
         Point rightBack=new Point(-160,-80,260);
         Point rightTop=new Point(-195,-80,200);
         Point leftTop=new Point(-160,-80,200);
@@ -145,7 +145,7 @@ new Polygon(new Point(-19.5,10.01,-160),new Point(-19.5,10.01,-145),new Point(-2
                     .setMaterial(new Material().setnShininess(80).setKd(0.5).setKs(0.8).setKr(0.5)));
 
         }
-
+*/
         scene1._lights.add(new SpotLight(new Color(WHITE), new Point(100,200,-200), new Vector(-0.5,-1,0)));
         scene1._lights.add(new SpotLight(new Color(WHITE), new Point(-400,-400,0), new Vector(0.2d,0.5d,-1)));
         //scene1.lights.add(new DirectionalLight(new Color(GREEN), new Vector(1,1,1)));

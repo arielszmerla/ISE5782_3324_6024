@@ -371,14 +371,14 @@ private Random random = new Random();
 
         Color c3 = _rayTracer.traceRay(constructRayThroughPixel(nX,nY,Pij.add(_vRight.scale(-halfRx)).add(_vUp.scale(-halfRy)).subtract(_p0)));
        Color c4 = _rayTracer.traceRay(constructRayThroughPixel(nX,nY,Pij.add(_vRight.scale(halfRx)).add(_vUp.scale(-halfRy)).subtract(_p0)));
-        boolean checkEdges = c1.equals(c2); //&& c1.equals(c3) && c1.equals(c4);
+        boolean checkEdges = c1.equals(c2) && c1.equals(c3) && c1.equals(c4);
 
 
         HashSet<Ray> myra= new HashSet<>();//to save all the different rays created
 
-        if (!checkEdges){
+        if (!checkEdges||checkEdges){
         //We call the function constructRayThroughPixel like we used to but this time we launch m * n ray in the same pixel
-            for (int k = 0; k < 15; k++) {
+            for (int k = 0; k < 100; k++) {
               Point tmp = Pij;
                 Ray ray=constructRayThroughPixel(nX, nY, Pij);
                 myra.add(ray);
