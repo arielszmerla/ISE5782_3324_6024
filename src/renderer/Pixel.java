@@ -116,6 +116,8 @@ class Pixel {
             if (lastPrinted != percentage) {
                 last = current;
                 lastPrinted = percentage;
+                //changed from original one
+                //this one works on my comps (printf vs println) asked stackoverflow but no answer
                 System.out.println(percentage / 10d+"%");
             }
         }
