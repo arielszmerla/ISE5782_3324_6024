@@ -78,10 +78,10 @@ private Geometry backBone= new Polygon(new Point(-1000,1000,-9000),
     public void table() {
         Color tableColor = new Color(new java.awt.Color(119, 79, 61));
         Material tableMaterial = new Material().setKd(0.7).setKs(0.7).setnShininess(20).setKt(0.1);
-        Table table1 = new Table(80d, 80d, new Point(0, 0, -200), tableColor, tableMaterial);
+        Table table1 = new Table(100d, 80d, new Point(0, 0, -200), tableColor, tableMaterial);
 //        //Table table2 = new Table(80d,80d,new Point(200, 0, -200) , tableColor, tableMaterial );
         //Table table3 = new Table(80d,80d,new Point(-200, 0, -200) , tableColor, tableMaterial );
-        //scene1._geometries.addAll(table1._parts);
+        scene1._geometries.addAll(table1._parts);
         /*scene1._geometries.addAll(table2._parts);
         scene1._geometries.addAll(table3._parts);
         Table table4 = new Table(80d,80d,new Point(0, 0, -400) , tableColor, tableMaterial );
@@ -96,12 +96,30 @@ private Geometry backBone= new Polygon(new Point(-1000,1000,-9000),
         scene1._geometries.addAll(table7._parts);
         scene1._geometries.addAll(table8._parts);
         scene1._geometries.addAll(table9._parts);
-        *//*
+        */
+
         scene1._geometries.add(
-                new Sphere(new Point(0, 20, -200), 10).setEmission(new Color(BLUE)) //
-                        .setMaterial(new Material().setKd(0.5).setKs(0.5).setnShininess(20).setKt(0.7)),
-                new Sphere(new Point(0, 20, -200), 5).setEmission(new Color(BLUE)) //
-                        .setMaterial(new Material().setKd(0.5).setKs(0.5).setnShininess(20).setKt(0.1)));*//*,
+                new Sphere(new Point(-80, 150, -200), 15).setEmission(new Color(new java.awt.Color(248, 255, 175))) //
+                        .setMaterial(new Material().setKd(0.5).setKs(0.5).setnShininess(20).setKt(0.8).setKg(1)),
+                new Sphere(new Point(0, 150, -200), 15).setEmission(new Color(new java.awt.Color(248, 255, 175))) //
+                        .setMaterial(new Material().setKd(0.5).setKs(0.5).setnShininess(20).setKt(0.8).setKg(1)),
+                new Sphere(new Point(80, 150, -200), 15).setEmission(new Color(new java.awt.Color(248, 255, 175))) //
+                        .setMaterial(new Material().setKd(0.5).setKs(0.5).setnShininess(20).setKt(0.8).setKg(1)),
+                new Cylinder(new Ray(new Point(-80,165,-200), new Vector(0,1,0)),1d, 50)
+                        .setEmission(new Color(new java.awt.Color(248, 255, 175))) //
+                        .setMaterial(new Material().setKd(0.5).setKs(0.5).setnShininess(20).setKt(0.8).setKg(1)),
+                new Cylinder(new Ray(new Point(0,165,-200), new Vector(0,1,0)),1d, 50)
+                        .setEmission(new Color(new java.awt.Color(248, 255, 175))) //
+                        .setMaterial(new Material().setKd(0.5).setKs(0.5).setnShininess(20).setKt(0.8).setKg(1)),
+                new Cylinder(new Ray(new Point(80,165,-200), new Vector(0,1,0)),1d, 50)
+                        .setEmission(new Color(new java.awt.Color(248, 255, 175))) //
+                        .setMaterial(new Material().setKd(0.5).setKs(0.5).setnShininess(20).setKt(0.8).setKg(1)),
+                new Cylinder(new Ray(new Point(-80,215,-200), new Vector(1,0,0)),3d, 160)
+                        .setEmission(new Color(new java.awt.Color(248, 255, 175))) //
+                        .setMaterial(new Material().setKd(0.5).setKs(0.5).setnShininess(20).setKt(0.8).setKg(1))
+
+        );
+        /*,
                 new Cylinder(new Ray(new Point(0,10,-145), new Vector(0,1,0)), 15d , 1d).setEmission(new Color(GRAY)) //
                         .setMaterial(new Material().setKd(0.5).setKs(0.5).setnShininess(20).setKt(0.3)),
                 new Cylinder(new Ray(new Point(20,10,-165), new Vector(0,1,0)), 3d , 10d).setEmission(new Color(GRAY)) //
@@ -120,24 +138,38 @@ new Polygon(new Point(-19.5,10.01,-160),new Point(-19.5,10.01,-145),new Point(-2
                         .setMaterial(new Material().setKd(0.5).setKs(0.5).setnShininess(20).setKt(0.01)) );
 */
 
+        // left
         Point w1 = new Point(-260, -80, 260);
-        Point w2 = new Point(-260, -80, -1300);
-        Point w3 = new Point(-250, -80, -1300);
+        Point w2 = new Point(-260, -80, -1250);
+        Point w3 = new Point(-250, -80, -1250);
         Point w4 = new Point(-250, -80, 260);
         scene1._geometries.addAll(new Wall(w1,w2,w3,w4, 200, new Color(WHITE),new Material().setKd(0.5).setKs(0.5))._parts);
 
-
-        Point w11 = new Point(260, -80, -1300);
-        Point w22 = new Point(-260, -80, -1300);
-        Point w33 = new Point(-260, -80, -1290);
-        Point w44 = new Point(260, -80, -1290);
+        //back
+        Point w11 = new Point(260, -80, -1250);
+        Point w22 = new Point(-260, -80, -1250);
+        Point w33 = new Point(-260, -80, -1240);
+        Point w44 = new Point(260, -80, -1240);
         scene1._geometries.addAll(new Wall(w11,w22,w33,w44, 200, new Color(WHITE),new Material().setKd(0.5).setKs(0.5))._parts);
 
+        //right
+        Point w111 = new Point(260, -80, 260);
+        Point w222 = new Point(260, -80, -1250);
+        Point w333 = new Point(250, -80, -1250);
+        Point w444 = new Point(250, -80, 260);
+        scene1._geometries.addAll(new Wall(w111,w222,w333,w444, 200, new Color(WHITE),new Material().setKd(0.5).setKs(0.5))._parts);
+
+        //up
+        Point w1111 = new Point(260, 120, -1250);
+        Point w2222 = new Point(-260, 120, -1250);
+        Point w3333 = new Point(-260, 120, 260);
+        Point w4444 = new Point(260, 120, 260);
+        scene1._geometries.addAll(new Wall(w1111,w2222,w3333,w4444, 20, new Color(WHITE),new Material().setKd(0.5).setKs(0.5))._parts);
 
 
         Point leftBack = new Point(-300, -80, 260);
-        Material redMaterial = new Material().setnShininess(30).setKd(0.5).setKs(0.5).setKr(0.8).setKg(0.5);
-        Material blackMaterial = new Material().setnShininess(30).setKd(0.5).setKs(0.5).setKr(0.8).setKg(0.01);
+        Material redMaterial = new Material().setnShininess(30).setKd(0.5).setKs(0.5);
+        Material blackMaterial = new Material().setnShininess(30).setKd(0.5).setKs(0.5);
 
         for (int i = 1; i < 31; i++) {
             leftBack = leftBack.add(new Vector(0, 0, -50));
@@ -151,7 +183,6 @@ new Polygon(new Point(-19.5,10.01,-160),new Point(-19.5,10.01,-145),new Point(-2
                 scene1._geometries.add(tile._pol);
             }
         }
-
 
             /*
             scene1._geometries.add( new Polygon(new Point(-160,-80,260),new Point(-160,-80,200-500),new Point(-160,300,200-500),new Point(-160,300,260))
@@ -173,8 +204,11 @@ new Polygon(new Point(-19.5,10.01,-160),new Point(-19.5,10.01,-145),new Point(-2
 
         }
 */
-            scene1._lights.add(new SpotLight(new Color(WHITE), new Point(100, 200, -200), new Vector(-0.5, -1, 0)));
-            scene1._lights.add(new SpotLight(new Color(WHITE), new Point(-400, -400, 0), new Vector(0.2d, 0.5d, -1)));
+            scene1._lights.add(new SpotLight(new Color(WHITE), new Point(-80, 150, -200), new Vector(-1, -1, 0)));
+            scene1._lights.add(new SpotLight(new Color(WHITE), new Point(0, 150, -200), new Vector(0, -1, 0)));
+            scene1._lights.add(new SpotLight(new Color(WHITE), new Point(80, 150, -200), new Vector(1, -1, 0)));
+
+            //scene1._lights.add(new SpotLight(new Color(WHITE), new Point(-400, -400, 0), new Vector(0.2d, 0.5d, -1)));
             //scene1.lights.add(new DirectionalLight(new Color(GREEN), new Vector(1,1,1)));
             //scene1.lights.add(_directionalLight);
             //scene1.lights.add(_directionalLight1);
