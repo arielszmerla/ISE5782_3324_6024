@@ -244,13 +244,6 @@ private Random random = new Random();
                             Pixel.printPixel();
                 });
             });
-
-        /*   for (int i = 0; i < nY; i++) {
-
-                for (int j = 0; j < nX; j++) {
-                    _imageWriter.writePixel(j, i, castRays_AntiAliasing(nY, nX, j, i));
-                }
-            }*/
         } catch (MissingResourceException e) {
             throw new UnsupportedOperationException("Not implemented yet" + e.getClassName());
         }
