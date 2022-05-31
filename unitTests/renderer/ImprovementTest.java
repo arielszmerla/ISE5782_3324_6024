@@ -215,10 +215,12 @@ new Polygon(new Point(-19.5,10.01,-160),new Point(-19.5,10.01,-145),new Point(-2
             //scene1.lights.add(new PointLight(spCL, spPL).setKl(0.001).setKq(0.0002));
             ImageWriter imageWriter = new ImageWriter("wall", 500, 500);
             camera1.setFocusField(1800);
-            Camera camera1 = new Camera(new Point(0, 1700, 4500), new Vector(0, -0.3219, -0.9468), new Vector(0, 0.9468, -0.3219)) //
+           Camera camera1 = new Camera(new Point(0, 1700, 4500), new Vector(0, -0.3219, -0.9468), new Vector(0, 0.9468, -0.3219)) //
                     .setVPSize(150, 150) //
                     .setVPDistance(1000);
-
+camera1.moveCamera(new Vector(140, -670,-800));
+//camera1.rotateCamera(new Vector(1,0,0),-2);
+        camera1.rotateCamera(new Vector(0, 0.9468, -0.3219),3);
             camera1.setImageWriter(imageWriter) //
                     .setRayTracer(new RayTracerBasic(scene1)) //
                     .renderImage(); //
