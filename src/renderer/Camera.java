@@ -371,7 +371,7 @@ private Random random = new Random();
 
         if (!checkEdges||checkEdges){
         //We call the function constructRayThroughPixel like we used to but this time we launch m * n ray in the same pixel
-            for (int k = 0; k < 5; k++) {
+            for (int k = 0; k < 100; k++) {
               Point tmp = Pij;
                 Ray ray=constructRayThroughPixel(nX, nY, Pij);
                 myra.add(ray);

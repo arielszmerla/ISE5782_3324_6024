@@ -29,6 +29,11 @@ public class SpotLight extends PointLight{
         _direction=direction.normalize();
     }
 
+    public SpotLight set_shorten(double _shorten) {
+        this._shorten = _shorten;
+        return this;
+    }
+
     @Override
     public Color getIntensity(Point p) {
         double projection = _direction.dotProduct(getL(p));
