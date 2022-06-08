@@ -48,10 +48,10 @@ public class Triangle extends Polygon{
 
     // if there is an intersection point inside the triangle
         if((num1>0&&num2>0&&num3>0)||(num1<0&&num2<0&&num3<0)) {
-            Plane pl = new Plane(l.get(0), l.get(1), l.get(2));
+           // Plane pl = new Plane(l.get(0), l.get(1), l.get(2));
             List<GeoPoint> geoPoints =new LinkedList<>();
-            if(pl.findIntersections(ray) != null)
-                for ( Point pt : pl.findIntersections(ray) ) {
+            if(_plane.findIntersections(ray) != null)
+                for ( Point pt : _plane.findIntersections(ray) ) {
                     geoPoints.add( new GeoPoint(this,pt));
             }
             return  geoPoints;

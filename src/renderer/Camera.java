@@ -403,8 +403,7 @@ private Random random = new Random();
         for(Ray ray: rays){
             color = color.add(_rayTracer.traceRay(ray));
         }
-        //if(color != Color.BLACK)
-          //  System.out.println("fff");
+
         return averageColor(color,rays.size());
     }
 
