@@ -14,6 +14,16 @@ public class Camera {
     private int _threads = 1;
     private boolean _print = false;
 
+    /**
+     * This function returns the number of beams.
+     *
+     * @return The number of beams.
+     */
+    public int getNumOfBeams() {
+        return _numOfBeams;
+    }
+
+    private int _numOfBeams = 100;
     private final int SPARE_THREADS = 2;
     /**
      * right direction vector from camera
@@ -43,6 +53,16 @@ public class Camera {
      * height of view plane
      */
     private double _height;
+    /**
+     * Sets the number of beams and returns the camera.
+     *
+     * @param numOfBeams The number of beams to be emitted from the camera.
+     * @return The camera object itself.
+     */
+    public Camera setNumOfBeams(int numOfBeams) {
+        _numOfBeams = numOfBeams;
+        return this;
+    }
 // A random number generator.
 private Random random = new Random();
     // A private variable that is used to write the image to the screen.
@@ -288,34 +308,19 @@ private Random random = new Random();
      * center of the pixel
      */
     public void renderImage() {
-        //Render every pixel of the image
-        //rendering the image
-       /* int nX = _imageWriter.getNx();
-        int nY = _imageWriter.getNy();
-        Pixel.initialize(nY, nX, printInterval);
-        IntStream.range(0, nY).parallel().forEach(i -> {
-            IntStream.range(0, nX).parallel().forEach(j -> {
-                _imageWriter.writePixel(j,i,castRays_AntiAliasing(nX, nY, j, i));
-                Pixel.pixelDone();
-                Pixel.printPixel();
-            });
-        });*/int nX = _imageWriter.getNx();
+        //Render every pixel of the ima
+        Point pC = _p0.add(_vTo.scale(_distance));
+        int nX = _imageWriter.getNx();
         int nY = _imageWriter.getNy();
         Pixel.initialize(nY, nX, printInterval);
         IntStream.range(0, nY).parallel().forEach(i -> {
             IntStream.range(0, nX).parallel().forEach(j -> {
                 //construct ray for every pixel
-
-
-
-                Ray myRay = constructRayThroughPixelyon(
-                        _imageWriter.getNx(),
-                        _imageWriter.getNy(),j,i
+                Ray myRay = constructRayThroughPixel(
+                        nX,nY,pC
                         );
-
-
                 //Get the color of every pixel
-                Color myColor = renderPixel(_imageWriter.getNx(), _imageWriter.getNy(), 3, myRay);
+                Color myColor = renderPixel(nX,nY, 3, myRay);
                 //write the color on the image
                 _imageWriter.writePixel(j, i, myColor);
                 Pixel.pixelDone();
@@ -323,45 +328,7 @@ private Random random = new Random();
             });
         });
     }
-    /**
-     * The function constructs a ray from Camera location through the center of a
-     * pixel (i,j) in the view plane
-     *
-     * @param nX number of pixels in a row of view plane
-     * @param nY number of pixels in a column of view plane
-     * @param j  number of the pixel in a row
-     * @param i  number of the pixel in a column
-     * @return the ray through pixel's center
-     */
-    public Ray constructRayThroughPixelyon(int nX, int nY, double j, double i) {
 
-        //Pc = P0 + d * vTo
-        Point pc = _p0.add(_vTo.scale(_distance));
-        Point pIJ = pc;
-
-        //Ry = height / nY : height of a pixel
-        double rY = alignZero(_height / nY);
-        //Ry = weight / nX : width of a pixel
-        double rX = alignZero(_width / nX);
-        //xJ is the value of width we need to move from center to get to the point
-        double xJ = alignZero((j - ((nX - 1) / 2d)) * rX);
-        //yI is the value of height we need to move from center to get to the point
-        double yI = alignZero(-(i - ((nY - 1) / 2d)) * rY);
-
-        if (xJ != 0) {
-            pIJ = pIJ.add(_vRight.scale(xJ)); // move to the point
-        }
-        if (yI != 0) {
-            pIJ = pIJ.add(_vUp.scale(yI)); // move to the point
-        }
-
-        //get vector from camera p0 to the point
-        Vector vIJ = pIJ.subtract(_p0);
-
-        //return ray to the center of the pixel
-        return new Ray(_p0, vIJ);
-
-    }
     /**
      * Function that gets a pixel's center ray and constructs a list of 5 rays from that ray,
      * one at each corner of the pixel and one in the center
@@ -378,7 +345,6 @@ private Random random = new Random();
         double rY = alignZero(_height / nY);
         //Rx = h / nX - pixel width ratio
         double rX = alignZero(_width / nX);
-
 
         Point center = calcFocalFieldPoint(myRay);
 
@@ -415,8 +381,6 @@ private Random random = new Random();
 
         List<Ray> myRays = new ArrayList<>();
         Point center = calcFocalFieldPoint(ray);
-
-
         Point point1 = center.add(_vUp.scale(height / 2));
         Point point2 = center.add(_vRight.scale(-width / 2));
         Point point3 = center.add(_vRight.scale(width / 2));
@@ -429,12 +393,14 @@ private Random random = new Random();
     }
 
     /**
-     * Render every pixel by calling recursive adaptive render function
-     * @param nX nb of pixels in col
-     * @param nY nb of pixels in row
-     * @param depth depth of recursion
-     * @param firstRay first ray traced in center of the pixel
-     * @return the color of the pixel
+     * The function constructs 5 rays into the pixel, traces all the rays and stores the colors with the rays, and renders
+     * the pixel in recursive function
+     *
+     * @param nX the x coordinate of the pixel in the view plane
+     * @param nY the y coordinate of the pixel
+     * @param depth the depth of the recursion
+     * @param firstRay the first ray that was sent to the pixel
+     * @return The color of the pixel
      */
     private Color renderPixel(double nX, double nY, int depth, Ray firstRay) {
         List<Ray> myRays = construct5RaysFromRay(firstRay, nX, nY); //construct 5 rays into the pixel
@@ -448,13 +414,17 @@ private Random random = new Random();
         return renderPixelRecursive(rays, nX, nY, depth);
     }
 
+
     /**
-     * Render the pixel by doing recursion until the color is the same in all the 5 rays or end of depth
-     * @param myRays the rays
-     * @param nX nb of pixels in col
-     * @param nY nb of pixels in row
-     * @param depth recursion depth
-     * @return the color of the pixel
+     * The function gets a map of 5 rays, the center ray is the ray of the pixel, the other rays are the rays of the 4
+     * corners of the pixel. The function checks if the color of the center ray is the same as the color of the other rays,
+     * if not, it sends the pixel to recursion with a map of 5 rays of the 4 under pixels
+     *
+     * @param myRays a map of the rays that are sent to the pixel.
+     * @param nX the width of the pixel
+     * @param nY the height of the pixel
+     * @param depth the number of recursions to perform.
+     * @return The color of the pixel.
      */
     private Color renderPixelRecursive(HashMap<Integer, ColoredRay> myRays, double nX, double nY, int depth) {
         boolean flag = false;
@@ -579,31 +549,32 @@ private Random random = new Random();
      * @return The point on the aperture field that the ray intersects.
      */
     private Point calcApertureFieldPoint(Ray ray) {
-        double len= _apertureFieldDistance /_vTo.dotProduct(ray.getDir());
-        return ray.getPoint(len);
+        return ray.getPoint(_apertureFieldDistance /_vTo.dotProduct(ray.getDir()));
     }
 
+
     /**
-     * The function creates a random point on the aperture field, and then creates a ray from that point to the focus plane
-     * intersection point. The color of the ray is then added to the color of the primary ray
+     * The function calculates the color of the secondary rays by calculating the color of the primary ray and adding the
+     * color of the secondary rays
      *
      * @param ray The ray that hit the focus plane.
-     * @param focusPlaneIntersection The point on the focus plane where the primary ray intersects.
-     * @return The color of the point in the focus plane.
+     * @param focusPlaneIntersection The point where the ray intersects the focus plane.
+     * @return The color of the pixel.
      */
     private Color colorSecundaryRays(Ray ray,Point focusPlaneIntersection)
     {
-        Color color=  _rayTracer.traceRay(ray);
+        Color color=_rayTracer.traceRay(ray);
         Point apertureCenter= calcApertureFieldPoint( ray);
-        int i=0;
+
+        //rotate on the lense
         double d = 360d/5d;
-        for (;i<5;i++){
-            Vector v=  _vUp.rotateVector(_vRight,d*i).scale(_apertureFieldRadius).rotateVector(_vUp,d*i);
+        for (int i=0;i<5;i++){
+            Vector v=_vUp.rotateVector(_vRight,d*i).scale(_apertureFieldRadius).rotateVector(_vUp,d*i);
             Point p=apertureCenter.add(v);
             Ray depthRay=new Ray(p,new Vector(focusPlaneIntersection.subtract(p).get_xyz()));
             color=color.add(_rayTracer.traceRay(depthRay));
         }
-        return color.scale(1/5d);
+        return averageColor(color,5);
     }
 
 
@@ -635,7 +606,7 @@ private Random random = new Random();
         Color c2 = _rayTracer.traceRay(constructRayThroughPixel(nX,nY,Pij.add(_vRight.scale(-halfRx)).add(_vUp.scale(-halfRy)).subtract(_p0)));
 
         Color c3 = _rayTracer.traceRay(constructRayThroughPixel(nX,nY,Pij.add(_vRight.scale(-halfRx)).add(_vUp.scale(-halfRy)).subtract(_p0)));
-       Color c4 = _rayTracer.traceRay(constructRayThroughPixel(nX,nY,Pij.add(_vRight.scale(halfRx)).add(_vUp.scale(-halfRy)).subtract(_p0)));
+        Color c4 = _rayTracer.traceRay(constructRayThroughPixel(nX,nY,Pij.add(_vRight.scale(halfRx)).add(_vUp.scale(-halfRy)).subtract(_p0)));
         boolean checkEdges = c1.equals(c2) && c1.equals(c3) && c1.equals(c4);
 
 
@@ -643,7 +614,7 @@ private Random random = new Random();
 
         if (!checkEdges||checkEdges){
         //We call the function constructRayThroughPixel like we used to but this time we launch m * n ray in the same pixel
-            for (int k = 0; k < 100; k++) {
+            for (int k = 0; k < _numOfBeams; k++) {
               Point tmp = Pij;
                 Ray ray=constructRayThroughPixel(nX, nY, Pij);
                 myra.add(ray);
@@ -675,39 +646,7 @@ private Random random = new Random();
         for(Ray ray: rays){
             color = color.add(_rayTracer.traceRay(ray));
         }
-
         return averageColor(color,rays.size());
-    }
-
-
-    /**
-     * The function gets a pixel and checks if the color of the pixel is the same as the color of the pixel's neighbors
-     *
-     * @param nX number of pixels in the width
-     * @param nY number of pixels in the height
-     * @param j the number of pixels in the width
-     * @param i the row number of the pixel
-     * @return true if all the colors are the same and false otherwise
-     */
-    private boolean calcFourEdges(int nX, int nY, int j, int i){
-        //  double Ry = (double) _height / nY;
-        // double Rx = (double) _width / nX;
-
-        // Image center
-        Point pC = _p0.add(_vTo.scale(_distance));
-
-
-        //Ry = height / nY : height of a pixel
-        double halfRy = alignZero( _height /(2 *nY));
-        //Ry = weight / nX : width of a pixel
-        double halfRx = alignZero(_width /(2* nX));
-
-        Color c1 = _rayTracer.traceRay(constructRayThroughPixel(nX,nY,pC.add(_vRight.scale(halfRx)).add(_vUp.scale(halfRy)).subtract(_p0)));
-        Color c2 = _rayTracer.traceRay(constructRayThroughPixel(nX,nY,pC.add(_vRight.scale(-halfRx)).add(_vUp.scale(halfRy)).subtract(_p0)));
-        Color c3 = _rayTracer.traceRay(constructRayThroughPixel(nX,nY,pC.add(_vRight.scale(-halfRx)).add(_vUp.scale(-halfRy)).subtract(_p0)));
-        Color c4 = _rayTracer.traceRay(constructRayThroughPixel(nX,nY,pC.add(_vRight.scale(halfRx)).add(_vUp.scale(-halfRy)).subtract(_p0)));
-
-        return c2.equals(c3) && c1.equals(c2) && c4.equals(c1);
     }
     /**
      * We start from the center of the pixel and move randomly in the pixel to get the point
@@ -745,7 +684,7 @@ private Random random = new Random();
 
     }
     /**
-     * Construct ray through nthe center of a pixel when we have only the bottom right corner's ray
+     * Construct ray through the center of a pixel when we have only the bottom right corner's ray
      * @param ray the ray
      * @param nX number of pixel in width
      * @param nY number of pixels in height
