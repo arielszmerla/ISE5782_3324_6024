@@ -254,7 +254,10 @@ public class ImprovementTest {
         camera1.rotateCamera(new Vector(0, 0.999, -0.0425), 8);
         camera1.setImageWriter(imageWriter) //
                 .setRayTracer(new RayTracerBasic(scene1)) //
+                .setMultithreading(3)//
+                .setDebugPrint()//
                 .renderImage(); //
+
         camera1.writeToImage();//
 
 
