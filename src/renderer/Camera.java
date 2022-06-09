@@ -276,7 +276,7 @@ private Random random = new Random();
         _imageWriter.writeToImage();
     }
 
-    public void renderImage() {
+    public void renderImage2() {
 
         try {
             if (_imageWriter == null) {
@@ -307,7 +307,7 @@ private Random random = new Random();
      * Use of AntiAliasing method that is shooting lots of beams in place of only one in the
      * center of the pixel
      */
-    public void renderImage1() {
+    public void renderImage() {
         //Render every pixel of the image
         Point pC = _p0.add(_vTo.scale(_distance));
         int nX = _imageWriter.getNx();
@@ -428,6 +428,7 @@ private Random random = new Random();
      */
     private Color renderPixelRecursive(HashMap<Integer, ColoredRay> myRays, double nX, double nY, int depth) {
         boolean flag = false;
+        HashMap<Integer, ColoredRay> rays = new HashMap<>();
         //get the center of the pixel ray
         ColoredRay mainRay = myRays.get(3);
         //get center's color
@@ -437,14 +438,15 @@ private Random random = new Random();
             //if one differs than center need to send the pixel to compute color in recursion
             for (Integer integer : myRays.keySet()) {
                 if (integer != 3) {
-                    ColoredRay tmpRay = myRays.get(integer);
-                    Color tmpColor = tmpRay.getColor();
-                    if (tmpRay.getColor() == null) {
-                        tmpColor = _rayTracer.traceRay(tmpRay.getRay());
-                        myRays.put(integer, new ColoredRay(tmpRay.getRay(), tmpColor));
-                    }
-                    if (!tmpColor.equals(mainColor)) {
+                    //Color tmpColor  = myRays.get(integer).getColor();
+                    //Color tmpColor = tmpRay.getColor();
+                   /* if (tmpColor == null || tmpColor==Color.BLACK) {
+                       // tmpColor = _rayTracer.traceRay(tmpRay.getRay());
+                        myRays.put(integer, tmpRay);
+                    }*/
+                    if (!myRays.get(integer).getColor().equals(mainColor)) {
                         flag = true;
+                        break;
                     }
                 }
             }
@@ -453,7 +455,7 @@ private Random random = new Random();
                 List<ColoredRay> newRays =construct4RaysThroughPixel(myRays.get(3).getRay(), nX, nY).stream().map(
                         x -> new ColoredRay(x, _rayTracer.traceRay(x))
                 ).collect(Collectors.toList());
-                HashMap<Integer, ColoredRay> rays = new HashMap<>();
+
                 rays.put(1, myRays.get(1));
                 rays.put(2, newRays.get(0));
                 Ray tempCenter = constructPixelCenterRay(myRays.get(1).getRay(), nX * 2, nY * 2);
@@ -461,7 +463,7 @@ private Random random = new Random();
                 rays.put(4, newRays.get(1));
                 rays.put(5, myRays.get(3));
                 mainColor = mainColor.add(renderPixelRecursive(rays, nX * 2, nY * 2, depth - 1));
-                rays = new HashMap<>();
+                //rays = new HashMap<>();
                 rays.put(1, newRays.get(0));
                 rays.put(2, myRays.get(2));
                 tempCenter = constructPixelCenterRay(newRays.get(0).getRay(), nX * 2, nY * 2);
@@ -469,7 +471,7 @@ private Random random = new Random();
                 rays.put(4, myRays.get(3));
                 rays.put(5, newRays.get(2));
                 mainColor = mainColor.add(renderPixelRecursive(rays, nX * 2, nY * 2, depth - 1));
-                rays = new HashMap<>();
+               // rays = new HashMap<>();
                 rays.put(1, newRays.get(1));
                 rays.put(2, myRays.get(3));
                 tempCenter = constructPixelCenterRay(newRays.get(1).getRay(), nX * 2, nY * 2);
@@ -477,7 +479,7 @@ private Random random = new Random();
                 rays.put(4, myRays.get(4));
                 rays.put(5, newRays.get(3));
                 mainColor = mainColor.add(renderPixelRecursive(rays, nX * 2, nY * 2, depth - 1));
-                rays = new HashMap<>();
+                //rays = new HashMap<>();
                 rays.put(1, myRays.get(3));
                 rays.put(2, newRays.get(2));
                 tempCenter = constructPixelCenterRay(myRays.get(3).getRay(), nX * 2, nY * 2);
