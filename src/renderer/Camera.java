@@ -23,7 +23,7 @@ public class Camera {
         return _numOfBeams;
     }
 
-    private int _numOfBeams = 4;
+    private int _numOfBeams = 100;
     private final int SPARE_THREADS = 2;
     /**
      * right direction vector from camera

@@ -334,7 +334,6 @@ public class RayTracerBasic extends RayTracer {
      */
     private Ray[] constructReflectedRays(Point point, Vector v, Vector n, Double3 kG) {
         Vector n2vn = n.scale(-2 * v.dotProduct(n));
-      //  Vector r = v.add(n2vn);
         Vector r = new Vector( n2vn.add(v).get_xyz());
         // If kG is equals to 1 then return only 1 ray, the specular ray (r)
         if (Double3.ONE.equals(kG)) {
