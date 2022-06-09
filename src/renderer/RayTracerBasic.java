@@ -124,22 +124,22 @@ public class RayTracerBasic extends RayTracer {
         }
         // Calculating the reflected rays and adding them to the color.
         if(kkr.biggerThan(MIN_CALC_COLOR_K)){
-            Ray[] reflectedRays = constructReflectedRays(intersection._point, v, n, material._kG);
+            HashSet<Ray> reflectedRays = constructReflectedRays(intersection._point, v, n, material._kG);
             for (Ray reflectedRay : reflectedRays) {
                 color = color.add(calcGlobalEffect(reflectedRay, level, material._kR, kkr)
-                        .scale(1d / reflectedRays.length));
+                        .scale(1d / reflectedRays.size()));
             }
         }
 
         // adds the refraction effect
         Double3 kt=intersection._geometry.getMaterial()._kT;Double3 kkt=kt.product(k);
         if(kkt.biggerThan(MIN_CALC_COLOR_K)){
-            Ray[] refractedRays = constructRefractedRays(intersection._point, v, n.scale(-1), material._kG);
+            HashSet<Ray> refractedRays = constructRefractedRays(intersection._point, v, n.scale(-1), material._kG);
             for (Ray refractedRay : refractedRays) {
                 color = color.add(calcGlobalEffect(refractedRay, level, material._kT, kkt));
 
             }
-            color = color.reduce(refractedRays.length);
+            color = color.reduce(refractedRays.size());
         }
 
         return color;
@@ -332,19 +332,21 @@ public class RayTracerBasic extends RayTracer {
      * @param kG    the glossiness parameter in range of [0,1], where 0 - matte, 1 - glossy
      * @return randomized reflection rays
      */
-    private Ray[] constructReflectedRays(Point point, Vector v, Vector n, Double3 kG) {
+    private HashSet<Ray> constructReflectedRays(Point point, Vector v, Vector n, Double3 kG) {
         Vector n2vn = n.scale(-2 * v.dotProduct(n));
       //  Vector r = v.add(n2vn);
         Vector r = new Vector( n2vn.add(v).get_xyz());
         // If kG is equals to 1 then return only 1 ray, the specular ray (r)
         if (Double3.ONE.equals(kG)) {
-            return new Ray[]{new Ray(point, n, r)};
+             HashSet<Ray> rays =new HashSet<>();
+            rays.add(new Ray(point, n, r));
+            return rays;
         }
 
-        Vector[] randomizedVectors = createRandomVectorsOnSphere(n,_glossinessRays);
+
 
         // If kG is equals to 0 then select all the randomized vectors
-        if (Double3.ZERO==kG) {
+     /*   if (Double3.ZERO==kG) {
             return Arrays.stream(randomizedVectors)
                     .map(vector -> new Ray(point, n,vector))
                     .toArray(Ray[]::new);
@@ -354,7 +356,13 @@ public class RayTracerBasic extends RayTracer {
         return Arrays.stream(randomizedVectors)
                 .map(vector -> new Ray(point,n,
                         new Vector( vector.scale(Double3.ONE.subtract(kG)).add(r.scale(kG)).get_xyz())))
-                .toArray(Ray[]::new);
+                .toArray(Ray[]::new);*/
+        if (Double3.ZERO.equals(kG)) {
+            return createRandomVectorsOnSphere(n, _glossinessRays,new Double3(1),point);
+
+        }
+        // If kG is in range (0,1) then move the randomized vectors towards the specular vector (v)
+        return createRandomVectorsOnSphere(n, _glossinessRays,Double3.ONE.subtract(kG).add(r.scale(kG).get_xyz()),point);
     }
 
     /**
@@ -367,25 +375,28 @@ public class RayTracerBasic extends RayTracer {
      * @param kG    the glossiness parameter in range of [0,1], where 0 - matte, 1 - glossy
      * @return randomized refraction rays
      */
-    private Ray[] constructRefractedRays(Point point, Vector v, Vector n, Double3 kG) {
+    private HashSet<Ray> constructRefractedRays(Point point, Vector v, Vector n, Double3 kG) {
         // If kG is equals to 1 then return only 1 ray, the specular ray (v)
         if (Double3.ONE.equals(kG)) {
-            return new Ray[]{new Ray(point, n, v)};
+            //return new Ray[]{new Ray(point, n, v)};
+            HashSet<Ray> rays =new HashSet<>();
+            rays.add(new Ray(point, n,v));
+            return rays;
         }
 
-        Vector[] randomizedVectors = createRandomVectorsOnSphere(n, _glossinessRays);
+       // Ray[] randomizedVectors = createRandomVectorsOnSphere(n, _glossinessRays,1d);
 
         // If kG is equals to 0 then select all the randomized vectors
         if (Double3.ZERO.equals(kG)) {
-            return Arrays.stream(randomizedVectors)
-                    .map(vector -> new Ray(point, n,vector))
-                    .toArray(Ray[]::new);
+            return createRandomVectorsOnSphere(n, _glossinessRays,new Double3(1),point);
+
         }
         // If kG is in range (0,1) then move the randomized vectors towards the specular vector (v)
-        return Arrays.stream(randomizedVectors)
+        return createRandomVectorsOnSphere(n, _glossinessRays,Double3.ONE.subtract(kG).add(v.scale(kG).get_xyz()),point);
+       /* return Arrays.stream(randomizedVectors)
                 .map(vector -> new Ray(point,n,
                      vector.scale(Double3.ONE.subtract(kG).add(v.scale(kG).get_xyz()))))
-                .toArray(Ray[]::new);
+                .toArray(Ray[]::new);*/
     }
 
     /**
@@ -395,7 +406,7 @@ public class RayTracerBasic extends RayTracer {
      * @param numOfVectors The number of vectors to be generated.
      * @return A vector that is orthogonal to the normal vector.
      */
-    private Vector[] createRandomVectorsOnSphere(Vector n, int numOfVectors) {
+    private HashSet<Ray> createRandomVectorsOnSphere(Vector n, int numOfVectors,Double3 scalar,Point point) {
         // pick axis with smallest component in normal
         // in order to prevent picking an axis parallel
         // to the normal and eventually creating zero vector
@@ -414,7 +425,7 @@ public class RayTracerBasic extends RayTracer {
         Vector x = n.crossProduct(axis);
         Vector z = n.crossProduct(x);
 
-        Hashtable<Vector,Vector> randomVectors = new Hashtable<>();
+        HashSet<Ray> randomVectors = new HashSet<>();
         for (int i = 0; i < numOfVectors; i++) {
             // pick a point on the hemisphere bottom
             double u, v, u2, v2;
@@ -430,14 +441,19 @@ public class RayTracerBasic extends RayTracer {
 
             // create the new vector according to the base (x, n, z) and the coordinates (u, w, v)
             Vector vec=new Vector( x.scale(u).add(z.scale(v)).add(n.scale(w)).get_xyz());
-            randomVectors.put(vec,vec);
+            randomVectors.add( new Ray(point, n,vec.scale(scalar)));
         }
+        return randomVectors;
+        /*
         Set<Vector> keys = randomVectors.keySet();
         Vector[] vectors=new Vector[numOfVectors];
         int i =0;
         for(Vector key: keys){
             vectors[i++]=key;
         }
-        return vectors;
+        //return vectors;
+        return Arrays.stream(vectors)
+                .map(vector -> new Ray(point, n,vector.scale(scalar)))
+                .toArray(Ray[]::new);*/
     }
 }
