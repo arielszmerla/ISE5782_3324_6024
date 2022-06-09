@@ -151,23 +151,45 @@ public class ImprovementTest {
         Point w33 = new Point(-260, -80, -590);
         Point w44 = new Point(260, -80, -590);
         scene1._geometries.addAll(new Wall(w11, w22, w33, w44, 295, new Color(WHITE), new Material().setKd(0.7))._parts);
-
-        //front1
-        Point wf1 = new Point(0, -80, 260);
-        Point wf2 = new Point(-260, -80, 260);
-        Point wf3 = new Point(-260, 215, 260);
-        Point wf4 = new Point(0, 215, 260);
-        scene1._geometries.add(new Polygon(wf1,wf2,wf3,wf4).setEmission(new Color(BLACK))
-                .setMaterial(new Material().setKd(0.2).setKs(0.2).setnShininess(30).setKt(0.9).setKg(1)));
+//front1
+        Point wf11 = new Point(-150, -80, 260);
+        Point wf12 = new Point(-260, -80, 260);
+        Point wf13 = new Point(-260, 215, 260);
+        Point wf14 = new Point(-150, 215, 260);
+        scene1._geometries.add(new Polygon(wf11,wf12,wf13,wf14).setEmission(new Color(BLACK))
+                .setMaterial(new Material().setKd(0.2).setKs(0.2).setnShininess(30).setKt(0.9).setKg(0.2)));
 
         //front2
-        Point wff1 = new Point(260, -80, 260);
-        Point wff2 = new Point(0, -80, 260);
-        Point wff3 = new Point(0, 215, 260);
-        Point wff4 = new Point(260, 215, 260);
-        scene1._geometries.add(new Polygon(wff1,wff2,wff3,wff4).setEmission(new Color(BLACK))
-                .setMaterial(new Material().setKd(0.2).setKs(0.2).setnShininess(30).setKt(0.9).setKg(0.1)));
+        Point wf21 = new Point(-50, -80, 260);
+        Point wf22 = new Point(-150, -80, 260);
+        Point wf23 = new Point(-150, 215, 260);
+        Point wf24 = new Point(-50, 215, 260);
+        scene1._geometries.add(new Polygon(wf21,wf22,wf23,wf24).setEmission(new Color(BLACK))
+                .setMaterial(new Material().setKd(0.2).setKs(0.2).setnShininess(30).setKt(0.9).setKg(0.4)));
 
+        //front3
+        Point wf31 = new Point(50, -80, 260);
+        Point wf32 = new Point(-50, -80, 260);
+        Point wf33 = new Point(-50, 215, 260);
+        Point wf34 = new Point(50, 215, 260);
+        scene1._geometries.add(new Polygon(wf31,wf32,wf33,wf34).setEmission(new Color(BLACK))
+                .setMaterial(new Material().setKd(0.2).setKs(0.2).setnShininess(30).setKt(0.9).setKg(0.6)));
+
+        //front4
+        Point wf41 = new Point(150, -80, 260);
+        Point wf42 = new Point(50, -80, 260);
+        Point wf43 = new Point(50, 215, 260);
+        Point wf44 = new Point(150, 215, 260);
+        scene1._geometries.add(new Polygon(wf41,wf42,wf43,wf44).setEmission(new Color(BLACK))
+                .setMaterial(new Material().setKd(0.2).setKs(0.2).setnShininess(30).setKt(0.9).setKg(0.8)));
+
+        //front5
+        Point wf51 = new Point(260, -80, 260);
+        Point wf52 = new Point(150, -80, 260);
+        Point wf53 = new Point(150, 215, 260);
+        Point wf54 = new Point(260, 215, 260);
+        scene1._geometries.add(new Polygon(wf51,wf52,wf53,wf54).setEmission(new Color(BLACK))
+                .setMaterial(new Material().setKd(0.2).setKs(0.2).setnShininess(30).setKt(0.9).setKg(1)));
         //mirror
         Point m1 = new Point(200, -20, -590);
         Point m2 = new Point(-200, -20, -590);

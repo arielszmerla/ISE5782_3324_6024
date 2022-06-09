@@ -11,7 +11,7 @@ import static primitives.Util.*;
 import static renderer.Pixel.printInterval;
 
 public class Camera {
-    private int _threads = 1;
+    private int _threads = 0;
     private boolean _print = false;
 
     /**
@@ -23,7 +23,7 @@ public class Camera {
         return _numOfBeams;
     }
 
-    private int _numOfBeams = 100;
+    private int _numOfBeams = 4;
     private final int SPARE_THREADS = 2;
     /**
      * right direction vector from camera
@@ -143,7 +143,7 @@ private Random random = new Random();
      */
     public Camera setMultithreading(int threads) {
         if (threads < 0)
-            throw new IllegalArgumentException("Multithreading patameter must be 0 or higher");
+            throw new IllegalArgumentException("Multithreading parameter must be 0 or higher");
         if (threads != 0)
             _threads = threads;
         else {
@@ -276,7 +276,7 @@ private Random random = new Random();
         _imageWriter.writeToImage();
     }
 
-    public void renderImage2() {
+    public void renderImage() {
 
         try {
             if (_imageWriter == null) {
@@ -307,8 +307,8 @@ private Random random = new Random();
      * Use of AntiAliasing method that is shooting lots of beams in place of only one in the
      * center of the pixel
      */
-    public void renderImage() {
-        //Render every pixel of the ima
+    public void renderImage1() {
+        //Render every pixel of the image
         Point pC = _p0.add(_vTo.scale(_distance));
         int nX = _imageWriter.getNx();
         int nY = _imageWriter.getNy();
@@ -317,7 +317,7 @@ private Random random = new Random();
             IntStream.range(0, nX).parallel().forEach(j -> {
                 //construct ray for every pixel
                 Ray myRay = constructRayThroughPixel(
-                        nX,nY,pC
+                        nX,nY,i,j
                         );
                 //Get the color of every pixel
                 Color myColor = renderPixel(nX,nY, 3, myRay);
@@ -580,7 +580,7 @@ private Random random = new Random();
 
 
     public HashSet <Ray> constructRays(int nX, int nY, int j, int i) {
-        double Ry =  _height / nY;
+       /* double Ry =  _height / nY;
         double Rx =  _width / nX;
 
         // Image center
@@ -610,21 +610,20 @@ private Random random = new Random();
         boolean checkEdges = c1.equals(c2) && c1.equals(c3) && c1.equals(c4);
 
 
-        HashSet<Ray> myra= new HashSet<>();//to save all the different rays created
 
-        if (!checkEdges||checkEdges){
+
+        if (!checkEdges||checkEdges){*/
+        HashSet<Ray> myra= new HashSet<>();//to save all the different rays created
         //We call the function constructRayThroughPixel like we used to but this time we launch m * n ray in the same pixel
             for (int k = 0; k < _numOfBeams; k++) {
-              Point tmp = Pij;
-                Ray ray=constructRayThroughPixel(nX, nY, Pij);
+                Ray ray=constructRayThroughPixel(nX, nY, j,i);
                 myra.add(ray);
-                Pij = tmp;
             }
-        }
+       /* }
         else {
-            Ray ray = constructRayThroughPixel(nX, nY, Pij);
+            Ray ray = constructRayThroughPixel(nX, nY, j,i);
             myra.add(ray);
-        }
+        }*/
 
         return myra;
     }
@@ -701,6 +700,45 @@ private Random random = new Random();
         Point point = calcFocalFieldPoint(ray);
         point = point.add(_vRight.scale(width / 2)).add(_vUp.scale(-height / 2));
         return new Ray(_p0, point.subtract(_p0));
+    }
+    /**
+     * The function constructs a ray from Camera location through the center of a
+     * pixel (i,j) in the view plane
+     *
+     * @param nX number of pixels in a row of view plane
+     * @param nY number of pixels in a column of view plane
+     * @param j  number of the pixel in a row
+     * @param i  number of the pixel in a column
+     * @return the ray through pixel's center
+     */
+    public Ray constructRayThroughPixel(int nX, int nY, double j, double i) {
+
+        //Pc = P0 + d * vTo
+        Point pc = _p0.add(_vTo.scale(_distance));
+        Point pIJ = pc;
+
+        //Ry = height / nY : height of a pixel
+        double rY = alignZero(_height / nY);
+        //Ry = weight / nX : width of a pixel
+        double rX = alignZero(_width / nX);
+        //xJ is the value of width we need to move from center to get to the point
+        double xJ = alignZero((j - ((nX - 1) / 2d)) * rX);
+        //yI is the value of height we need to move from center to get to the point
+        double yI = alignZero(-(i - ((nY - 1) / 2d)) * rY);
+
+        if (xJ != 0) {
+            pIJ = pIJ.add(_vRight.scale(xJ)); // move to the point
+        }
+        if (yI != 0) {
+            pIJ = pIJ.add(_vUp.scale(yI)); // move to the point
+        }
+
+        //get vector from camera p0 to the point
+        Vector vIJ = pIJ.subtract(_p0);
+
+        //return ray to the center of the pixel
+        return new Ray(_p0, vIJ);
+
     }
 }
 

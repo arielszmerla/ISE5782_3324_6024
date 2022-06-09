@@ -19,7 +19,7 @@ public class RayTracerBasic extends RayTracer {
     private static final int MAX_CALC_COLOR_LEVEL = 10;
     private static final double MIN_CALC_COLOR_K = 0.001;
     private static final double INITIAL_K = 1.0;
-    private int _glossinessRays = 10;
+    private int _glossinessRays = 30;
 
     /**
      * scene setter
@@ -134,12 +134,12 @@ public class RayTracerBasic extends RayTracer {
         // adds the refraction effect
         Double3 kt=intersection._geometry.getMaterial()._kT;Double3 kkt=kt.product(k);
         if(kkt.biggerThan(MIN_CALC_COLOR_K)){
-
             Ray[] refractedRays = constructRefractedRays(intersection._point, v, n.scale(-1), material._kG);
             for (Ray refractedRay : refractedRays) {
-                color = color.add(calcGlobalEffect(refractedRay, level, material._kT, kkt)
-                        .scale(1d / refractedRays.length));
+                color = color.add(calcGlobalEffect(refractedRay, level, material._kT, kkt));
+
             }
+            color = color.reduce(refractedRays.length);
         }
 
         return color;
@@ -335,7 +335,7 @@ public class RayTracerBasic extends RayTracer {
     private Ray[] constructReflectedRays(Point point, Vector v, Vector n, Double3 kG) {
         Vector n2vn = n.scale(-2 * v.dotProduct(n));
       //  Vector r = v.add(n2vn);
-        Vector r= new Vector(v.add(n2vn).get_xyz());
+        Vector r = new Vector( n2vn.add(v).get_xyz());
         // If kG is equals to 1 then return only 1 ray, the specular ray (r)
         if (Double3.ONE.equals(kG)) {
             return new Ray[]{new Ray(point, n, r)};
@@ -381,11 +381,10 @@ public class RayTracerBasic extends RayTracer {
                     .map(vector -> new Ray(point, n,vector))
                     .toArray(Ray[]::new);
         }
-
         // If kG is in range (0,1) then move the randomized vectors towards the specular vector (v)
         return Arrays.stream(randomizedVectors)
                 .map(vector -> new Ray(point,n,
-                        vector.scale(Double3.ONE.subtract(kG).add(v.scale(kG).get_xyz()))))
+                     vector.scale(Double3.ONE.subtract(kG).add(v.scale(kG).get_xyz()))))
                 .toArray(Ray[]::new);
     }
 
