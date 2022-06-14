@@ -39,8 +39,8 @@ public class RayTracerBasic extends RayTracer {
     @Override
     public Color traceRay(Ray ray) {
           if (findClosestIntersection(ray) != null)
-               return calcColor(this.findClosestIntersection(ray), ray);
-            return _scene._background;
+               return calcColor(findClosestIntersection(ray), ray);
+          return _scene._background;
     }
     public RayTracerBasic setGlossinessRays(int glossinessRays) {
         if (glossinessRays <= 0) {

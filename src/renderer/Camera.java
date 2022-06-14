@@ -452,10 +452,15 @@ private Random random = new Random();
             }
             if (flag) {
                 //Create a map of Colored rays for the 4 under pixels and send to recursion
-                List<ColoredRay> newRays =construct4RaysThroughPixel(myRays.get(3).getRay(), nX, nY).stream().map(
+                /*   List<ColoredRay> newRays =construct4RaysThroughPixel(myRays.get(3).getRay(), nX, nY).stream().map(
                         x -> new ColoredRay(x, _rayTracer.traceRay(x))
-                ).collect(Collectors.toList());
-
+                ).collect(Collectors.toList());*/
+                List<ColoredRay> newRays = new LinkedList<>();
+                    List<Ray> r=construct4RaysThroughPixel(myRays.get(3).getRay(), nX, nY);
+                for (Ray ray:r
+                     ) {
+                    newRays.add(new ColoredRay(ray,_rayTracer.traceRay(ray)));
+                }
                 rays.put(1, myRays.get(1));
                 rays.put(2, newRays.get(0));
                 Ray tempCenter = constructPixelCenterRay(myRays.get(1).getRay(), nX * 2, nY * 2);
