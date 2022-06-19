@@ -28,7 +28,7 @@ public class Geometries extends Intersectable {
    }
 
     /**
-     * add geometries to _intesectables
+     * add geometries to _intersectables
      * @param geometries {@link Intersectable}
      */
    public void add(Intersectable... geometries) {
@@ -36,7 +36,7 @@ public class Geometries extends Intersectable {
    }
 
    /**
-     * add geometries to _intesectables
+     * add geometries to _intresectables
      * @param geometries {@link Intersectable}
      */
    public void addAll(List <Intersectable> geometries) {
