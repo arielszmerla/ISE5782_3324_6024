@@ -31,19 +31,15 @@ public class FinalTest {
             for(int j=0;j<5;j++){
                 Sphere sphere = (Sphere) new Sphere(center.add(new Vector(30*(j+0.001),0,-40*(i+0.001))),10d)
                         .setMaterial(new Material().setKs(0.5).setKd(0.5).setKg(1));
-                //if(i==j)
-                    sphere.setEmission(new Color(rand.nextInt(256),rand.nextInt(256),rand.nextInt(256)));
-                //else
-                  //  sphere.setEmission(new Color(136,139,141));
-
+                sphere.setEmission(new Color(rand.nextInt(256),rand.nextInt(256),rand.nextInt(256)));
                 scene1._geometries.add(sphere);
 
         }
-            scene1._geometries.add(
+           /* scene1._geometries.add(
                     new Sphere(new Point(-40,55,-150), 20)
                             .setEmission(new Color(136,139,141))
                             .setMaterial(new Material().setKs(0.5).setKd(0.5).setKr(1).setKg(1))
-            );
+            );*/
         }
         scene1._geometries.add(new Polygon(
                 new Point(-70,-10,40),

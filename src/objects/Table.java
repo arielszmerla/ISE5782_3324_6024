@@ -24,7 +24,9 @@ public class Table  {
 
         double x = Math.sqrt((_radius-5)*(_radius-5)/2);
 
-        Collections.addAll(_parts, new Cylinder(new Ray(_center,new Vector(0,1,0)),_radius, 10d).setEmission(_color) //
+        Collections.addAll(_parts, new Cylinder(new Ray(_center.add(new Vector(0,10,0)),new Vector(0,1,0)),_radius, 1d).setEmission(_color) //
+                        .setMaterial(new Material().setnShininess(40).setKs(0.5).setKd(0.5).setKr(1).setKg(1)),
+                new Cylinder(new Ray(_center,new Vector(0,1,0)),_radius, 10d).setEmission(_color) //
                         .setMaterial(_material),
                 new Cylinder(new Ray(_center.add(new Vector(x,0,x)),new Vector(0,-1,0)),5d, _height).setEmission(_color) //
                         .setMaterial(_material),
