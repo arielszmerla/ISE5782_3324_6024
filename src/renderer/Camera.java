@@ -63,8 +63,8 @@ public class Camera {
         _numOfBeams = numOfBeams;
         return this;
     }
-// A random number generator.
-private Random random = new Random();
+    // A random number generator.
+    private Random random = new Random();
     // A private variable that is used to write the image to the screen.
     private ImageWriter _imageWriter;
     // A private variable that is used to write the image to the screen.

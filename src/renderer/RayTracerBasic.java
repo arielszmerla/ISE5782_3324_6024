@@ -185,7 +185,6 @@ public class RayTracerBasic extends RayTracer {
      * @return The color of the point.
      */
     private Color calcSpecular(Double3 ks, Vector l, Vector n, Vector v, int nShininess, Color lightIntensity) {
-
         // Calculating the reflection vector.
         Vector r = new Vector(l.add(n.scale(n.dotProduct(l) * -2)).get_xyz());
         double vR;
@@ -345,11 +344,11 @@ public class RayTracerBasic extends RayTracer {
 
         // If kG is equals to 0 then select all the randomized vectors
         if (Double3.ZERO.equals(kG))
-            return createRandomVectorsOnSphere(n, _glossinessRays,new Double3(1),point);
+            return getRandomVectorsOnSphere(n, _glossinessRays,new Double3(1),point);
 
 
         // If kG is in range (0,1) then move the randomized vectors towards the specular vector (v)
-        return createRandomVectorsOnSphere(n, _glossinessRays,Double3.ONE.subtract(kG).add(r.scale(kG).get_xyz()),point);
+        return getRandomVectorsOnSphere(n, _glossinessRays,Double3.ONE.subtract(kG).add(r.scale(kG).get_xyz()),point);
     }
 
     /**
@@ -369,16 +368,13 @@ public class RayTracerBasic extends RayTracer {
             rays.add(new Ray(point, n,v));
             return rays;
         }
-
-       // Ray[] randomizedVectors = createRandomVectorsOnSphere(n, _glossinessRays,1d);
-
         // If kG is equals to 0 then select all the randomized vectors
         if (Double3.ZERO.equals(kG)) {
-            return createRandomVectorsOnSphere(n, _glossinessRays,new Double3(1),point);
+            return getRandomVectorsOnSphere(n, _glossinessRays,Double3.ONE,point);
 
         }
-        // If kG is in range (0,1) then move the randomized vectors towards the specular vector (v)
-        return createRandomVectorsOnSphere(n, _glossinessRays,Double3.ONE.subtract(kG).add(v.scale(kG).get_xyz()),point);
+        // If kG is in range (0,1) then move the randomized vectors towards the specular vector (v) so the glossy effect is less strong as irt grows
+        return getRandomVectorsOnSphere(n, _glossinessRays,Double3.ONE.subtract(kG).add(v.scale(kG).get_xyz()),point);
     }
 
     /**
@@ -388,41 +384,44 @@ public class RayTracerBasic extends RayTracer {
      * @param numOfVectors The number of vectors to be generated.
      * @return A vector that is orthogonal to the normal vector.
      */
-    private HashSet<Ray> createRandomVectorsOnSphere(Vector n, int numOfVectors,Double3 scalar,Point point) {
-        // pick axis with the smallest component in normal
-        // in order to prevent picking an axis parallel
+    private HashSet<Ray> getRandomVectorsOnSphere(Vector n, int numOfVectors,Double3 scalar,Point point) {
+        // pick vTo with the smallest component in normal
+        // in order to prevent picking an vTo parallel to the object
         // to the normal and eventually creating zero vector
-        Vector axis;
+        Vector vTo;
 
-        // Finding the axis that is closest to the normal vector.
+        // Finding the vTo that is closest to the normal vector.
+        // we create an vTo that comports like vTo of camera to send our rays through sphere
         if (Math.abs(n.getX()) < Math.abs(n.getY()) && Math.abs(n.getX()) < Math.abs(n.getZ())) {
-            axis = new Vector(1, 0, 0);
+            vTo = new Vector(1, 0, 0);
         } else if (Math.abs(n.getY()) < Math.abs(n.getZ())) {
-            axis = new Vector(0, 1, 0);
+            vTo = new Vector(0, 1, 0);
         } else {
-            axis = new Vector(0, 0, 1);
+            vTo = new Vector(0, 0, 1);
         }
 
         // find two vectors orthogonal to the normal
-        Vector x = n.crossProduct(axis);
-        Vector z = n.crossProduct(x);
+        // like vUp and vRight of camera to send our rays through sphere
+        Vector vUP = n.crossProduct(vTo);
+        // Creating a vector that is perpendicular to the normal and the up vector.
+        Vector vRight = n.crossProduct(vUP);
         double u, v, u2, v2,w;
         HashSet<Ray> randomVectors = new HashSet<>();
         for (int i = 0; i < numOfVectors; i++) {
             // pick a point on the hemisphere bottom
 
             do {
-                u = random() * 2 - 1;
-                v = random() * 2 - 1;
+                u = random() * 2f - 1f;
+                v = random() * 2f - 1f;
                 u2 = u * u;
                 v2 = v * v;
-            } while (u2 + v2 >= 1);
+            } while (u2 + v2 >= 1f);
 
-            // calculate the height of the point
+            // set a normal size for the vector
             w = Math.sqrt(1 - u2 - v2);
 
-            // create the new vector according to the base (x, n, z) and the coordinates (u, w, v)
-            Vector vec=new Vector( x.scale(u).add(z.scale(v)).add(n.scale(w)).get_xyz());
+            // create the new vector according to the base (vUP, n, vRight) and the coordinates (u, w, v)
+            Vector vec=new Vector( vUP.scale(u).add(vRight.scale(v)).add(n.scale(w)).get_xyz());
             randomVectors.add(new Ray(point, n,vec.scale(scalar)));
         }
         return randomVectors;
