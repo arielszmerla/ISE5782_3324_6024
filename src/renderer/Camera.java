@@ -4,7 +4,6 @@ import primitives.*;
 import primitives.Vector;
 
 import java.util.*;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static primitives.Util.*;
@@ -64,7 +63,7 @@ public class Camera {
         return this;
     }
     // A random number generator.
-    private Random random = new Random();
+    private final Random random = new Random();
     // A private variable that is used to write the image to the screen.
     private ImageWriter _imageWriter;
     // A private variable that is used to write the image to the screen.
@@ -125,10 +124,12 @@ public class Camera {
         _vRight = _vTo.crossProduct(_vUp);
     }
 
+
     /**
-     * set distance from camera to viewplane
-     * @param distance
-     * @return updated Camera {@link Camera}
+     * Sets the distance from the camera to the view plane.
+     *
+     * @param distance The distance from the camera to the view plane.
+     * @return The camera object itself.
      */
     public Camera setVPDistance(double distance) {
         _distance = distance;
@@ -166,12 +167,7 @@ public class Camera {
         return this;
     }
 
-    /**
-     * set view plane size
-     * @param width
-     * @param height
-     * @return updated Camera {@link Camera}
-     */
+
     public Camera setVPSize(int width, int height) {
         _width = width;
         _height = height;
@@ -290,24 +286,22 @@ public class Camera {
             int nX = _imageWriter.getNx();
             int nY = _imageWriter.getNy();
             Pixel.initialize(nY, nX, printInterval);
-            IntStream.range(0, nY).parallel().forEach(i -> {
-                IntStream.range(0, nX).parallel().forEach(j -> {
-                           if(isAntiAliasing) {
-                               _imageWriter.writePixel(j, i, castRays_AntiAliasing(nX, nY, j, i));
-                           }
-                           else if (isDepthOfField) {
-                               _imageWriter.writePixel(j, i, castRayDepth(nX, nY, j, i));
+            IntStream.range(0, nY).parallel().forEach(i -> IntStream.range(0, nX).parallel().forEach(j -> {
+                       if(isAntiAliasing) {
+                           _imageWriter.writePixel(j, i, castRays_AntiAliasing(nX, nY, j, i));
+                       }
+                       else if (isDepthOfField) {
+                           _imageWriter.writePixel(j, i, castRayDepth(nX, nY, j, i));
 
-                           }
-                           else{
-                               //Get the color of every pixel
-                               //write the color on the image
-                               _imageWriter.writePixel(j, i, renderPixel(nX, nY, 3, constructRayThroughPixel( nX, nY, i, j)));
-                           }
-                            Pixel.pixelDone();
-                            Pixel.printPixel();
-                });
-            });
+                       }
+                       else{
+                           //Get the color of every pixel
+                           //write the color on the image
+                           _imageWriter.writePixel(j, i, renderPixel(nX, nY, 3, constructRayThroughPixel( nX, nY, i, j)));
+                       }
+                        Pixel.pixelDone();
+                        Pixel.printPixel();
+            }));
         } catch (MissingResourceException e) {
             throw new UnsupportedOperationException("Not implemented yet" + e.getClassName());
         }
@@ -320,24 +314,22 @@ public class Camera {
      */
     public void renderImage() {
         //Render every pixel of the image
-        Point pC = _p0.add(_vTo.scale(_distance));
+//
         int nX = _imageWriter.getNx();
         int nY = _imageWriter.getNy();
         Pixel.initialize(nY, nX, printInterval);
-        IntStream.range(0, nY).parallel().forEach(i -> {
-            IntStream.range(0, nX).parallel().forEach(j -> {
-                //construct ray for every pixel
-                Ray myRay = constructRayThroughPixel(
-                        nX,nY,i,j
-                        );
-                //Get the color of every pixel
-                Color myColor = renderPixel(nX,nY, 3, myRay);
-                //write the color on the image
-                _imageWriter.writePixel(j, i, myColor);
-                Pixel.pixelDone();
-                Pixel.printPixel();
-            });
-        });
+        IntStream.range(0, nY).parallel().forEach(i -> IntStream.range(0, nX).parallel().forEach(j -> {
+            //construct ray for every pixel
+            Ray myRay = constructRayThroughPixel(
+                    nX,nY,i,j
+                    );
+            //Get the color of every pixel
+            Color myColor = renderPixel(nX,nY, 3, myRay);
+            //write the color on the image
+            _imageWriter.writePixel(j, i, myColor);
+            Pixel.pixelDone();
+            Pixel.printPixel();
+        }));
     }
 
     /**
@@ -392,10 +384,12 @@ public class Camera {
 
         List<Ray> myRays = new ArrayList<>();
         Point center = calcFocalFieldPoint(ray);
+        //set the 4 points
         Point point1 = center.add(_vUp.scale(height / 2));
         Point point2 = center.add(_vRight.scale(-width / 2));
         Point point3 = center.add(_vRight.scale(width / 2));
         Point point4 = center.add(_vUp.scale(-height / 2));
+        //create their rays
         myRays.add(new Ray(_p0, point1.subtract(_p0)));
         myRays.add(new Ray(_p0, point2.subtract(_p0)));
         myRays.add(new Ray(_p0, point3.subtract(_p0)));
@@ -449,12 +443,6 @@ public class Camera {
             //if one differs than center need to send the pixel to compute color in recursion
             for (Integer integer : myRays.keySet()) {
                 if (integer != 3) {
-                    //Color tmpColor  = myRays.get(integer).getColor();
-                    //Color tmpColor = tmpRay.getColor();
-                   /* if (tmpColor == null || tmpColor==Color.BLACK) {
-                       // tmpColor = _rayTracer.traceRay(tmpRay.getRay());
-                        myRays.put(integer, tmpRay);
-                    }*/
                     if (!myRays.get(integer).getColor().equals(mainColor)) {
                         flag = true;
                         break;
@@ -536,7 +524,7 @@ public class Camera {
     private Color castRayDepth(int nX, int nY, double j, double i) {
         Ray centerRay=constructRay(nX,nY,(int)j,(int)i);
         Point focalPoint= calcFocalFieldPoint(centerRay);
-        return colorSecundaryRays(centerRay,focalPoint);
+        return calcRaysFromAperturetoFocalPoint(centerRay,focalPoint);
     }
     /**
      * Given a color and a length, return the average color of the color and the length.
@@ -579,12 +567,12 @@ public class Camera {
      * @param focusPlaneIntersection The point where the ray intersects the focus plane.
      * @return The color of the pixel.
      */
-    private Color colorSecundaryRays(Ray ray,Point focusPlaneIntersection)
+    private Color calcRaysFromAperturetoFocalPoint(Ray ray, Point focusPlaneIntersection)
     {
         Color color=_rayTracer.traceRay(ray);
         Point apertureCenter= calcApertureFieldPoint( ray);
 
-        //rotate on the lense
+        //rotate on the lens
         double d = 360d/5d;
         for (int i=0;i<5;i++){
             Vector v=_vUp.rotateVector(_vRight,d*i).scale(_apertureFieldRadius).rotateVector(_vUp,d*i);
@@ -600,7 +588,7 @@ public class Camera {
     public HashSet <Ray> constructRays(int nX, int nY, int j, int i) {
 
         HashSet<Ray> myra= new HashSet<>();//to save all the different rays created
-        //We call the function constructRayThroughPixel like we used to but this time we launch m * n ray in the same pixel
+        //We call the function constructRayThroughPixel like we used to but this time we launch _numOfBeams ray in the same pixel
             for (int k = 0; k < _numOfBeams; k++) {
                 Ray ray=constructRayThroughPixel(nX, nY, j,i);
                 myra.add(ray);
@@ -700,8 +688,8 @@ public class Camera {
     public Ray constructRayThroughPixel(int nX, int nY, double j, double i) {
 
         //Pc = P0 + d * vTo
-        Point pc = _p0.add(_vTo.scale(_distance));
-        Point pIJ = pc;
+        Point pC = _p0.add(_vTo.scale(_distance));
+        Point pIJ = pC;
 
         //Ry = height / nY : height of a pixel
         double rY = alignZero(_height / nY);
