@@ -55,7 +55,7 @@ public class RayTracerBasic extends RayTracer {
             return _scene._background;
         Color color = intersection._geometry.getEmission()
                 .add(calcLocalEffects(intersection,ray,k));
-        return 1 == level ? color : color.add(calcGlobalEffects2(intersection, ray, level, k));
+        return 1 == level ? color : color.add(calcGlobalEffects(intersection, ray, level, k, true));
 
     }
     /**
@@ -70,24 +70,66 @@ public class RayTracerBasic extends RayTracer {
                 .add(_scene._ambientLight.getIntensity());
     }
 
-    private Color calcGlobalEffects(GeoPoint intersection, Ray ray, int level, Double3 k) {
+    /**
+     * Calculates the reflection and the refraction
+     * at a given intersection point.
+     *
+     * @param intersection    the intersection point
+     * @param ray   the ray that caused the intersection
+     * @param level the number of the recursive calls
+     *              to calculate the next reflections and
+     *              refractions
+     * @param k     the effect's strength by the reflection and refraction
+     * @return the color on the intersection point
+     */
+    private Color calcGlobalEffects(GeoPoint intersection, Ray ray, int level, Double3 k,boolean isGlossyEffect) {
         Color color = Color.BLACK;
-        Double3 kr= intersection._geometry.getMaterial()._kR;Double3 kkr=kr.product(k);
+        Material material=intersection._geometry.getMaterial();
+        Double3 kr= material._kR;
+        Double3 kkr=kr.product(k);
         Vector n = intersection._geometry.getNormal(intersection._point);
-        if(kkr.biggerThan(MIN_CALC_COLOR_K)){
-            Ray reflectedRay = constructReflectedRay(n, intersection._point, ray);
-            GeoPoint reflectedPoint = findClosestIntersection(reflectedRay);
-            if (reflectedPoint != null)
-                color= color.add(calcColor(reflectedPoint,reflectedRay,level-1,kkr).scale(kr));
+        Vector v = ray.getDir();
+        if(!isGlossyEffect)
+        {
+            if(kkr.biggerThan(MIN_CALC_COLOR_K)){
+                Ray reflectedRay = constructReflectedRay(n, intersection._point, ray);
+                GeoPoint reflectedPoint = findClosestIntersection(reflectedRay);
+                if (reflectedPoint != null)
+                    color= color.add(calcColor(reflectedPoint,reflectedRay,level-1,kkr).scale(kr));
+            }
+            Double3 kt=intersection._geometry.getMaterial()._kT;Double3 kkt=kt.product(k);
+            if(kkt.biggerThan(MIN_CALC_COLOR_K)){
+                Ray refractedRay = constructRefractedRay(n, intersection._point, ray);
+                GeoPoint refractedPoint = findClosestIntersection(refractedRay);
+                if (refractedPoint != null)
+                    color= color.add(calcColor(refractedPoint,refractedRay,level-1,kkt).scale(kt));
+            }
         }
-        Double3 kt=intersection._geometry.getMaterial()._kT;Double3 kkt=kt.product(k);
-        if(kkt.biggerThan(MIN_CALC_COLOR_K)){
-            Ray refractedRay = constructRefractedRay(n, intersection._point, ray);
-            GeoPoint refractedPoint = findClosestIntersection(refractedRay);
-            if (refractedPoint != null)
-                color= color.add(calcColor(refractedPoint,refractedRay,level-1,kkt).scale(kt));
+        else {
+            if (v.dotProduct(n) > 0) {
+                n = n.scale(-1);
+            }
+            // Calculating the reflected rays and adding them to the color.
+            if (kkr.biggerThan(MIN_CALC_COLOR_K)) {
+                HashSet<Ray> reflectedRays = constructReflectedRays(intersection._point, v, n, material._kG);
+                for (Ray reflectedRay : reflectedRays) {
+                    color = color.add(calcGlobalEffect(reflectedRay, level, material._kR, kkr));
+                }
+                color = color.reduce(reflectedRays.size());
+            }
+            // adds the refraction effect
+            Double3 kt = intersection._geometry.getMaterial()._kT;
+            Double3 kkt = kt.product(k);
+            if (kkt.biggerThan(MIN_CALC_COLOR_K)) {
+                HashSet<Ray> refractedRays = constructRefractedRays(intersection._point, v, n.scale(-1), material._kG);
+                for (Ray refractedRay : refractedRays) {
+                    color = color.add(calcGlobalEffect(refractedRay, level, material._kT, kkt));
+                }
+                color = color.reduce(refractedRays.size());
+            }
         }
         return color;
+
     }
     /**
      *help function to the recursion
@@ -101,50 +143,7 @@ public class RayTracerBasic extends RayTracer {
         GeoPoint gp = findClosestIntersection(ray);
         return (gp == null ? _scene._background :  calcColor(gp, ray, level - 1, kkx)).scale(kx);
     }
-    /**
-     * Calculates the reflection and the refraction
-     * at a given intersection point.
-     *
-     * @param intersection    the intersection point
-     * @param ray   the ray that caused the intersection
-     * @param level the number of the recursive calls
-     *              to calculate the next reflections and
-     *              refractions
-     * @param k     the effect's strength by the reflection and refraction
-     * @return the color on the intersection point
-     */
-    private Color calcGlobalEffects2(GeoPoint intersection, Ray ray, int level, Double3 k) {
-        Color color = Color.BLACK;
-        Material material=intersection._geometry.getMaterial();
-        Double3 kr= material._kR;
-        Double3 kkr=kr.product(k);
-        Vector n = intersection._geometry.getNormal(intersection._point);
-        Vector v = ray.getDir();
-        if (v.dotProduct(n) > 0) {
-            n = n.scale(-1);
-        }
-        // Calculating the reflected rays and adding them to the color.
-        if(kkr.biggerThan(MIN_CALC_COLOR_K)){
-            HashSet<Ray> reflectedRays = constructReflectedRays(intersection._point, v, n, material._kG);
-            for (Ray reflectedRay : reflectedRays) {
-                color = color.add(calcGlobalEffect(reflectedRay, level, material._kR, kkr));
-            }
-            color = color.reduce(reflectedRays.size());
-        }
 
-        // adds the refraction effect
-        Double3 kt=intersection._geometry.getMaterial()._kT;Double3 kkt=kt.product(k);
-        if(kkt.biggerThan(MIN_CALC_COLOR_K)){
-            HashSet<Ray> refractedRays = constructRefractedRays(intersection._point, v, n.scale(-1), material._kG);
-            for (Ray refractedRay : refractedRays) {
-                color = color.add(calcGlobalEffect(refractedRay, level, material._kT, kkt));
-
-            }
-            color = color.reduce(refractedRays.size());
-        }
-
-        return color;
-    }
     private Color calcLocalEffects(GeoPoint intersection, Ray ray,Double3 k) {
         Vector v = ray.getDir();
         Vector n = intersection._geometry.getNormal(intersection._point);
@@ -165,7 +164,6 @@ public class RayTracerBasic extends RayTracer {
                     color = color.add(calcDiffusive(kd, l, n, lightIntensity),
                             calcSpecular(ks, l, n, v, nShininess, lightIntensity));
                 }
-
             }
         }
         return color;

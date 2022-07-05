@@ -276,7 +276,7 @@ public class Camera {
         _imageWriter.writeToImage();
     }
 
-    public void renderImage2() {
+    public void renderImage(boolean isAntiAliasing,boolean isDepthOfField) {
 
         try {
             if (_imageWriter == null) {
@@ -292,7 +292,18 @@ public class Camera {
             Pixel.initialize(nY, nX, printInterval);
             IntStream.range(0, nY).parallel().forEach(i -> {
                 IntStream.range(0, nX).parallel().forEach(j -> {
-                            _imageWriter.writePixel(j,i,castRays_AntiAliasing(nX, nY, j, i));
+                           if(isAntiAliasing) {
+                               _imageWriter.writePixel(j, i, castRays_AntiAliasing(nX, nY, j, i));
+                           }
+                           else if (isDepthOfField) {
+                               _imageWriter.writePixel(j, i, castRayDepth(nX, nY, j, i));
+
+                           }
+                           else{
+                               //Get the color of every pixel
+                               //write the color on the image
+                               _imageWriter.writePixel(j, i, renderPixel(nX, nY, 3, constructRayThroughPixel( nX, nY, i, j)));
+                           }
                             Pixel.pixelDone();
                             Pixel.printPixel();
                 });
@@ -587,39 +598,7 @@ public class Camera {
 
 
     public HashSet <Ray> constructRays(int nX, int nY, int j, int i) {
-       /* double Ry =  _height / nY;
-        double Rx =  _width / nX;
 
-        // Image center
-        Point Pc = _p0.add(_vTo.scale(_distance));
-
-        Point Pij = Pc;
-
-        double yI = -(i - ((nY - 1) / 2d)) * Ry;
-        double xJ = (j - ((nX - 1) / 2d)) * Rx;
-
-        if (xJ != 0)
-            Pij = Pij.add(_vRight.scale(xJ));
-        if (yI != 0)
-            Pij = Pij.add(_vUp.scale(yI));
-
-        //Ry = height / nY : height of a pixel
-        double halfRy = alignZero( _height /(2 *nY));
-        //Ry = weight / nX : width of a pixel
-        double halfRx = alignZero(_width /(2* nX));
-
-        Color c1 = _rayTracer.traceRay(constructRayThroughPixel(nX,nY,Pij.add(_vRight.scale(halfRx)).add(_vUp.scale(halfRy)).subtract(_p0)));;
-
-        Color c2 = _rayTracer.traceRay(constructRayThroughPixel(nX,nY,Pij.add(_vRight.scale(-halfRx)).add(_vUp.scale(-halfRy)).subtract(_p0)));
-
-        Color c3 = _rayTracer.traceRay(constructRayThroughPixel(nX,nY,Pij.add(_vRight.scale(-halfRx)).add(_vUp.scale(-halfRy)).subtract(_p0)));
-        Color c4 = _rayTracer.traceRay(constructRayThroughPixel(nX,nY,Pij.add(_vRight.scale(halfRx)).add(_vUp.scale(-halfRy)).subtract(_p0)));
-        boolean checkEdges = c1.equals(c2) && c1.equals(c3) && c1.equals(c4);
-
-
-
-
-        if (!checkEdges||checkEdges){*/
         HashSet<Ray> myra= new HashSet<>();//to save all the different rays created
         //We call the function constructRayThroughPixel like we used to but this time we launch m * n ray in the same pixel
             for (int k = 0; k < _numOfBeams; k++) {
