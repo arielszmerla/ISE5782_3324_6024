@@ -20,7 +20,7 @@ public class RayTracerBasic extends RayTracer {
     private static final double MIN_CALC_COLOR_K = 0.001;
     private static final double INITIAL_K = 1.0;
     private int _glossinessRays = 30;
-
+    private final boolean isGlossyEffect=false;
     /**
      * scene setter
      *
@@ -55,7 +55,7 @@ public class RayTracerBasic extends RayTracer {
             return _scene._background;
         Color color = intersection._geometry.getEmission()
                 .add(calcLocalEffects(intersection,ray,k));
-        return 1 == level ? color : color.add(calcGlobalEffects(intersection, ray, level, k, true));
+        return 1 == level ? color : color.add(calcGlobalEffects(intersection, ray, level, k));
 
     }
     /**
@@ -82,7 +82,7 @@ public class RayTracerBasic extends RayTracer {
      * @param k     the effect's strength by the reflection and refraction
      * @return the color on the intersection point
      */
-    private Color calcGlobalEffects(GeoPoint intersection, Ray ray, int level, Double3 k,boolean isGlossyEffect) {
+    private Color calcGlobalEffects(GeoPoint intersection, Ray ray, int level, Double3 k) {
         Color color = Color.BLACK;
         Material material=intersection._geometry.getMaterial();
         Double3 kr= material._kR;
@@ -143,7 +143,15 @@ public class RayTracerBasic extends RayTracer {
         GeoPoint gp = findClosestIntersection(ray);
         return (gp == null ? _scene._background :  calcColor(gp, ray, level - 1, kkx)).scale(kx);
     }
-
+    /**
+     * The function calculates the color of the intersection point by calculating the diffuse and specular components of
+     * the light sources in the scene
+     *
+     * @param intersection The point of intersection between the ray and the geometry.
+     * @param ray the ray that hit the object
+     * @param k the transparency of the ray
+     * @return The color of the intersection point.
+     */
     private Color calcLocalEffects(GeoPoint intersection, Ray ray,Double3 k) {
         Vector v = ray.getDir();
         Vector n = intersection._geometry.getNormal(intersection._point);
@@ -310,6 +318,7 @@ public class RayTracerBasic extends RayTracer {
         List<GeoPoint> geoPoints = _scene._geometries.findGeoIntersections(ray);
         return ray.getClosestGeoPoint(geoPoints);
     }
+
 
     @Override
     // Creating a method called averageColor that takes in a linked list of rays and returns a color.

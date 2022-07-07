@@ -12,7 +12,19 @@ import static renderer.Pixel.printInterval;
 public class Camera {
     private int _threads = 0;
     private boolean _print = false;
+    boolean isAntiAliasing=false;
 
+    public Camera setAntiAliasing(boolean antiAliasing) {
+        isAntiAliasing = antiAliasing;
+        return this;
+    }
+
+    public Camera setDepthOfField(boolean depthOfField) {
+        isDepthOfField = depthOfField;
+        return this;
+    }
+
+    boolean isDepthOfField=false;
     /**
      * This function returns the number of beams.
      *
@@ -107,13 +119,13 @@ public class Camera {
 
 
     /**
+     * This is the constructor of the camera. It receives 3 vectors: p0, vto and vup. The function checks if the vectors
+     * are orthogonal. If they are not, it throws an exception. If they are, it sets the vectors to the camera.
      * Camera constructor based-on point and 2 vectors
      * @param p0 {@link Point} position
      * @param vto {@link Vector}
      * @param vup {@link  Vector}
      */
-    // This is the constructor of the camera. It receives 3 vectors: p0, vto and vup. The function checks if the vectors
-    // are orthogonal. If they are not, it throws an exception. If they are, it sets the vectors to the camera.
     public Camera(Point p0, Vector vto, Vector vup) {
         if (!isZero(vto.dotProduct(vup))) {
             throw new IllegalArgumentException("vup and vto aren't orthogonal");
@@ -168,6 +180,13 @@ public class Camera {
     }
 
 
+    /**
+     * This function sets the width and height of the viewport
+     *
+     * @param width The width of the viewport.
+     * @param height The height of the viewport.
+     * @return The camera object.
+     */
     public Camera setVPSize(int width, int height) {
         _width = width;
         _height = height;
@@ -175,6 +194,15 @@ public class Camera {
 
     }
 
+    /**
+     * The function constructs a ray through pixel (i,j) on the view plane
+     *
+     * @param nX number of pixels in the x direction
+     * @param nY number of pixels in the vertical direction
+     * @param j the column of the pixel in the image
+     * @param i the row index of the pixel in the image
+     * @return A ray from the camera to the pixel.
+     */
     public Ray constructRay(int nX, int nY, int j, int i) {
         double Ry = (double) _height / nY;
         double Rx = (double) _width / nX;
@@ -272,7 +300,7 @@ public class Camera {
         _imageWriter.writeToImage();
     }
 
-    public void renderImage(boolean isAntiAliasing,boolean isDepthOfField) {
+    public void renderImage2() {
 
         try {
             if (_imageWriter == null) {
