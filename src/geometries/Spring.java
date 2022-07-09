@@ -8,10 +8,14 @@ import java.util.*;
 
 import static java.awt.Color.*;
 
+/**
+ * It's a list of circles that are connected to each other
+ */
 public class Spring extends Geometry {
+    // It's the start point of the spring
     public Point _start;
+    // It's a list of circles that are connected to each other
     public List<Geometry> _points=new LinkedList<>();
-public double height;
     public Spring(Point start,double height,double radius ) {
         _start = start;
         for(double t=0; t<height ;t+=0.01)
@@ -19,11 +23,13 @@ public double height;
     }
 
     @Override
+    // It's a function that returns the normal vector of the point
     public Vector getNormal(Point point) {
 return null;
     }
 
     @Override
+    // It's a function that returns the intersection points of the ray and the geometry
     protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
         for (Geometry g : _points){
           if(  g.findGeoIntersectionsHelper(ray)!=null)

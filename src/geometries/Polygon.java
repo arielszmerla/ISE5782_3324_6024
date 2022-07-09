@@ -30,19 +30,17 @@ public class Polygon extends Geometry {
 	 * @param vertices list of vertices according to their order by edge path
 	 * @throws IllegalArgumentException in any case of illegal combination of
 	 *                                  vertices:
-	 *                                  <ul>
-	 *                                  <li>Less than 3 vertices</li>
-	 *                                  <li>Consequent vertices are in the same
+	 *                                  Less than 3 vertices
+	 *                                  Consequent vertices are in the same
 	 *                                  point
 	 *                                  <li>The vertices are not in the same
-	 *                                  plane</li>
+	 *                                  plane
 	 *                                  <li>The order of vertices is not according
-	 *                                  to edge path</li>
-	 *                                  <li>Three consequent vertices lay in the
-	 *                                  same line (180&#176; angle between two
-	 *                                  consequent edges)
-	 *                                  <li>The polygon is concave (not convex)</li>
-	 *                                  </ul>
+	 *                                  to edge path
+	 *                                  Three consequent vertices lay in the
+	 *                                  same line 180' angle between two
+	 *                                  consequent edges
+	 *                                  The polygon is concave (not convex)
 	 */
 	public Polygon(Point... vertices) {
 		if (vertices.length < 3)

@@ -17,7 +17,6 @@ public class SpotLight extends PointLight{
      */
     public double _shorten=1;
     public SpotLight(Color intensity, Point position, Vector direction,double shorten) throws IllegalArgumentException {
-
         super(intensity, position);
         _direction=direction.normalize();
         if(shorten>1 || shorten<0)

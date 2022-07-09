@@ -87,13 +87,10 @@ public class Cylinder extends Tube {
             //Add all intersections of bottom's plane that are in the base's bounders
             for (GeoPoint point : result2) {
                 if (point._point.equals(p1)){ //to avoid vector ZERO
-                    //if (point._point.distance(ray.getP0()) <= maxDistance){
                         result.add(new GeoPoint(this, point._point));
-
                 }
                 //Formula that checks that point is inside the base
                 else if ((point._point.subtract(p1).dotProduct(point._point.subtract(p1)) < _radius * _radius)){
-                  //  if (point._point.distance(ray.getP0()) <= maxDistance){
                         result.add(new GeoPoint(this, point._point));
 
                 }
@@ -106,7 +103,6 @@ public class Cylinder extends Tube {
             //Add all intersections of tube that are in the cylinder's bounders
             for (GeoPoint point:result1) {
                 if (va.dotProduct(point._point.subtract(p1)) > 0 && va.dotProduct(point._point.subtract(p2)) < 0){
-                  //  if (point._point.distance(ray.getP0()) <= maxDistance){
                         result.add(new GeoPoint(this, point._point));
 
                 }
@@ -120,13 +116,11 @@ public class Cylinder extends Tube {
         if (result3 != null){
             for (GeoPoint point : result3) {
                 if (point._point.equals(p2)){ //to avoid vector ZERO
-                  //  if (point._point.distance(ray.getP0()) <= maxDistance){
                         result.add(new GeoPoint(this, point._point));
 
                 }
                 //Formula that checks that point is inside the base
                 else if ((point._point.subtract(p2).dotProduct(point._point.subtract(p2)) < _radius * _radius)){
-                    //if (point._point.distance(ray.getP0()) <= maxDistance){
                         result.add(new GeoPoint(this, point._point));
 
                 }

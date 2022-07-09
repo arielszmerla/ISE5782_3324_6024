@@ -9,7 +9,11 @@ import java.util.List;
 
 import static primitives.Util.isZero;
 
+/**
+ * It's a list of polygons that are connected to each other
+ */
 public class Cube extends Geometry {
+    // It's a list of polygons that are connected to each other
     List<Polygon> _cube;
 
     public Cube( double length,Point ... points) {

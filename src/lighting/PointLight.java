@@ -13,11 +13,16 @@ public class PointLight extends Light implements LightSource{
      */
    private Point _position;
 
-   private double _kC=1d;
+  // A constant that is used to calculate the intensity of the light.
+    private double _kC=1d;
+   // A constant that is used to calculate the intensity descending due to distance of the light.
    private double _kL=0d;
-   private double _kQ=0d;
+    // A constant that is used to calculate the intensity descending due to cubic loose of strength of the light.
 
-    /**
+    private double _kQ=0d;
+
+  // A constant that is used to calculate the intensity of the light.
+     /**
      * ctor with values
      * @param c {@link Color} of the light
      * @param pos {@link Point} start position
@@ -44,6 +49,7 @@ public class PointLight extends Light implements LightSource{
     }
 
     @Override
+    // Returning the color of the point p.
     public Color getIntensity(Point p) {
         double factor = _kC;
         double distance;
@@ -57,6 +63,7 @@ public class PointLight extends Light implements LightSource{
     }
 
     @Override
+    // Calculating the vector from the light source to the point.
     public Vector getL(Point p) {
         try {
             return p.subtract(_position).normalize();

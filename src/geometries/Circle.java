@@ -6,6 +6,9 @@ import primitives.Vector;
 
 import java.util.List;
 
+/**
+ * A sphere is a point and a radius
+ */
 public class Circle extends Geometry{
     /**
      * Sphere's center
