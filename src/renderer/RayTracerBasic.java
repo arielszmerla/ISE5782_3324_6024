@@ -19,7 +19,9 @@ public class RayTracerBasic extends RayTracer {
     private static final int MAX_CALC_COLOR_LEVEL = 10;
     private static final double MIN_CALC_COLOR_K = 0.001;
     private static final double INITIAL_K = 1.0;
+    // Setting the default value of the variable _glossinessRays to 30.
     private int _glossinessRays = 30;
+    // Declaring a variable called isGlossyEffect and assigning it a value of false.
     private final boolean isGlossyEffect=false;
     /**
      * scene setter
@@ -42,14 +44,30 @@ public class RayTracerBasic extends RayTracer {
                return calcColor(findClosestIntersection(ray), ray);
           return _scene._background;
     }
+    /**
+     * Sets the number of rays to be used for glossiness calculations.
+     *
+     * @param glossinessRays the number of rays to shoot for each glossy reflection.
+     * @return The RayTracerBasic object.
+     */
     public RayTracerBasic setGlossinessRays(int glossinessRays) {
         if (glossinessRays <= 0) {
+
             throw new IllegalArgumentException("number of glossiness rays should be greater than 0");
         }
         _glossinessRays = glossinessRays;
         return this;
     }
-
+    /**
+     * The function calculates the color of a given point on the screen, by calculating the local effects (diffuse,
+     * specular, reflection, refraction) and the global effects (reflection, refraction) of the point
+     *
+     * @param intersection The intersection point between the ray and the geometry.
+     * @param ray the ray that hit the geometry
+     * @param level the recursion level, starts at 1 and usually goes up to a predefined maximum.
+     * @param k the color of the object
+     * @return The color of the intersection point.
+     */
     private Color calcColor(GeoPoint intersection, Ray ray,int level,Double3 k) {
         if(intersection==null)
             return _scene._background;
@@ -160,7 +178,6 @@ public class RayTracerBasic extends RayTracer {
         int nShininess = intersection._geometry.getMaterial().getnShininess();
         Double3 kd = intersection._geometry.getMaterial().getkD();
         Double3 ks = intersection._geometry.getMaterial().getkS();
-
         Color color= Color.BLACK;
         for (LightSource lightSource: _scene._lights) {
             Vector l = lightSource.getL(intersection._point);
@@ -176,6 +193,7 @@ public class RayTracerBasic extends RayTracer {
         }
         return color;
     }
+
 
     /**
      * The specular component is the light intensity multiplied by the specular coefficient (ks) multiplied by the max of 0
@@ -226,8 +244,7 @@ public class RayTracerBasic extends RayTracer {
         return lightIntensity.scale(kd.scale(Math.abs(lN)));
     }
 
-    // The below code is checking if the point is unshaded. If it is unshaded, it will return true. If it is shaded, it
-    // will return false.
+
     /**
      * If the point is not shaded, return true
      *
@@ -348,12 +365,9 @@ public class RayTracerBasic extends RayTracer {
             rays.add(new Ray(point, n, r));
             return rays;
         }
-
         // If kG is equals to 0 then select all the randomized vectors
         if (Double3.ZERO.equals(kG))
             return getRandomVectorsOnSphere(n, _glossinessRays,new Double3(1),point);
-
-
         // If kG is in range (0,1) then move the randomized vectors towards the specular vector (v)
         return getRandomVectorsOnSphere(n, _glossinessRays,Double3.ONE.subtract(kG).add(r.scale(kG).get_xyz()),point);
     }
@@ -378,7 +392,6 @@ public class RayTracerBasic extends RayTracer {
         // If kG is equals to 0 then select all the randomized vectors
         if (Double3.ZERO.equals(kG)) {
             return getRandomVectorsOnSphere(n, _glossinessRays,Double3.ONE,point);
-
         }
         // If kG is in range (0,1) then move the randomized vectors towards the specular vector (v) so the glossy effect is less strong as irt grows
         return getRandomVectorsOnSphere(n, _glossinessRays,Double3.ONE.subtract(kG).add(v.scale(kG).get_xyz()),point);
