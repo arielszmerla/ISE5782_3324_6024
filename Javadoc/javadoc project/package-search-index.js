@@ -1,1 +1,0 @@
-packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"geometries"},{"l":"lighting"},{"l":"objects"},{"l":"primitives"},{"l":"renderer"},{"l":"renderer.scene"},{"l":"xml"}];updateSearchResults();
