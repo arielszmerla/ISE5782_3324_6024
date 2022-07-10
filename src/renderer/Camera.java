@@ -333,23 +333,23 @@ public class Camera {
             int nY = _imageWriter.getNy();
             Pixel.initialize(nY, nX, printInterval);
             IntStream.range(0, nY).parallel().forEach(i -> IntStream.range(0, nX).parallel().forEach(j -> {
-                       if(isAntiAliasing && isDepthOfField) {
-                           //Get the color of every pixel
-                           //write the color on the image
-                           _imageWriter.writePixel(j, i, castRayDepth(nX, nY, j, i));
-                       }
-                       else if (isDepthOfField) {
-                           _imageWriter.writePixel(j, i, castRayDepth(nX, nY, j, i));
+               if(isAntiAliasing && isDepthOfField) {
+                   //Get the color of every pixel
+                   //write the color on the image
+                   _imageWriter.writePixel(j, i, castRayDepth(nX, nY, j, i));
+               }
+               else if (isDepthOfField) {
+                   _imageWriter.writePixel(j, i, castRayDepth(nX, nY, j, i));
 
-                       }
-                       else if (isAntiAliasing) {
-                           _imageWriter.writePixel(j, i, recurseOnPixel(nX, nY, 3, constructRayThroughPixel( nX, nY, j, i)));
-                       }
-                       else{
-                           _imageWriter.writePixel(j, i, recurseOnPixel(nX, nY, 0, constructRayThroughPixel( nX, nY, j, i)));
-                       }
-                        Pixel.pixelDone();
-                        Pixel.printPixel();
+               }
+               else if (isAntiAliasing) {
+                   _imageWriter.writePixel(j, i, recurseOnPixel(nX, nY, 3, constructRayThroughPixel( nX, nY, j, i)));
+               }
+               else{
+                   _imageWriter.writePixel(j, i, recurseOnPixel(nX, nY, 0, constructRayThroughPixel( nX, nY, j, i)));
+               }
+               Pixel.pixelDone();
+               Pixel.printPixel();
             }));
         } catch (MissingResourceException e) {
             throw new UnsupportedOperationException("Not implemented yet" + e.getClassName());
@@ -411,6 +411,7 @@ public class Camera {
         myRays.add( new Ray(_p0, center.add(_vRight.scale(rX / 2)).add(_vUp.scale(-rY / 2)).subtract(_p0)));
         return myRays;
 
+
         /** index       location
          * --------------------------
          *    0        Bottom left
@@ -432,15 +433,7 @@ public class Camera {
      * @param nY number of pixels in height
      * @return list of rays
      */
-    /**
-     * It takes a ray and a pixel, and returns the 4 rays that go through the edges of the pixel
-     *
-     * @param ray the ray that goes through the center of the pixel
-     * @param nX number of pixels in the X axis
-     * @param nY the number of pixels in the vertical direction
-     * @return The rays that are being returned are the rays that are being sent from the camera to the focal field.
-     */
-    public List<Ray> constructCenterOfEdgesRays(Ray ray, double nX, double nY) {
+    public List<Ray> constructSmallestPixelPartsOfEdgesRays(Ray ray, double nX, double nY) {
 
         //Ry = h / nY - pixel height ratio
         double height = alignZero(_height / nY);
@@ -530,7 +523,7 @@ public class Camera {
             //send to recursion
             if (flag) {
                 List<ColorRaySaver> newRays = new LinkedList<>();
-                List<Ray> centerOfEdgesRays= constructCenterOfEdgesRays(myRays.get(3).getRay(), nX, nY);
+                List<Ray> centerOfEdgesRays= constructSmallestPixelPartsOfEdgesRays(myRays.get(3).getRay(), nX, nY);
                 for (Ray ray:centerOfEdgesRays
                      ) {
                     newRays.add(new ColorRaySaver(ray,_rayTracer.traceRay(ray)));
