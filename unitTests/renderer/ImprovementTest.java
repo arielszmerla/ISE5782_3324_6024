@@ -141,14 +141,14 @@ public class ImprovementTest {
         Point w2 = new Point(-260, -80, -600);
         Point w3 = new Point(-250, -80, -600);
         Point w4 = new Point(-250, -80, 260);
-        scene1._geometries.addAll(new Wall(w1, w2, w3, w4, 295, new Color(WHITE), new Material().setKd(0.7))._parts);
+        scene1._geometries.addAll(new Wall(w1, w2, w3, w4, 295, new Color(105,105,105), new Material().setKd(0.7))._parts);
 
         //back
         Point w11 = new Point(260, -80, -600);
         Point w22 = new Point(-260, -80, -600);
         Point w33 = new Point(-260, -80, -590);
         Point w44 = new Point(260, -80, -590);
-        scene1._geometries.addAll(new Wall(w11, w22, w33, w44, 295, new Color(WHITE), new Material().setKd(0.7))._parts);
+        scene1._geometries.addAll(new Wall(w11, w22, w33, w44, 295, new Color(211,211,211), new Material().setKd(0.7))._parts);
 
         //front
         Point wf51 = new Point(260, -80, 260);
@@ -231,16 +231,16 @@ public class ImprovementTest {
         scene1._lights.add(new SpotLight(new Color(WHITE), new Point(400, 100, -170), new Vector(-1, 0, 0)).set_shorten(0.2));
 
 
-        ImageWriter imageWriter = new ImageWriter("wall5", 500, 500);
-        camera1.setFocusField(1800);
+        ImageWriter imageWriter = new ImageWriter("final photo - DOF2", 500, 500);
         Camera camera1 = new Camera(new Point(0, 200, 4500), new Vector(0, -0.0425, -0.999), new Vector(0, 0.999, -0.0425)) //
                 .setVPSize(150, 150) //
                 .setVPDistance(1000);
         camera1.moveCamera(new Vector(660, 0, 0));
         camera1.rotateCamera(new Vector(0, 0.999, -0.0425), 8);
         camera1.setImageWriter(imageWriter) //
-                .setRayTracer(new RayTracerBasic(scene1)) //
-                .setAntiAliasing(true).renderImage2(); //
+                .setRayTracer(new RayTracerBasic(scene1))
+                .setFocusField(1800).setDepthOfField(true)
+                .renderImage2(); //
         camera1.writeToImage();//
 
 

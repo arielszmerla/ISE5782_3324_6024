@@ -535,37 +535,39 @@ public class Camera {
                      ) {
                     newRays.add(new ColorRaySaver(ray,_rayTracer.traceRay(ray)));
                 }
+                // Bottom-Left pixel's quarter
                 rays.put(1, myRays.get(1));
-                rays.put(2, newRays.get(0));
+                rays.put(2, newRays.get(3));
                 Ray tempCenter = constructPixelCenterRay(myRays.get(1).getRay(), nX * 2, nY * 2);
                 rays.put(3, new ColorRaySaver(tempCenter, _rayTracer.traceRay(tempCenter)));
                 rays.put(4, newRays.get(1));
                 rays.put(5, myRays.get(3));
                 mainColor = mainColor.add(renderPixelRecursive(rays, nX * 2, nY * 2, depth - 1));
-
-                rays.put(1, newRays.get(0));
+                // Bottom-Right pixel's quarter
+                rays.put(1, newRays.get(3));
                 rays.put(2, myRays.get(2));
-                tempCenter = constructPixelCenterRay(newRays.get(0).getRay(), nX * 2, nY * 2);
+                tempCenter = constructPixelCenterRay(newRays.get(3).getRay(), nX * 2, nY * 2);
                 rays.put(3, new ColorRaySaver(tempCenter, _rayTracer.traceRay(tempCenter)));
                 rays.put(4, myRays.get(3));
                 rays.put(5, newRays.get(2));
                 mainColor = mainColor.add(renderPixelRecursive(rays, nX * 2, nY * 2, depth - 1));
-
+                // Top-Left pixel's quarter
                 rays.put(1, newRays.get(1));
                 rays.put(2, myRays.get(3));
                 tempCenter = constructPixelCenterRay(newRays.get(1).getRay(), nX * 2, nY * 2);
                 rays.put(3, new ColorRaySaver(tempCenter, _rayTracer.traceRay(tempCenter)));
                 rays.put(4, myRays.get(4));
-                rays.put(5, newRays.get(3));
+                rays.put(5, newRays.get(0));
                 mainColor = mainColor.add(renderPixelRecursive(rays, nX * 2, nY * 2, depth - 1));
-
+                // Top-Right pixel's quarter
                 rays.put(1, myRays.get(3));
                 rays.put(2, newRays.get(2));
                 tempCenter = constructPixelCenterRay(myRays.get(3).getRay(), nX * 2, nY * 2);
                 rays.put(3, new ColorRaySaver(tempCenter, _rayTracer.traceRay(tempCenter)));
-                rays.put(4, newRays.get(3));
+                rays.put(4, newRays.get(0));
                 rays.put(5, myRays.get(5));
                 mainColor = mainColor.add(renderPixelRecursive(rays, nX * 2, nY * 2, depth - 1));
+                //Average of colors
                 mainColor = mainColor.reduce(5d);
             }
         }
