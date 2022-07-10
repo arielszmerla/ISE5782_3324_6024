@@ -67,9 +67,9 @@ public class ImprovementTest {
         scene1._lights.add(_directionalLight1);
         scene1._lights.add(new PointLight(spCL, spPL).setKl(0.001).setKq(0.0002));
         ImageWriter imageWriter = new ImageWriter("Cylinder depth test", 500, 500);
-        camera1.setImageWriter(imageWriter) //
+        camera1.setImageWriter(imageWriter).setDepthOfField(true).setNumOfRaysDepth(25).setApertureFieldRadius(1)//
                 .setRayTracer(new RayTracerBasic(scene1)) //
-                .renderImage(); //
+                .renderImage2(); //
         camera1.writeToImage();//
     }
 

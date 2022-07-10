@@ -4,7 +4,6 @@ import primitives.*;
 import primitives.Vector;
 
 import java.util.*;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static primitives.Util.*;
@@ -13,7 +12,19 @@ import static renderer.Pixel.printInterval;
 public class Camera {
     private int _threads = 0;
     private boolean _print = false;
+    boolean isAntiAliasing=false;
 
+    public Camera setAntiAliasing(boolean antiAliasing) {
+        isAntiAliasing = antiAliasing;
+        return this;
+    }
+
+    public Camera setDepthOfField(boolean depthOfField) {
+        isDepthOfField = depthOfField;
+        return this;
+    }
+
+    boolean isDepthOfField=false;
     /**
      * This function returns the number of beams.
      *
@@ -23,7 +34,13 @@ public class Camera {
         return _numOfBeams;
     }
 
-    private int _numOfBeams = 100;
+    public Camera setNumOfRaysDepth(int numOfRaysDepth) {
+        _numOfRaysDepth = numOfRaysDepth;
+        return this;
+    }
+
+    private int _numOfRaysDepth = 4;
+    private int _numOfBeams = 300;
     private final int SPARE_THREADS = 2;
     /**
      * right direction vector from camera
@@ -63,8 +80,8 @@ public class Camera {
         _numOfBeams = numOfBeams;
         return this;
     }
-// A random number generator.
-private Random random = new Random();
+    // A random number generator.
+    private final Random random = new Random();
     // A private variable that is used to write the image to the screen.
     private ImageWriter _imageWriter;
     // A private variable that is used to write the image to the screen.
@@ -108,13 +125,13 @@ private Random random = new Random();
 
 
     /**
+     * This is the constructor of the camera. It receives 3 vectors: p0, vto and vup. The function checks if the vectors
+     * are orthogonal. If they are not, it throws an exception. If they are, it sets the vectors to the camera.
      * Camera constructor based-on point and 2 vectors
      * @param p0 {@link Point} position
      * @param vto {@link Vector}
      * @param vup {@link  Vector}
      */
-    // This is the constructor of the camera. It receives 3 vectors: p0, vto and vup. The function checks if the vectors
-    // are orthogonal. If they are not, it throws an exception. If they are, it sets the vectors to the camera.
     public Camera(Point p0, Vector vto, Vector vup) {
         if (!isZero(vto.dotProduct(vup))) {
             throw new IllegalArgumentException("vup and vto aren't orthogonal");
@@ -125,10 +142,12 @@ private Random random = new Random();
         _vRight = _vTo.crossProduct(_vUp);
     }
 
+
     /**
-     * set distance from camera to viewplane
-     * @param distance
-     * @return updated Camera {@link Camera}
+     * Sets the distance from the camera to the view plane.
+     *
+     * @param distance The distance from the camera to the view plane.
+     * @return The camera object itself.
      */
     public Camera setVPDistance(double distance) {
         _distance = distance;
@@ -166,11 +185,13 @@ private Random random = new Random();
         return this;
     }
 
+
     /**
-     * set view plane size
-     * @param width
-     * @param height
-     * @return updated Camera {@link Camera}
+     * This function sets the width and height of the viewport
+     *
+     * @param width The width of the viewport.
+     * @param height The height of the viewport.
+     * @return The camera object.
      */
     public Camera setVPSize(int width, int height) {
         _width = width;
@@ -179,6 +200,15 @@ private Random random = new Random();
 
     }
 
+    /**
+     * The function constructs a ray through pixel (i,j) on the view plane
+     *
+     * @param nX number of pixels in the x direction
+     * @param nY number of pixels in the vertical direction
+     * @param j the column of the pixel in the image
+     * @param i the row index of the pixel in the image
+     * @return A ray from the camera to the pixel.
+     */
     public Ray constructRay(int nX, int nY, int j, int i) {
         double Ry = (double) _height / nY;
         double Rx = (double) _width / nX;
@@ -290,13 +320,25 @@ private Random random = new Random();
             int nX = _imageWriter.getNx();
             int nY = _imageWriter.getNy();
             Pixel.initialize(nY, nX, printInterval);
-            IntStream.range(0, nY).parallel().forEach(i -> {
-                IntStream.range(0, nX).parallel().forEach(j -> {
-                            _imageWriter.writePixel(j,i,castRays_AntiAliasing(nX, nY, j, i));
-                            Pixel.pixelDone();
-                            Pixel.printPixel();
-                });
-            });
+            IntStream.range(0, nY).parallel().forEach(i -> IntStream.range(0, nX).parallel().forEach(j -> {
+                       if(isAntiAliasing) {
+                           //Get the color of every pixel
+                           //write the color on the image
+                           _imageWriter.writePixel(j, i, recurseOnPixel(nX, nY, 3, constructRayThroughPixel( nX, nY, j, i)));
+                       }
+                       else if (isDepthOfField) {
+                           _imageWriter.writePixel(j, i, castRayDepth(nX, nY, j, i));
+
+                       }
+                       else if (isAntiAliasing && isDepthOfField) {
+                           _imageWriter.writePixel(j, i, castRayDepth(nX, nY, j, i));
+                       }
+                       else{
+                           _imageWriter.writePixel(j, i, recurseOnPixel(nX, nY, 0, constructRayThroughPixel( nX, nY, j, i)));
+                       }
+                        Pixel.pixelDone();
+                        Pixel.printPixel();
+            }));
         } catch (MissingResourceException e) {
             throw new UnsupportedOperationException("Not implemented yet" + e.getClassName());
         }
@@ -309,24 +351,22 @@ private Random random = new Random();
      */
     public void renderImage() {
         //Render every pixel of the image
-        Point pC = _p0.add(_vTo.scale(_distance));
+//
         int nX = _imageWriter.getNx();
         int nY = _imageWriter.getNy();
         Pixel.initialize(nY, nX, printInterval);
-        IntStream.range(0, nY).parallel().forEach(i -> {
-            IntStream.range(0, nX).parallel().forEach(j -> {
-                //construct ray for every pixel
-                Ray myRay = constructRayThroughPixel(
-                        nX,nY,i,j
-                        );
-                //Get the color of every pixel
-                Color myColor = renderPixel(nX,nY, 3, myRay);
-                //write the color on the image
-                _imageWriter.writePixel(j, i, myColor);
-                Pixel.pixelDone();
-                Pixel.printPixel();
-            });
-        });
+        IntStream.range(0, nY).parallel().forEach(i -> IntStream.range(0, nX).parallel().forEach(j -> {
+            //construct ray for every pixel
+            Ray myRay = constructRayThroughPixel(
+                    nX,nY,j,i
+                    );
+            //Get the color of every pixel
+            Color myColor = recurseOnPixel(nX,nY, 3, myRay);
+            //write the color on the image
+            _imageWriter.writePixel(j, i, myColor);
+            Pixel.pixelDone();
+            Pixel.printPixel();
+        }));
     }
 
     /**
@@ -337,7 +377,7 @@ private Random random = new Random();
      * @param nY number of pixels in height
      * @return list of rays
      */
-    public List<Ray> construct5RaysFromRay(Ray myRay, double nX, double nY) {
+    public List<Ray> constructCenterCornersRaysFromRay(Ray myRay, double nX, double nY) {
 
         List<Ray> myRays = new LinkedList<>();
 
@@ -346,17 +386,18 @@ private Random random = new Random();
         //Rx = h / nX - pixel width ratio
         double rX = alignZero(_width / nX);
 
+        //get center point
         Point center = calcFocalFieldPoint(myRay);
 
-        //[-1/2, -1/2]
+        //Bottom left
         myRays.add( new Ray(_p0, center.add(_vRight.scale(-rX / 2)).add(_vUp.scale(rY / 2)).subtract(_p0)));
-        //[1/2, -1/2]
+        //Bottom right
         myRays.add( new Ray(_p0, center.add(_vRight.scale(rX / 2)).add(_vUp.scale(rY / 2)).subtract(_p0)));
-
+        //cnter of pixel
         myRays.add(myRay);
-        //[-1/2, 1/2]
+        //Top left
         myRays.add( new Ray(_p0, center.add(_vRight.scale(-rX / 2)).add(_vUp.scale(-rY / 2)).subtract(_p0)));
-        //[1/2, 1/2]
+        //top right
         myRays.add( new Ray(_p0, center.add(_vRight.scale(rX / 2)).add(_vUp.scale(-rY / 2)).subtract(_p0)));
         return myRays;
     }
@@ -372,24 +413,38 @@ private Random random = new Random();
      * @param nY number of pixels in height
      * @return list of rays
      */
-    public List<Ray> construct4RaysThroughPixel(Ray ray, double nX, double nY) {
+    /**
+     * It takes a ray and a pixel, and returns the 4 rays that go through the edges of the pixel
+     *
+     * @param ray the ray that goes through the center of the pixel
+     * @param nX number of pixels in the X axis
+     * @param nY the number of pixels in the vertical direction
+     * @return The rays that are being returned are the rays that are being sent from the camera to the focal field.
+     */
+    public List<Ray> constructCenterOfEdgesRays(Ray ray, double nX, double nY) {
 
         //Ry = h / nY - pixel height ratio
         double height = alignZero(_height / nY);
         //Rx = h / nX - pixel width ratio
         double width = alignZero(_width / nX);
 
-        List<Ray> myRays = new ArrayList<>();
+        List<Ray> edgeRays = new ArrayList<>();
         Point center = calcFocalFieldPoint(ray);
+        //set the 4 points
+        //Middle top edge
         Point point1 = center.add(_vUp.scale(height / 2));
+        //Middle left edge
         Point point2 = center.add(_vRight.scale(-width / 2));
+        //Middle right edge
         Point point3 = center.add(_vRight.scale(width / 2));
+        //Middle bottom edge
         Point point4 = center.add(_vUp.scale(-height / 2));
-        myRays.add(new Ray(_p0, point1.subtract(_p0)));
-        myRays.add(new Ray(_p0, point2.subtract(_p0)));
-        myRays.add(new Ray(_p0, point3.subtract(_p0)));
-        myRays.add(new Ray(_p0, point4.subtract(_p0)));
-        return myRays;
+        //create their rays
+        edgeRays.add(new Ray(_p0, point1.subtract(_p0)));
+        edgeRays.add(new Ray(_p0, point2.subtract(_p0)));
+        edgeRays.add(new Ray(_p0, point3.subtract(_p0)));
+        edgeRays.add(new Ray(_p0, point4.subtract(_p0)));
+        return edgeRays;
     }
 
     /**
@@ -402,13 +457,13 @@ private Random random = new Random();
      * @param firstRay the first ray that was sent to the pixel
      * @return The color of the pixel
      */
-    private Color renderPixel(double nX, double nY, int depth, Ray firstRay) {
-        List<Ray> myRays = construct5RaysFromRay(firstRay, nX, nY); //construct 5 rays into the pixel
-        HashMap<Integer, ColoredRay> rays = new HashMap<>();
+    private Color recurseOnPixel(double nX, double nY, int depth, Ray firstRay) {
+        List<Ray> myRays = constructCenterCornersRaysFromRay(firstRay, nX, nY); //construct 5 rays into the pixel
+        HashMap<Integer, ColorRaySaver> rays = new HashMap<>();
         int i = 0;
         //trace all the rays and store the colors with the rays
         for (Ray myRay : myRays) {
-            rays.put(++i, new ColoredRay(myRay, _rayTracer.traceRay(myRay)));
+            rays.put(++i, new ColorRaySaver(myRay, _rayTracer.traceRay(myRay)));
         }
         //render the pixel in recursive function
         return renderPixelRecursive(rays, nX, nY, depth);
@@ -426,73 +481,62 @@ private Random random = new Random();
      * @param depth the number of recursions to perform.
      * @return The color of the pixel.
      */
-    private Color renderPixelRecursive(HashMap<Integer, ColoredRay> myRays, double nX, double nY, int depth) {
+    private Color renderPixelRecursive(HashMap<Integer, ColorRaySaver> myRays, double nX, double nY, int depth) {
         boolean flag = false;
-        HashMap<Integer, ColoredRay> rays = new HashMap<>();
+        HashMap<Integer, ColorRaySaver> rays = new HashMap<>();
         //get the center of the pixel ray
-        ColoredRay mainRay = myRays.get(3);
-        //get center's color
+        ColorRaySaver mainRay = myRays.get(3);
+        //get center's color that we will return in case of stopping recursion
+        // Getting the color of the main ray.
         Color mainColor = mainRay.getColor();
         if (depth >= 1) {
             //get color of all the 4 different points
             //if one differs than center need to send the pixel to compute color in recursion
             for (Integer integer : myRays.keySet()) {
                 if (integer != 3) {
-                    //Color tmpColor  = myRays.get(integer).getColor();
-                    //Color tmpColor = tmpRay.getColor();
-                   /* if (tmpColor == null || tmpColor==Color.BLACK) {
-                       // tmpColor = _rayTracer.traceRay(tmpRay.getRay());
-                        myRays.put(integer, tmpRay);
-                    }*/
                     if (!myRays.get(integer).getColor().equals(mainColor)) {
                         flag = true;
                         break;
                     }
                 }
             }
+            //send to recursion
             if (flag) {
-                //Create a map of Colored rays for the 4 under pixels and send to recursion
-                /*   List<ColoredRay> newRays =construct4RaysThroughPixel(myRays.get(3).getRay(), nX, nY).stream().map(
-                        x -> new ColoredRay(x, _rayTracer.traceRay(x))
-                ).collect(Collectors.toList());*/
-                List<ColoredRay> newRays = new LinkedList<>();
-                    List<Ray> r=construct4RaysThroughPixel(myRays.get(3).getRay(), nX, nY);
-                for (Ray ray:r
+                List<ColorRaySaver> newRays = new LinkedList<>();
+                List<Ray> centerOfEdgesRays= constructCenterOfEdgesRays(myRays.get(3).getRay(), nX, nY);
+                for (Ray ray:centerOfEdgesRays
                      ) {
-                    newRays.add(new ColoredRay(ray,_rayTracer.traceRay(ray)));
+                    newRays.add(new ColorRaySaver(ray,_rayTracer.traceRay(ray)));
                 }
                 rays.put(1, myRays.get(1));
                 rays.put(2, newRays.get(0));
                 Ray tempCenter = constructPixelCenterRay(myRays.get(1).getRay(), nX * 2, nY * 2);
-                rays.put(3, new ColoredRay(tempCenter, _rayTracer.traceRay(tempCenter)));
+                rays.put(3, new ColorRaySaver(tempCenter, _rayTracer.traceRay(tempCenter)));
                 rays.put(4, newRays.get(1));
                 rays.put(5, myRays.get(3));
                 mainColor = mainColor.add(renderPixelRecursive(rays, nX * 2, nY * 2, depth - 1));
-                //rays = new HashMap<>();
                 rays.put(1, newRays.get(0));
                 rays.put(2, myRays.get(2));
                 tempCenter = constructPixelCenterRay(newRays.get(0).getRay(), nX * 2, nY * 2);
-                rays.put(3, new ColoredRay(tempCenter, _rayTracer.traceRay(tempCenter)));
+                rays.put(3, new ColorRaySaver(tempCenter, _rayTracer.traceRay(tempCenter)));
                 rays.put(4, myRays.get(3));
                 rays.put(5, newRays.get(2));
                 mainColor = mainColor.add(renderPixelRecursive(rays, nX * 2, nY * 2, depth - 1));
-               // rays = new HashMap<>();
                 rays.put(1, newRays.get(1));
                 rays.put(2, myRays.get(3));
                 tempCenter = constructPixelCenterRay(newRays.get(1).getRay(), nX * 2, nY * 2);
-                rays.put(3, new ColoredRay(tempCenter, _rayTracer.traceRay(tempCenter)));
+                rays.put(3, new ColorRaySaver(tempCenter, _rayTracer.traceRay(tempCenter)));
                 rays.put(4, myRays.get(4));
                 rays.put(5, newRays.get(3));
                 mainColor = mainColor.add(renderPixelRecursive(rays, nX * 2, nY * 2, depth - 1));
-                //rays = new HashMap<>();
                 rays.put(1, myRays.get(3));
                 rays.put(2, newRays.get(2));
                 tempCenter = constructPixelCenterRay(myRays.get(3).getRay(), nX * 2, nY * 2);
-                rays.put(3, new ColoredRay(tempCenter, _rayTracer.traceRay(tempCenter)));
+                rays.put(3, new ColorRaySaver(tempCenter, _rayTracer.traceRay(tempCenter)));
                 rays.put(4, newRays.get(3));
                 rays.put(5, myRays.get(5));
                 mainColor = mainColor.add(renderPixelRecursive(rays, nX * 2, nY * 2, depth - 1));
-                mainColor = mainColor.reduce(5);
+                mainColor = mainColor.reduce(5d);
             }
         }
         return mainColor;
@@ -523,9 +567,12 @@ private Random random = new Random();
      * @return The color of the pixel.
      */
     private Color castRayDepth(int nX, int nY, double j, double i) {
+        //create ray to center of pixel
         Ray centerRay=constructRay(nX,nY,(int)j,(int)i);
+        //get focal point using focal distance
         Point focalPoint= calcFocalFieldPoint(centerRay);
-        return colorSecundaryRays(centerRay,focalPoint);
+        //create and return average color from the aperture to focal point rays beam
+        return calcRaysFromAperturetoFocalPoint(centerRay,focalPoint);
     }
     /**
      * Given a color and a length, return the average color of the color and the length.
@@ -568,69 +615,33 @@ private Random random = new Random();
      * @param focusPlaneIntersection The point where the ray intersects the focus plane.
      * @return The color of the pixel.
      */
-    private Color colorSecundaryRays(Ray ray,Point focusPlaneIntersection)
+    private Color calcRaysFromAperturetoFocalPoint(Ray ray, Point focusPlaneIntersection)
     {
         Color color=_rayTracer.traceRay(ray);
-        Point apertureCenter= calcApertureFieldPoint( ray);
+        Point apertureCenter= calcApertureFieldPoint(ray);
 
-        //rotate on the lense
-        double d = 360d/5d;
-        for (int i=0;i<5;i++){
+        //rotate on the lens and create the rays
+        double d = 360d/_numOfRaysDepth;
+        for (int i=0;i<_numOfRaysDepth;i++){
             Vector v=_vUp.rotateVector(_vRight,d*i).scale(_apertureFieldRadius).rotateVector(_vUp,d*i);
             Point p=apertureCenter.add(v);
             Ray depthRay=new Ray(p,new Vector(focusPlaneIntersection.subtract(p).get_xyz()));
             color=color.add(_rayTracer.traceRay(depthRay));
         }
-        return averageColor(color,5);
+        //return average color
+        return averageColor(color,_numOfRaysDepth);
     }
 
 
 
     public HashSet <Ray> constructRays(int nX, int nY, int j, int i) {
-       /* double Ry =  _height / nY;
-        double Rx =  _width / nX;
 
-        // Image center
-        Point Pc = _p0.add(_vTo.scale(_distance));
-
-        Point Pij = Pc;
-
-        double yI = -(i - ((nY - 1) / 2d)) * Ry;
-        double xJ = (j - ((nX - 1) / 2d)) * Rx;
-
-        if (xJ != 0)
-            Pij = Pij.add(_vRight.scale(xJ));
-        if (yI != 0)
-            Pij = Pij.add(_vUp.scale(yI));
-
-        //Ry = height / nY : height of a pixel
-        double halfRy = alignZero( _height /(2 *nY));
-        //Ry = weight / nX : width of a pixel
-        double halfRx = alignZero(_width /(2* nX));
-
-        Color c1 = _rayTracer.traceRay(constructRayThroughPixel(nX,nY,Pij.add(_vRight.scale(halfRx)).add(_vUp.scale(halfRy)).subtract(_p0)));;
-
-        Color c2 = _rayTracer.traceRay(constructRayThroughPixel(nX,nY,Pij.add(_vRight.scale(-halfRx)).add(_vUp.scale(-halfRy)).subtract(_p0)));
-
-        Color c3 = _rayTracer.traceRay(constructRayThroughPixel(nX,nY,Pij.add(_vRight.scale(-halfRx)).add(_vUp.scale(-halfRy)).subtract(_p0)));
-        Color c4 = _rayTracer.traceRay(constructRayThroughPixel(nX,nY,Pij.add(_vRight.scale(halfRx)).add(_vUp.scale(-halfRy)).subtract(_p0)));
-        boolean checkEdges = c1.equals(c2) && c1.equals(c3) && c1.equals(c4);
-
-
-
-
-        if (!checkEdges||checkEdges){*/
         HashSet<Ray> myra= new HashSet<>();//to save all the different rays created
-        //We call the function constructRayThroughPixel like we used to but this time we launch m * n ray in the same pixel
+        //We call the function constructRayThroughPixel like we used to but this time we launch _numOfBeams ray in the same pixel
             for (int k = 0; k < _numOfBeams; k++) {
                 Ray ray=constructRayThroughPixel(nX, nY, j,i);
                 myra.add(ray);
             }
-       /* }
-        else {
-            Ray ray = constructRayThroughPixel(nX, nY, j,i);
-            myra.add(ray);
-        }*/
 
         return myra;
     }
@@ -721,8 +732,8 @@ private Random random = new Random();
     public Ray constructRayThroughPixel(int nX, int nY, double j, double i) {
 
         //Pc = P0 + d * vTo
-        Point pc = _p0.add(_vTo.scale(_distance));
-        Point pIJ = pc;
+        Point pC = _p0.add(_vTo.scale(_distance));
+        Point pIJ = pC;
 
         //Ry = height / nY : height of a pixel
         double rY = alignZero(_height / nY);

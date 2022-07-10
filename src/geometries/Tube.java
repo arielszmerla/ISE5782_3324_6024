@@ -9,9 +9,7 @@ import java.util.List;
 import static primitives.Util.*;
 
 /**
- * Tube class represents 3D tube in 3D Cartesian coordinate system
- * inherits Geometry class
- * @author Gal&Ariel
+ * A tube is a cylinder with a finite height
  */
 public class Tube extends Geometry {
     /**

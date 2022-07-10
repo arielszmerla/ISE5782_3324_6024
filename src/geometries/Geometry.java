@@ -43,7 +43,7 @@ public abstract class Geometry extends Intersectable {
     }
 
     /**
-     * get the geometry material
+     *  get the geometry material
      * @return material {@link Material}
      */
     public Material getMaterial() {

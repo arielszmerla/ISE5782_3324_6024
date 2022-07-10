@@ -7,6 +7,7 @@ import java.util.Objects;
  */
 public class Point {
     public static final Point ZERO = new Point(0,0,0);
+    // A field of the class.
     final Double3 _xyz;
 
     /**
@@ -27,6 +28,12 @@ public class Point {
         _xyz =new Double3 (x,y,z);
     }
 
+    /**
+     * > Returns the value of the `_xyz` field
+     *
+     * @return The xyz coordinates of the point.
+     */
+    // A method that returns a string representation of the object.
     public Double3 get_xyz() {
         return _xyz;
     }
@@ -37,6 +44,7 @@ public class Point {
     }
 
     @Override
+    // Overriding the equals method of the Object class.
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
