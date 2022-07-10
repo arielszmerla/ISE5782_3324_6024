@@ -67,9 +67,9 @@ public class ImprovementTest {
         scene1._lights.add(_directionalLight1);
         scene1._lights.add(new PointLight(spCL, spPL).setKl(0.001).setKq(0.0002));
         ImageWriter imageWriter = new ImageWriter("Cylinder depth test", 500, 500);
-        camera1.setImageWriter(imageWriter).setDepthOfField(true).setNumOfRaysDepth(25).setApertureFieldRadius(1)//
+        camera1.setImageWriter(imageWriter) //
                 .setRayTracer(new RayTracerBasic(scene1)) //
-                .renderImage2(); //
+                .renderImage(); //
         camera1.writeToImage();//
     }
 
@@ -95,6 +95,8 @@ public class ImprovementTest {
 
             }
         }
+
+
         scene1._geometries.add(
                 new Sphere(new Point(-80, 150, -200), 15).setEmission(lightColor) //
                         .setMaterial(new Material().setKd(0.5).setKs(0.5).setnShininess(20).setKt(0.5).setKg(1)),
@@ -148,48 +150,7 @@ public class ImprovementTest {
         Point w44 = new Point(260, -80, -590);
         scene1._geometries.addAll(new Wall(w11, w22, w33, w44, 295, new Color(WHITE), new Material().setKd(0.7))._parts);
 
-
-/*
-        //front1
-        Point wf11 = new Point(-150, -80, 260);
-        Point wf12 = new Point(-260, -80, 260);
-        Point wf13 = new Point(-260, 215, 260);
-        Point wf14 = new Point(-150, 215, 260);
-        scene1._geometries.add(new Polygon(wf11,wf12,wf13,wf14).setEmission(new Color(BLACK))
-                .setMaterial(new Material().setKd(0.2).setKs(0.2).setnShininess(30).setKt(0.9).setKg(0.2)));
-
-        //front2
-        Point wf21 = new Point(-50, -80, 260);
-        Point wf22 = new Point(-150, -80, 260);
-        Point wf23 = new Point(-150, 215, 260);
-        Point wf24 = new Point(-50, 215, 260);
-        scene1._geometries.add(new Polygon(wf21,wf22,wf23,wf24).setEmission(new Color(BLACK))
-                .setMaterial(new Material().setKd(0.2).setKs(0.2).setnShininess(30).setKt(0.9).setKg(0.4)));
- */
-/*
-        //front3
-        Point wf31 = new Point(100, -80, 260);
-        Point wf32 = new Point(-260, -80, 260);
-        Point wf33 = new Point(-260, 215, 260);
-        Point wf34 = new Point(100, 215, 260);
-        scene1._geometries.add(new Polygon(wf31,wf32,wf33,wf34).setEmission(new Color(BLACK))
-                .setMaterial(new Material().setKd(0.2).setKs(0.2).setnShininess(30).setKt(0.9).setKg(0.49)));
-
- */
-
-/*
-        //front4
-        Point wf41 = new Point(150, -80, 260);
-        Point wf42 = new Point(50, -80, 260);
-        Point wf43 = new Point(50, 215, 260);
-        Point wf44 = new Point(150, 215, 260);
-        scene1._geometries.add(new Polygon(wf41,wf42,wf43,wf44).setEmission(new Color(BLACK))
-                .setMaterial(new Material().setKd(0.2).setKs(0.2).setnShininess(30).setKt(1).setKg(0.5)));
-
-
- */
-
-        //front5
+        //front
         Point wf51 = new Point(260, -80, 260);
         Point wf52 = new Point(-260, -80, 260);
         Point wf53 = new Point(-260, 215, 260);
@@ -206,11 +167,37 @@ public class ImprovementTest {
 
 
         //right
-        Point w111 = new Point(260, -80, 260);
-        Point w222 = new Point(260, -80, -600);
-        Point w333 = new Point(250, -80, -600);
-        Point w444 = new Point(250, -80, 260);
-        scene1._geometries.addAll(new Wall(w111, w222, w333, w444, 295, new Color(WHITE), new Material().setKd(0.7))._parts);
+        Point wrb1 = new Point(260, -80, 260);
+        Point wrb2 = new Point(260, -80, -600);
+        Point wrb3 = new Point(250, -80, -600);
+        Point wrb4 = new Point(250, -80, 260);
+        scene1._geometries.addAll(new Wall(wrb1, wrb2, wrb3, wrb4, 130, new Color(WHITE), new Material().setKd(0.7))._parts);
+
+        Point wrr1 = new Point(260, 50, -500);
+        Point wrr2 = new Point(260, 50, -600);
+        Point wrr3 = new Point(250, 50, -600);
+        Point wrr4 = new Point(250, 50, -500);
+        scene1._geometries.addAll(new Wall(wrr1, wrr2, wrr3, wrr4, 165, new Color(WHITE), new Material().setKd(0.7))._parts);
+
+        Point wrl1 = new Point(260, 50, 260);
+        Point wrl2 = new Point(260, 50, 160);
+        Point wrl3 = new Point(250, 50, 160);
+        Point wrl4 = new Point(250, 50, 260);
+        scene1._geometries.addAll(new Wall(wrl1, wrl2, wrl3, wrl4, 165, new Color(WHITE), new Material().setKd(0.7))._parts);
+
+        Point wrt1 = new Point(260, 180, 160);
+        Point wrt2 = new Point(260, 180, -500);
+        Point wrt3 = new Point(250, 180, -500);
+        Point wrt4 = new Point(250, 180, 160);
+        scene1._geometries.addAll(new Wall(wrt1, wrt2, wrt3, wrt4, 35, new Color(WHITE), new Material().setKd(0.7))._parts);
+
+        //window
+        Point wrw1 = new Point(250, 50, 160);
+        Point wrw2 = new Point(250, 50, -500);
+        Point wrw3 = new Point(250, 180, -500);
+        Point wrw4 = new Point(250, 180, 160);
+        scene1._geometries.add(new Polygon(wrw1,wrw2,wrw3,wrw4).setEmission(new Color(BLACK))
+                .setMaterial(new Material().setKd(0.2).setKs(0.2).setnShininess(30).setKt(0.9).setKg(1)));
 
         //up
         Point w1111 = new Point(260, 215, -600);
@@ -219,19 +206,18 @@ public class ImprovementTest {
         Point w4444 = new Point(260, 215, 260);
         scene1._geometries.addAll(new Wall(w1111, w2222, w3333, w4444, 20, new Color(WHITE), new Material().setKd(0.7))._parts);
 
-
+        //ground
         Point leftBack = new Point(-300, -80, 260);
-        Material redMaterial = new Material().setnShininess(30).setKd(0.5).setKs(0.5).setKr(0.8).setKg(1);
-        Material blackMaterial = new Material().setnShininess(30).setKd(0.5).setKs(0.5).setKr(0.8).setKg(1);
+        Material tileMaterial = new Material().setnShininess(20).setKd(0.7).setKs(0.3).setKr(0.7).setKg(1);
 
         for (int i = 1; i < 18; i++) {
             leftBack = leftBack.add(new Vector(0, 0, -50));
             for (int j = 1; j < 11; j++) {
                 Tile tile;
                 if (Math.abs(j - i) % 2 == 0) {
-                    tile = new Tile(leftBack.add(new Vector(50 * j, 0, 0)),50,new Color(WHITE),redMaterial);
+                    tile = new Tile(leftBack.add(new Vector(50 * j, 0, 0)),50, new Color(134,125,140),tileMaterial);
                 } else {
-                    tile = new Tile(leftBack.add(new Vector(50 * j, 0, 0)), 50, new Color(BLACK), blackMaterial);
+                    tile = new Tile(leftBack.add(new Vector(50 * j, 0, 0)), 50, new Color(BLACK), tileMaterial);
                 }
                 scene1._geometries.add(tile._pol);
             }
@@ -239,50 +225,22 @@ public class ImprovementTest {
 
 
 
-
-
-
-
-            /*
-            scene1._geometries.add( new Polygon(new Point(-160,-80,260),new Point(-160,-80,200-500),new Point(-160,300,200-500),new Point(-160,300,260))
-                    .setEmission(new Color(PINK))
-                    .setMaterial(new Material().setnShininess(30).setKd(0.5).setKs(0.5).setKr(0.8)));
-            scene1._geometries.add( new Polygon(new Point(-160,-80,260-600),new Point(-160,-80,200-1200),new Point(-160,300,200-1200),new Point(-160,300,260-600))
-                    .setEmission(new Color(PINK))
-                    .setMaterial(new Material().setnShininess(30).setKd(0.5).setKs(0.5).setKr(0.8)));
-            scene1._geometries.add( new Polygon(new Point(-160,-80,200-500),new Point(-160,-80,260-600),new Point(-160,100,260-600),new Point(-160,100,200-500))
-                    .setEmission(new Color(PINK))
-                    .setMaterial(new Material().setnShininess(30).setKd(0.5).setKs(0.5).setKr(0.8)));
-            scene1._geometries.add( new Polygon(new Point(-160,180,200-500),new Point(-160,180,260-600),new Point(-160,300,260-600),new Point(-160,300,200-500))
-                    .setEmission(new Color(PINK))
-                    .setMaterial(new Material().setnShininess(80).setKd(0.5).setKs(0.8).setKr(0.5)));
-            scene1._lights.add(new PointLight(new Color(YELLOW).reduce(10), new Point(-500, 330 , -400)));
-            scene1._geometries.add( new Polygon(new Point(-160+315,-80,260),new Point(-160+315,-80,200-1200),new Point(-160+315,300,200-1200),new Point(-160+315,300,260))
-                    .setEmission(new Color(PINK))
-                    .setMaterial(new Material().setnShininess(80).setKd(0.5).setKs(0.8).setKr(0.5)));
-
-        }
-*/
         scene1._lights.add(new SpotLight(new Color(WHITE), new Point(-80, 150, -200), new Vector(0, -1, 0)).set_shorten(0.1));
         scene1._lights.add(new SpotLight(new Color(WHITE), new Point(0, 150, -200), new Vector(0, -1, 0)).set_shorten(0.1));
         scene1._lights.add(new SpotLight(new Color(WHITE), new Point(80, 150, -200), new Vector(0, -1, 0)).set_shorten(0.1));
-        //scene1._lights.add(new SpotLight(new Color(WHITE), new Point(0,100,4000), new Vector(0,0,-1)));
-        //scene1._lights.add(new SpotLight(new Color(WHITE), new Point(-400, -400, 0), new Vector(0.2d, 0.5d, -1)));
-        //scene1.lights.add(new DirectionalLight(new Color(GREEN), new Vector(1,1,1)));
-        //scene1.lights.add(_directionalLight);
-        //scene1.lights.add(_directionalLight1);
-        //scene1.lights.add(new PointLight(spCL, spPL).setKl(0.001).setKq(0.0002));
-        ImageWriter imageWriter = new ImageWriter("wall4", 500, 500);
+        scene1._lights.add(new SpotLight(new Color(WHITE), new Point(400, 100, -170), new Vector(-1, 0, 0)).set_shorten(0.2));
+
+
+        ImageWriter imageWriter = new ImageWriter("wall5", 500, 500);
         camera1.setFocusField(1800);
         Camera camera1 = new Camera(new Point(0, 200, 4500), new Vector(0, -0.0425, -0.999), new Vector(0, 0.999, -0.0425)) //
                 .setVPSize(150, 150) //
                 .setVPDistance(1000);
         camera1.moveCamera(new Vector(660, 0, 0));
-//camera1.rotateCamera(new Vector(1,0,0),-2);
         camera1.rotateCamera(new Vector(0, 0.999, -0.0425), 8);
         camera1.setImageWriter(imageWriter) //
                 .setRayTracer(new RayTracerBasic(scene1)) //
-                .renderImage(); //
+                .setAntiAliasing(true).renderImage2(); //
         camera1.writeToImage();//
 
 

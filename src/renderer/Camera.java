@@ -10,38 +10,6 @@ import static primitives.Util.*;
 import static renderer.Pixel.printInterval;
 
 public class Camera {
-    private int _threads = 0;
-    private boolean _print = false;
-    boolean isAntiAliasing=false;
-
-    public Camera setAntiAliasing(boolean antiAliasing) {
-        isAntiAliasing = antiAliasing;
-        return this;
-    }
-
-    public Camera setDepthOfField(boolean depthOfField) {
-        isDepthOfField = depthOfField;
-        return this;
-    }
-
-    boolean isDepthOfField=false;
-    /**
-     * This function returns the number of beams.
-     *
-     * @return The number of beams.
-     */
-    public int getNumOfBeams() {
-        return _numOfBeams;
-    }
-
-    public Camera setNumOfRaysDepth(int numOfRaysDepth) {
-        _numOfRaysDepth = numOfRaysDepth;
-        return this;
-    }
-
-    private int _numOfRaysDepth = 4;
-    private int _numOfBeams = 300;
-    private final int SPARE_THREADS = 2;
     /**
      * right direction vector from camera
      */
@@ -70,16 +38,15 @@ public class Camera {
      * height of view plane
      */
     private double _height;
-    /**
-     * Sets the number of beams and returns the camera.
-     *
-     * @param numOfBeams The number of beams to be emitted from the camera.
-     * @return The camera object itself.
-     */
-    public Camera setNumOfBeams(int numOfBeams) {
-        _numOfBeams = numOfBeams;
-        return this;
-    }
+
+    private int _threads = 0;
+    private boolean _print = false;
+    boolean isAntiAliasing=false;
+    boolean isDepthOfField=false;
+    private int _numOfRaysDepth = 4;
+    private int _numOfBeams = 300;
+    private final int SPARE_THREADS = 2;
+
     // A random number generator.
     private final Random random = new Random();
     // A private variable that is used to write the image to the screen.
@@ -92,25 +59,71 @@ public class Camera {
     private double _focusField=1000;
 
     /**
-     * Radius of the aperture
+     * Distance of the aperture
      */
     private double _apertureFieldDistance=250;
-
-
     // The radius of the aperture.
     private double _apertureFieldRadius=2d;
+
+
     /**
      * Set the aperture field of the camera.
      *
      * @param focusField The aperture field of the camera.
      * @return The camera object itself.
      */
-
     public Camera setFocusField(double focusField) {
         _focusField = focusField;
         return this;
     }
-
+    /**
+     * This function sets the anti-aliasing boolean to the value of the parameter antiAliasing.
+     *
+     * @param antiAliasing If true, the camera will use anti-aliasing.
+     * @return The camera object itself.
+     */
+    public Camera setAntiAliasing(boolean antiAliasing) {
+        isAntiAliasing = antiAliasing;
+        return this;
+    }
+    /**
+     * This function sets the depth of field to true or false.
+     *
+     * @param depthOfField If true, the camera will have a depth of field effect.
+     * @return The camera object itself.
+     */
+    public Camera setDepthOfField(boolean depthOfField) {
+        isDepthOfField = depthOfField;
+        return this;
+    }
+    /**
+     * This function returns the number of beams.
+     *
+     * @return The number of beams.
+     */
+    public int getNumOfBeams() {
+        return _numOfBeams;
+    }
+    /**
+     * Sets the number of rays to be used for depth calculation.
+     *
+     * @param numOfRaysDepth The number of rays that will be casted from the camera to the scene.
+     * @return The camera itself.
+     */
+    public Camera setNumOfRaysDepth(int numOfRaysDepth) {
+        _numOfRaysDepth = numOfRaysDepth;
+        return this;
+    }
+    /**
+     * Sets the number of beams and returns the camera.
+     *
+     * @param numOfBeams The number of beams to be emitted from the camera.
+     * @return The camera object itself.
+     */
+    public Camera setNumOfBeams(int numOfBeams) {
+        _numOfBeams = numOfBeams;
+        return this;
+    }
     /**
      * This function sets the aperture field radius of the camera
      *
@@ -154,7 +167,7 @@ public class Camera {
         return this;
     }
     /**
-     * Set multithreading <br>
+     * Set multithreading
      * - if the parameter is 0 - number of cores less 2 is taken
      *
      * @param threads number of threads
@@ -228,7 +241,6 @@ public class Camera {
 
         return new Ray(_p0, Pij.subtract(_p0));
     }
-
 
     /**
      * Rotate camera through axis and angle of rotation
@@ -321,17 +333,17 @@ public class Camera {
             int nY = _imageWriter.getNy();
             Pixel.initialize(nY, nX, printInterval);
             IntStream.range(0, nY).parallel().forEach(i -> IntStream.range(0, nX).parallel().forEach(j -> {
-                       if(isAntiAliasing) {
+                       if(isAntiAliasing && isDepthOfField) {
                            //Get the color of every pixel
                            //write the color on the image
-                           _imageWriter.writePixel(j, i, recurseOnPixel(nX, nY, 3, constructRayThroughPixel( nX, nY, j, i)));
+                           _imageWriter.writePixel(j, i, castRayDepth(nX, nY, j, i));
                        }
                        else if (isDepthOfField) {
                            _imageWriter.writePixel(j, i, castRayDepth(nX, nY, j, i));
 
                        }
-                       else if (isAntiAliasing && isDepthOfField) {
-                           _imageWriter.writePixel(j, i, castRayDepth(nX, nY, j, i));
+                       else if (isAntiAliasing) {
+                           _imageWriter.writePixel(j, i, recurseOnPixel(nX, nY, 3, constructRayThroughPixel( nX, nY, j, i)));
                        }
                        else{
                            _imageWriter.writePixel(j, i, recurseOnPixel(nX, nY, 0, constructRayThroughPixel( nX, nY, j, i)));
@@ -357,9 +369,7 @@ public class Camera {
         Pixel.initialize(nY, nX, printInterval);
         IntStream.range(0, nY).parallel().forEach(i -> IntStream.range(0, nX).parallel().forEach(j -> {
             //construct ray for every pixel
-            Ray myRay = constructRayThroughPixel(
-                    nX,nY,j,i
-                    );
+            Ray myRay = constructRayThroughPixel(nX,nY,j,i);
             //Get the color of every pixel
             Color myColor = recurseOnPixel(nX,nY, 3, myRay);
             //write the color on the image
@@ -393,13 +403,22 @@ public class Camera {
         myRays.add( new Ray(_p0, center.add(_vRight.scale(-rX / 2)).add(_vUp.scale(rY / 2)).subtract(_p0)));
         //Bottom right
         myRays.add( new Ray(_p0, center.add(_vRight.scale(rX / 2)).add(_vUp.scale(rY / 2)).subtract(_p0)));
-        //cnter of pixel
+        //center of pixel
         myRays.add(myRay);
         //Top left
         myRays.add( new Ray(_p0, center.add(_vRight.scale(-rX / 2)).add(_vUp.scale(-rY / 2)).subtract(_p0)));
         //top right
         myRays.add( new Ray(_p0, center.add(_vRight.scale(rX / 2)).add(_vUp.scale(-rY / 2)).subtract(_p0)));
         return myRays;
+
+        /** index       location
+         * --------------------------
+         *    0        Bottom left
+         *    1        Bottom right
+         *    2           Center
+         *    3         Top Left
+         *    4         Top Right
+         */
     }
 
     /**
@@ -464,6 +483,14 @@ public class Camera {
         //trace all the rays and store the colors with the rays
         for (Ray myRay : myRays) {
             rays.put(++i, new ColorRaySaver(myRay, _rayTracer.traceRay(myRay)));
+            /** index       location
+             * --------------------------
+             *    1        Bottom left
+             *    2        Bottom right
+             *    3           Center
+             *    4         Top Left
+             *    5         Top Right
+             */
         }
         //render the pixel in recursive function
         return renderPixelRecursive(rays, nX, nY, depth);
@@ -515,6 +542,7 @@ public class Camera {
                 rays.put(4, newRays.get(1));
                 rays.put(5, myRays.get(3));
                 mainColor = mainColor.add(renderPixelRecursive(rays, nX * 2, nY * 2, depth - 1));
+
                 rays.put(1, newRays.get(0));
                 rays.put(2, myRays.get(2));
                 tempCenter = constructPixelCenterRay(newRays.get(0).getRay(), nX * 2, nY * 2);
@@ -522,6 +550,7 @@ public class Camera {
                 rays.put(4, myRays.get(3));
                 rays.put(5, newRays.get(2));
                 mainColor = mainColor.add(renderPixelRecursive(rays, nX * 2, nY * 2, depth - 1));
+
                 rays.put(1, newRays.get(1));
                 rays.put(2, myRays.get(3));
                 tempCenter = constructPixelCenterRay(newRays.get(1).getRay(), nX * 2, nY * 2);
@@ -529,6 +558,7 @@ public class Camera {
                 rays.put(4, myRays.get(4));
                 rays.put(5, newRays.get(3));
                 mainColor = mainColor.add(renderPixelRecursive(rays, nX * 2, nY * 2, depth - 1));
+
                 rays.put(1, myRays.get(3));
                 rays.put(2, newRays.get(2));
                 tempCenter = constructPixelCenterRay(myRays.get(3).getRay(), nX * 2, nY * 2);
@@ -557,6 +587,7 @@ public class Camera {
 
             return _rayTracer.traceRay(centerRay).add();
     }
+
     /**
      * The function casts a ray from the camera to the focal point, and then casts rays from the focal point to the scene
      *
@@ -645,9 +676,6 @@ public class Camera {
 
         return myra;
     }
-
-
-
     /**
      * The function casts rays from the camera to the scene, and returns the color of the pixel (anti-aliasing)
      *
@@ -700,6 +728,8 @@ public class Camera {
         return new Ray(_p0, vIJ);
 
     }
+
+
     /**
      * Construct ray through the center of a pixel when we have only the bottom right corner's ray
      * @param ray the ray

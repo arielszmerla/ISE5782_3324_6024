@@ -36,7 +36,7 @@ public class ShadowTests {
 				new SpotLight(new Color(400, 240, 0), spotLocation, new Vector(1, 1, -3)) //
 						.setKl(1E-5).setKq(1.5E-7));
 		camera.setImageWriter(new ImageWriter(pictName, 400, 400)) //
-				.renderImage(); //
+				.setAntiAliasing(true).renderImage2(); //
 		camera.writeToImage();
 	}
 
@@ -139,7 +139,7 @@ public class ShadowTests {
 	}
 
 	/**
-	 * Produce a picture of a cube lighted by a spot light with a Sphere
+	 * Produce a picture of a two triangles lighted by a spot light with a Sphere
 	 * producing a shading
 	 */
 	@Test
@@ -148,20 +148,21 @@ public class ShadowTests {
 
 		scene._geometries.add( //
 				new Triangle(new Point(-150, -150, -115), new Point(150, -150, -135), new Point(75, 75, -150)) //
-						.setMaterial(new Material().setKs(0.8).setnShininess(60).setKg(0.0001)), //
+						.setMaterial(new Material().setKs(0.8).setnShininess(60)), //
 				new Triangle(new Point(-150, -150, -115), new Point(-70, 70, -140), new Point(75, 75, -150)) //
 						.setMaterial(new Material().setKs(0.8).setnShininess(60)), //
 				new Sphere(new Point(0, 0, -11), 30d) //
 						.setEmission(new Color(java.awt.Color.BLUE)) //
-						.setMaterial(new Material().setKd(0.5).setKs(0.5).setKg(0.0001).setnShininess(30).setKt(0.9)) //
+						.setMaterial(new Material().setKd(0.5).setKs(0.5).setnShininess(30)) //
 		);
 		scene._lights.add( //
 				new SpotLight(new Color(700, 400, 400), new Point(40, 40, 115), new Vector(-1, -1, -4)) //
 						.setKl(4E-4).setKq(2E-5));
 
 		camera.setImageWriter(new ImageWriter("shadowTrianglesSphere", 600, 600)) //
-				.renderImage(); //
+				.setAntiAliasing(true).renderImage2();
 		camera.writeToImage();
+
 	}
 
 }
