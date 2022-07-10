@@ -34,7 +34,13 @@ public class Camera {
         return _numOfBeams;
     }
 
-    private int _numOfBeams = 4;
+    public Camera setNumOfRaysDepth(int numOfRaysDepth) {
+        _numOfRaysDepth = numOfRaysDepth;
+        return this;
+    }
+
+    private int _numOfRaysDepth = 4;
+    private int _numOfBeams = 300;
     private final int SPARE_THREADS = 2;
     /**
      * right direction vector from camera
@@ -316,16 +322,19 @@ public class Camera {
             Pixel.initialize(nY, nX, printInterval);
             IntStream.range(0, nY).parallel().forEach(i -> IntStream.range(0, nX).parallel().forEach(j -> {
                        if(isAntiAliasing) {
-                           _imageWriter.writePixel(j, i, castRays_AntiAliasing(nX, nY, j, i));
+                           //Get the color of every pixel
+                           //write the color on the image
+                           _imageWriter.writePixel(j, i, recurseOnPixel(nX, nY, 3, constructRayThroughPixel( nX, nY, j, i)));
                        }
                        else if (isDepthOfField) {
                            _imageWriter.writePixel(j, i, castRayDepth(nX, nY, j, i));
 
                        }
+                       else if (isAntiAliasing && isDepthOfField) {
+                           _imageWriter.writePixel(j, i, castRayDepth(nX, nY, j, i));
+                       }
                        else{
-                           //Get the color of every pixel
-                           //write the color on the image
-                           _imageWriter.writePixel(j, i, renderPixel(nX, nY, 3, constructRayThroughPixel( nX, nY, i, j)));
+                           _imageWriter.writePixel(j, i, recurseOnPixel(nX, nY, 0, constructRayThroughPixel( nX, nY, j, i)));
                        }
                         Pixel.pixelDone();
                         Pixel.printPixel();
@@ -349,10 +358,10 @@ public class Camera {
         IntStream.range(0, nY).parallel().forEach(i -> IntStream.range(0, nX).parallel().forEach(j -> {
             //construct ray for every pixel
             Ray myRay = constructRayThroughPixel(
-                    nX,nY,i,j
+                    nX,nY,j,i
                     );
             //Get the color of every pixel
-            Color myColor = renderPixel(nX,nY, 3, myRay);
+            Color myColor = recurseOnPixel(nX,nY, 3, myRay);
             //write the color on the image
             _imageWriter.writePixel(j, i, myColor);
             Pixel.pixelDone();
@@ -368,7 +377,7 @@ public class Camera {
      * @param nY number of pixels in height
      * @return list of rays
      */
-    public List<Ray> construct5RaysFromRay(Ray myRay, double nX, double nY) {
+    public List<Ray> constructCenterCornersRaysFromRay(Ray myRay, double nX, double nY) {
 
         List<Ray> myRays = new LinkedList<>();
 
@@ -377,17 +386,18 @@ public class Camera {
         //Rx = h / nX - pixel width ratio
         double rX = alignZero(_width / nX);
 
+        //get center point
         Point center = calcFocalFieldPoint(myRay);
 
-        //[-1/2, -1/2]
+        //Bottom left
         myRays.add( new Ray(_p0, center.add(_vRight.scale(-rX / 2)).add(_vUp.scale(rY / 2)).subtract(_p0)));
-        //[1/2, -1/2]
+        //Bottom right
         myRays.add( new Ray(_p0, center.add(_vRight.scale(rX / 2)).add(_vUp.scale(rY / 2)).subtract(_p0)));
-
+        //cnter of pixel
         myRays.add(myRay);
-        //[-1/2, 1/2]
+        //Top left
         myRays.add( new Ray(_p0, center.add(_vRight.scale(-rX / 2)).add(_vUp.scale(-rY / 2)).subtract(_p0)));
-        //[1/2, 1/2]
+        //top right
         myRays.add( new Ray(_p0, center.add(_vRight.scale(rX / 2)).add(_vUp.scale(-rY / 2)).subtract(_p0)));
         return myRays;
     }
@@ -403,26 +413,38 @@ public class Camera {
      * @param nY number of pixels in height
      * @return list of rays
      */
-    public List<Ray> construct4RaysThroughPixel(Ray ray, double nX, double nY) {
+    /**
+     * It takes a ray and a pixel, and returns the 4 rays that go through the edges of the pixel
+     *
+     * @param ray the ray that goes through the center of the pixel
+     * @param nX number of pixels in the X axis
+     * @param nY the number of pixels in the vertical direction
+     * @return The rays that are being returned are the rays that are being sent from the camera to the focal field.
+     */
+    public List<Ray> constructCenterOfEdgesRays(Ray ray, double nX, double nY) {
 
         //Ry = h / nY - pixel height ratio
         double height = alignZero(_height / nY);
         //Rx = h / nX - pixel width ratio
         double width = alignZero(_width / nX);
 
-        List<Ray> myRays = new ArrayList<>();
+        List<Ray> edgeRays = new ArrayList<>();
         Point center = calcFocalFieldPoint(ray);
         //set the 4 points
+        //Middle top edge
         Point point1 = center.add(_vUp.scale(height / 2));
+        //Middle left edge
         Point point2 = center.add(_vRight.scale(-width / 2));
+        //Middle right edge
         Point point3 = center.add(_vRight.scale(width / 2));
+        //Middle bottom edge
         Point point4 = center.add(_vUp.scale(-height / 2));
         //create their rays
-        myRays.add(new Ray(_p0, point1.subtract(_p0)));
-        myRays.add(new Ray(_p0, point2.subtract(_p0)));
-        myRays.add(new Ray(_p0, point3.subtract(_p0)));
-        myRays.add(new Ray(_p0, point4.subtract(_p0)));
-        return myRays;
+        edgeRays.add(new Ray(_p0, point1.subtract(_p0)));
+        edgeRays.add(new Ray(_p0, point2.subtract(_p0)));
+        edgeRays.add(new Ray(_p0, point3.subtract(_p0)));
+        edgeRays.add(new Ray(_p0, point4.subtract(_p0)));
+        return edgeRays;
     }
 
     /**
@@ -435,13 +457,13 @@ public class Camera {
      * @param firstRay the first ray that was sent to the pixel
      * @return The color of the pixel
      */
-    private Color renderPixel(double nX, double nY, int depth, Ray firstRay) {
-        List<Ray> myRays = construct5RaysFromRay(firstRay, nX, nY); //construct 5 rays into the pixel
-        HashMap<Integer, ColoredRay> rays = new HashMap<>();
+    private Color recurseOnPixel(double nX, double nY, int depth, Ray firstRay) {
+        List<Ray> myRays = constructCenterCornersRaysFromRay(firstRay, nX, nY); //construct 5 rays into the pixel
+        HashMap<Integer, ColorRaySaver> rays = new HashMap<>();
         int i = 0;
         //trace all the rays and store the colors with the rays
         for (Ray myRay : myRays) {
-            rays.put(++i, new ColoredRay(myRay, _rayTracer.traceRay(myRay)));
+            rays.put(++i, new ColorRaySaver(myRay, _rayTracer.traceRay(myRay)));
         }
         //render the pixel in recursive function
         return renderPixelRecursive(rays, nX, nY, depth);
@@ -459,12 +481,13 @@ public class Camera {
      * @param depth the number of recursions to perform.
      * @return The color of the pixel.
      */
-    private Color renderPixelRecursive(HashMap<Integer, ColoredRay> myRays, double nX, double nY, int depth) {
+    private Color renderPixelRecursive(HashMap<Integer, ColorRaySaver> myRays, double nX, double nY, int depth) {
         boolean flag = false;
-        HashMap<Integer, ColoredRay> rays = new HashMap<>();
+        HashMap<Integer, ColorRaySaver> rays = new HashMap<>();
         //get the center of the pixel ray
-        ColoredRay mainRay = myRays.get(3);
-        //get center's color
+        ColorRaySaver mainRay = myRays.get(3);
+        //get center's color that we will return in case of stopping recursion
+        // Getting the color of the main ray.
         Color mainColor = mainRay.getColor();
         if (depth >= 1) {
             //get color of all the 4 different points
@@ -477,49 +500,43 @@ public class Camera {
                     }
                 }
             }
+            //send to recursion
             if (flag) {
-                //Create a map of Colored rays for the 4 under pixels and send to recursion
-                /*   List<ColoredRay> newRays =construct4RaysThroughPixel(myRays.get(3).getRay(), nX, nY).stream().map(
-                        x -> new ColoredRay(x, _rayTracer.traceRay(x))
-                ).collect(Collectors.toList());*/
-                List<ColoredRay> newRays = new LinkedList<>();
-                    List<Ray> r=construct4RaysThroughPixel(myRays.get(3).getRay(), nX, nY);
-                for (Ray ray:r
+                List<ColorRaySaver> newRays = new LinkedList<>();
+                List<Ray> centerOfEdgesRays= constructCenterOfEdgesRays(myRays.get(3).getRay(), nX, nY);
+                for (Ray ray:centerOfEdgesRays
                      ) {
-                    newRays.add(new ColoredRay(ray,_rayTracer.traceRay(ray)));
+                    newRays.add(new ColorRaySaver(ray,_rayTracer.traceRay(ray)));
                 }
                 rays.put(1, myRays.get(1));
                 rays.put(2, newRays.get(0));
                 Ray tempCenter = constructPixelCenterRay(myRays.get(1).getRay(), nX * 2, nY * 2);
-                rays.put(3, new ColoredRay(tempCenter, _rayTracer.traceRay(tempCenter)));
+                rays.put(3, new ColorRaySaver(tempCenter, _rayTracer.traceRay(tempCenter)));
                 rays.put(4, newRays.get(1));
                 rays.put(5, myRays.get(3));
                 mainColor = mainColor.add(renderPixelRecursive(rays, nX * 2, nY * 2, depth - 1));
-                //rays = new HashMap<>();
                 rays.put(1, newRays.get(0));
                 rays.put(2, myRays.get(2));
                 tempCenter = constructPixelCenterRay(newRays.get(0).getRay(), nX * 2, nY * 2);
-                rays.put(3, new ColoredRay(tempCenter, _rayTracer.traceRay(tempCenter)));
+                rays.put(3, new ColorRaySaver(tempCenter, _rayTracer.traceRay(tempCenter)));
                 rays.put(4, myRays.get(3));
                 rays.put(5, newRays.get(2));
                 mainColor = mainColor.add(renderPixelRecursive(rays, nX * 2, nY * 2, depth - 1));
-               // rays = new HashMap<>();
                 rays.put(1, newRays.get(1));
                 rays.put(2, myRays.get(3));
                 tempCenter = constructPixelCenterRay(newRays.get(1).getRay(), nX * 2, nY * 2);
-                rays.put(3, new ColoredRay(tempCenter, _rayTracer.traceRay(tempCenter)));
+                rays.put(3, new ColorRaySaver(tempCenter, _rayTracer.traceRay(tempCenter)));
                 rays.put(4, myRays.get(4));
                 rays.put(5, newRays.get(3));
                 mainColor = mainColor.add(renderPixelRecursive(rays, nX * 2, nY * 2, depth - 1));
-                //rays = new HashMap<>();
                 rays.put(1, myRays.get(3));
                 rays.put(2, newRays.get(2));
                 tempCenter = constructPixelCenterRay(myRays.get(3).getRay(), nX * 2, nY * 2);
-                rays.put(3, new ColoredRay(tempCenter, _rayTracer.traceRay(tempCenter)));
+                rays.put(3, new ColorRaySaver(tempCenter, _rayTracer.traceRay(tempCenter)));
                 rays.put(4, newRays.get(3));
                 rays.put(5, myRays.get(5));
                 mainColor = mainColor.add(renderPixelRecursive(rays, nX * 2, nY * 2, depth - 1));
-                mainColor = mainColor.reduce(5);
+                mainColor = mainColor.reduce(5d);
             }
         }
         return mainColor;
@@ -550,8 +567,11 @@ public class Camera {
      * @return The color of the pixel.
      */
     private Color castRayDepth(int nX, int nY, double j, double i) {
+        //create ray to center of pixel
         Ray centerRay=constructRay(nX,nY,(int)j,(int)i);
+        //get focal point using focal distance
         Point focalPoint= calcFocalFieldPoint(centerRay);
+        //create and return average color from the aperture to focal point rays beam
         return calcRaysFromAperturetoFocalPoint(centerRay,focalPoint);
     }
     /**
@@ -598,17 +618,18 @@ public class Camera {
     private Color calcRaysFromAperturetoFocalPoint(Ray ray, Point focusPlaneIntersection)
     {
         Color color=_rayTracer.traceRay(ray);
-        Point apertureCenter= calcApertureFieldPoint( ray);
+        Point apertureCenter= calcApertureFieldPoint(ray);
 
-        //rotate on the lens
-        double d = 360d/5d;
-        for (int i=0;i<5;i++){
+        //rotate on the lens and create the rays
+        double d = 360d/_numOfRaysDepth;
+        for (int i=0;i<_numOfRaysDepth;i++){
             Vector v=_vUp.rotateVector(_vRight,d*i).scale(_apertureFieldRadius).rotateVector(_vUp,d*i);
             Point p=apertureCenter.add(v);
             Ray depthRay=new Ray(p,new Vector(focusPlaneIntersection.subtract(p).get_xyz()));
             color=color.add(_rayTracer.traceRay(depthRay));
         }
-        return averageColor(color,5);
+        //return average color
+        return averageColor(color,_numOfRaysDepth);
     }
 
 
@@ -621,11 +642,6 @@ public class Camera {
                 Ray ray=constructRayThroughPixel(nX, nY, j,i);
                 myra.add(ray);
             }
-       /* }
-        else {
-            Ray ray = constructRayThroughPixel(nX, nY, j,i);
-            myra.add(ray);
-        }*/
 
         return myra;
     }

@@ -11,8 +11,9 @@ import java.util.*;
 
 import static primitives.Util.*;
 
+
 /**
- * The type Ray tracer basic.
+ * The class RayTracerBasic is a class that inherits from the class RayTracer and implements the method traceRay
  */
 public class RayTracerBasic extends RayTracer {
     private static final double DELTA = 0.1;
@@ -20,9 +21,9 @@ public class RayTracerBasic extends RayTracer {
     private static final double MIN_CALC_COLOR_K = 0.001;
     private static final double INITIAL_K = 1.0;
     // Setting the default value of the variable _glossinessRays to 30.
-    private int _glossinessRays = 30;
+    private int _glossinessRays = 5;
     // Declaring a variable called isGlossyEffect and assigning it a value of false.
-    private final boolean isGlossyEffect=false;
+    private final boolean isGlossyEffect=true;
     /**
      * scene setter
      *
